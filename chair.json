@@ -1,0 +1,7 @@
+{
+  "name": "chair",
+  "instructions": [
+    {"op": "add", "pos": [0, 0, 0], "size": [4, 4, 4], "color": 4},
+    {"op": "add", "pos": [0, 0, 4], "size": [4, 1, 6], "color": 4}
+  ]
+}
