@@ -7,9 +7,9 @@ def generate_fireplace():
     random.seed(42)
     instructions = []
     
-    # Dimensions (Updated)
-    fp_w = 50  # Increased from 40
-    fp_d = 25  # Decreased from 40
+    # Dimensions
+    fp_w = 50 
+    fp_d = 25 
     fp_total_h = 140
     
     fp_x = 0
@@ -26,10 +26,9 @@ def generate_fireplace():
     z_stack = z_taper + h_taper
     
     w_base = fp_w
-    w_stack = 30 # Scaled up from 24
-    
+    w_stack = 30
     d_base = fp_d
-    d_stack = 15 # Scaled down from 24
+    d_stack = 15
     
     # Taper Alignment: Center X (0.5), Back Y (1.0)
     align_x = 0.5
@@ -37,7 +36,6 @@ def generate_fireplace():
     
     # --- 0. SOLID BACKING (Core) ---
     print("Adding solid backing...")
-    # Base Core
     instructions.append({
         "op": "add",
         "pos": [fp_x + 2, fp_y + 2, z_base],
@@ -45,16 +43,13 @@ def generate_fireplace():
         "color": palette.STONE_DARKER
     })
     
-    # Taper Core (Stepped)
     step_h = 2
     for z in range(0, h_taper, step_h):
         progress = z / float(h_taper)
         cur_w = int(w_base + (w_stack - w_base) * progress)
         cur_d = int(d_base + (d_stack - d_base) * progress)
-        
         off_x = int((w_base - cur_w) * align_x)
         off_y = int((d_base - cur_d) * align_y)
-        
         instructions.append({
             "op": "add",
             "pos": [fp_x + off_x + 2, fp_y + off_y + 2, z_taper + z],
@@ -62,10 +57,8 @@ def generate_fireplace():
             "color": palette.STONE_DARKER
         })
         
-    # Stack Core
     off_x_stack = int((w_base - w_stack) * align_x)
     off_y_stack = int((d_base - d_stack) * align_y)
-    
     instructions.append({
         "op": "add",
         "pos": [fp_x + off_x_stack + 2, fp_y + off_y_stack + 2, z_stack],
@@ -101,25 +94,49 @@ def generate_fireplace():
     )
     instructions.extend(taper_bricks)
     
-    # C. Stack Section
+    # C. Stack Section (Stop 4 voxels early for the crown)
+    h_stack_bricks = h_stack - 4
     stack_bricks = csg_patterns.create_brick_volume(
         start_pos=(fp_x + off_x_stack, fp_y + off_y_stack, z_stack),
-        size=(w_stack, d_stack, h_stack),
+        size=(w_stack, d_stack, h_stack_bricks),
         brick_size=(6, 5, 4),
         color=stone_mix,
         mortar=1,
         randomize_layout=True
     )
     instructions.extend(stack_bricks)
+
+    # --- 1.5 CHIMNEY CROWN/POT ---
+    print("Adding chimney crown...")
+    crown_h = 4
+    z_crown = fp_total_h - crown_h
+    
+    # Wider Crown Slab
+    instructions.append({
+        "op": "add",
+        "pos": [fp_x + off_x_stack - 1, fp_y + off_y_stack - 1, z_crown],
+        "size": [w_stack + 2, d_stack + 2, 2],
+        "color": palette.STONE_DARK
+    })
+    
+    # Chimney Pot (Centered on top)
+    pot_w, pot_d = 14, 10
+    pot_x = fp_x + off_x_stack + (w_stack - pot_w) // 2
+    pot_y = fp_y + off_y_stack + (d_stack - pot_d) // 2
+    
+    instructions.append({
+        "op": "add",
+        "pos": [pot_x, pot_y, z_crown + 2],
+        "size": [pot_w, pot_d, 2],
+        "color": palette.STONE_DARKER
+    })
     
     # --- 2. CARVING ---
-    # Firebox
-    fire_w = 30 # Wider
+    fire_w = 30
     fire_h = 24
-    fire_d = 18 # Shallower
+    fire_d = 18
     fire_x = fp_x + (fp_w - fire_w) // 2
     fire_z = fp_z + 2
-    
     print("Carving firebox...")
     instructions.append({
         "op": "subtract",
@@ -127,18 +144,14 @@ def generate_fireplace():
         "size": [fire_w, fire_d, fire_h]
     })
     
-    # Flue
     flue_w = 12
-    flue_d = 8 # Shallower to fit in d_stack=15
+    flue_d = 8 
     flue_h = fp_total_h - (fire_z + fire_h)
-    
     stack_center_x = fp_x + off_x_stack + (w_stack // 2)
     stack_center_y = fp_y + off_y_stack + (d_stack // 2)
-    
     flue_x = stack_center_x - (flue_w // 2)
     flue_y = stack_center_y - (flue_d // 2)
     flue_z = fire_z + fire_h
-    
     print("Carving flue...")
     instructions.append({
         "op": "subtract",
@@ -147,11 +160,9 @@ def generate_fireplace():
     })
     
     # --- 3. DETAILS ---
-    # Mantel
     mantel_h = 4
-    mantel_d = 12 # Deep mantel
+    mantel_d = 12
     mantel_z = fire_z + fire_h + 2 
-    
     print("Adding mantel...")
     instructions.append({
         "op": "add",
@@ -160,7 +171,6 @@ def generate_fireplace():
         "color": palette.WOOD_DARK
     })
     
-    # Fire
     print("Adding fire...")
     instructions.append({
         "op": "add",
@@ -181,12 +191,10 @@ def generate_fireplace():
         "color": palette.FIRE_ORANGE
     })
 
-    # Output
     data = {
         "name": "stone_fireplace",
         "instructions": instructions
     }
-    
     with open("stone_fireplace.json", "w") as f:
         json.dump(data, f, indent=2)
 

@@ -1,6 +1,8 @@
 [
-  {"asset_id": "chair", "pos": [10, 10, 0], "rot": 0},
-  {"asset_id": "chair", "pos": [20, 10, 0], "rot": 90},
-  {"asset_id": "chair", "pos": [30, 10, 0], "rot": 180},
-  {"asset_id": "stone_fireplace", "pos": [20, 30, 0], "rot": 270}
+  {"asset_id": "wooden_floor", "pos": [0, 0, 0], "rot": 0},
+  {"asset_id": "timber_wall", "pos": [0, 256, 2], "rot": 90},
+  {"asset_id": "chair", "pos": [70, 120, 2], "rot": 0},
+  {"asset_id": "chair", "pos": [80, 120, 2], "rot": 90},
+  {"asset_id": "chair", "pos": [90, 120, 2], "rot": 180},
+  {"asset_id": "stone_fireplace", "pos": [10, 128, 2], "rot": 90}
 ]
