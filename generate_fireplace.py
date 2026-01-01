@@ -77,7 +77,8 @@ def generate_fireplace():
         brick_size=(6, 5, 4),
         color=stone_mix,
         mortar=1,
-        randomize_layout=True
+        randomize_layout=True,
+        mortar_noise=1
     )
     instructions.extend(base_bricks)
     
@@ -90,7 +91,8 @@ def generate_fireplace():
         color=stone_mix,
         mortar=1,
         randomize_layout=True,
-        taper_align=(align_x, align_y)
+        taper_align=(align_x, align_y),
+        mortar_noise=1
     )
     instructions.extend(taper_bricks)
     
@@ -102,7 +104,8 @@ def generate_fireplace():
         brick_size=(6, 5, 4),
         color=stone_mix,
         mortar=1,
-        randomize_layout=True
+        randomize_layout=True,
+        mortar_noise=1
     )
     instructions.extend(stack_bricks)
 

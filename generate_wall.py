@@ -59,7 +59,8 @@ def generate_wall():
         brick_size=(8, 4, 4),
         color=stone_mix,
         mortar=1,
-        randomize_layout=True
+        randomize_layout=True,
+        mortar_noise=1
     )
     instructions.extend(lower_bricks)
     

@@ -1,6 +1,6 @@
 import random
 
-def create_brick_volume(start_pos, size, end_size=None, brick_size=(4, 2, 2), color=2, mortar=0, randomize_layout=False, taper_align=(0.5, 0.5)):
+def create_brick_volume(start_pos, size, end_size=None, brick_size=(4, 2, 2), color=2, mortar=0, randomize_layout=False, taper_align=(0.5, 0.5), mortar_noise=0, noise_probability=0.05):
     """
     Generates a list of CSG 'add' instructions to fill a volume with a brick pattern.
     Assumes Z is UP.
@@ -58,23 +58,57 @@ def create_brick_volume(start_pos, size, end_size=None, brick_size=(4, 2, 2), co
                 if randomize_layout:
                     this_brick_w = random.randint(max(2, int(target_bw * 0.5)), int(target_bw * 1.5))
                 
-                real_x_start = max(0, current_x)
-                real_x_end = min(cur_layer_w, current_x + this_brick_w)
+                # Apply noise to brick boundaries
+                dx_s, dx_e = 0, 0
+                dy_s, dy_e = 0, 0
+                dz_s, dz_e = 0, 0
+                
+                if mortar_noise > 0:
+                    if random.random() < noise_probability:
+                        dx_s = random.randint(-mortar_noise, mortar_noise)
+                    if random.random() < noise_probability:
+                        dx_e = random.randint(-mortar_noise, mortar_noise)
+                    if random.random() < noise_probability:
+                        dy_s = random.randint(-mortar_noise, mortar_noise)
+                    if random.random() < noise_probability:
+                        dy_e = random.randint(-mortar_noise, mortar_noise)
+                    if random.random() < noise_probability:
+                        dz_s = random.randint(-mortar_noise, mortar_noise)
+                    if random.random() < noise_probability:
+                        dz_e = random.randint(-mortar_noise, mortar_noise)
+
+                real_x_start = max(0, current_x + dx_s)
+                real_x_end = min(cur_layer_w, current_x + this_brick_w + dx_e)
                 real_w = real_x_end - real_x_start
                 
-                if real_w > 0:
+                # We need to handle Y and Z similarly but clamped to layer bounds
+                real_y_start = max(0, current_y + dy_s)
+                real_y_end = min(actual_d, actual_d + dy_e) # Relative to current_y
+                # Wait, current_y is the loop var. actual_d is the size of this row.
+                # The brick is at sy + offset_y + current_y.
+                # So we modify the size relative to that.
+                
+                # Simplified: modify pos and size directly
+                final_x = sx + offset_x + real_x_start
+                final_y = sy + offset_y + current_y + dy_s
+                final_z = sz + current_z + dz_s
+                
+                final_w = real_w
+                final_d = actual_d + (dy_e - dy_s)
+                final_h = actual_h + (dz_e - dz_s)
+
+                if final_w > 0 and final_d > 0 and final_h > 0:
                      brick_color = random.choice(colors)
                      instructions.append({
                         "op": "add",
-                        "pos": [sx + offset_x + real_x_start, sy + offset_y + current_y, sz + current_z],
-                        "size": [real_w, actual_d, actual_h],
+                        "pos": [final_x, final_y, final_z],
+                        "size": [final_w, final_d, final_h],
                         "color": brick_color
                     })
                 
                 current_x += this_brick_w + mortar
             current_y += layer_d + mortar
         current_z += layer_h + mortar
-        row_index += 1
     return instructions
 
 def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=0, direction='x'):
