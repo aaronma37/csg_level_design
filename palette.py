@@ -1,75 +1,68 @@
-# Shared Color Palette
-# Format: Index: (R, G, B, A)
+# Semantic Color Palette
+# 0-20: Wood textures
+# 21-40: Stone textures
+# 41-239: Misc / General
+# 240-255: Emissive / Glowing
 
-PALETTE_COLORS = [
-    (0, 0, 0, 0),          # 0: Empty
-    (100, 70, 40, 255),    # 1: Brown (Floor/Generic Wood)
-    (220, 200, 160, 255),  # 2: Sandstone (Light)
-    (60, 40, 20, 255),     # 3: Dark Wood (Beams/Furniture)
-    (180, 140, 90, 255),   # 4: Light Wood (Planks)
-    (200, 50, 50, 255),    # 5: Red (Fire/Carpet)
-    (240, 230, 200, 255),  # 6: Beige (Light)
-    (230, 215, 180, 255),  # 7: Beige (Medium)
-    (210, 190, 150, 255),  # 8: Beige (Dark)
-    (140, 120, 90, 255),   # 9: Sandstone (Darker)
-    (255, 100, 0, 255),    # 10: Orange (Fire Core)
-]
+PALETTE_COLORS = [(0, 0, 0, 0)] * 256
 
-# Named Constants for Scripts
-EMPTY = 0
-WOOD_BROWN = 1
-STONE_LIGHT = 2
-WOOD_DARK = 3
-WOOD_LIGHT = 4
-RED = 5
-BEIGE_LIGHT = 6
-BEIGE_MEDIUM = 7
-BEIGE_DARK = 8
-STONE_DARKER = 9
-FIRE_ORANGE = 10
-STONE_DARK = 2 # Reuse Stone light/dark if needed, or define more. 
-# Wait, I shifted indices. Let's be careful.
-# Original: 2=StoneLight, 7=StoneDark, 8=StoneDarker, 9=FireOrange
-# Let's re-align to be safe.
+def set_color(idx, r, g, b, a=255):
+    PALETTE_COLORS[idx] = (r, g, b, a)
 
-PALETTE_COLORS = [
-    (0, 0, 0, 0),          # 0: Empty
-    (100, 70, 40, 255),    # 1: Brown
-    (170, 170, 170, 255),  # 2: Castle Stone (Light)
-    (60, 40, 20, 255),     # 3: Dark Wood
-    (180, 140, 90, 255),   # 4: Light Wood
-    (200, 50, 50, 255),    # 5: Red
-    (235, 225, 200, 255),  # 6: Beige (Light) - More subtle
-    (230, 220, 195, 255),  # 7: Beige (Medium)
-    (225, 215, 190, 255),  # 8: Beige (Dark)
-    (130, 130, 130, 255),  # 9: Castle Stone (Dark)
-    (100, 100, 100, 255),  # 10: Castle Stone (Darker)
-    (255, 100, 0, 255),    # 11: Orange (Fire Core)
-]
+# --- WOOD RANGE (0-20) ---
+set_color(1, 100, 70, 40)    # Wood Brown (Base)
+set_color(2, 60, 40, 20)     # Wood Dark (Bark/Beams)
+set_color(3, 140, 100, 60)   # Wood Light (Planks)
+set_color(4, 80, 50, 30)     # Wood Grain A
+set_color(5, 110, 80, 50)    # Wood Grain B
 
-# Constants
-EMPTY = 0
-WOOD_BROWN = 1
-STONE_LIGHT = 2
-WOOD_DARK = 3
-WOOD_LIGHT = 4
-RED = 5
-BEIGE_LIGHT = 6
-BEIGE_MEDIUM = 7
-BEIGE_DARK = 8
-STONE_DARK = 9
-STONE_DARKER = 10
-FIRE_ORANGE = 11
+# --- STONE RANGE (21-40) ---
+set_color(21, 150, 150, 150) # Stone Light (Base)
+set_color(22, 100, 100, 100) # Stone Dark (Shadows)
+set_color(23, 180, 180, 180) # Stone Highlight
+set_color(24, 130, 120, 110) # Stone Warm (Sandy)
+set_color(25, 80, 80, 90)    # Stone Cold (Slate)
+
+# --- MISC (41-239) ---
+set_color(41, 200, 50, 50)   # Generic Red
+set_color(42, 50, 150, 50)   # Generic Green
+set_color(43, 50, 50, 200)   # Generic Blue
+set_color(44, 235, 225, 200) # Beige Light
+set_color(45, 230, 220, 195) # Beige Medium
+set_color(46, 225, 215, 190) # Beige Dark
+
+# --- EMISSIVE RANGE (240-255) ---
+set_color(240, 255, 100, 0)   # Fire Orange (Core)
+set_color(241, 255, 200, 0)   # Fire Yellow
+set_color(242, 200, 50, 0)    # Fire Red-Orange
+set_color(250, 100, 200, 255) # Magic Glow (Blue)
+
+# Named Constants
+WOOD_BASE = 1
+WOOD_DARK = 2
+WOOD_LIGHT = 3
+WOOD_BROWN = 1 # Re-alias for floor
+STONE_BASE = 21
+STONE_DARK = 22
+STONE_LIGHT = 23
+STONE_DARKER = 22 # Re-alias
+BEIGE_LIGHT = 44
+BEIGE_MEDIUM = 45
+BEIGE_DARK = 46
+RED = 41
+FIRE_CORE = 240
+FIRE_GLOW = 241
+FIRE_ORANGE = 240
 
 def get_palette_bytes():
-    """Returns the 255-color palette as bytes for VOX format"""
     import struct
     content = b''
+    # MagicaVoxel palette chunk is exactly 1024 bytes (256 colors)
+    # The first entry in the chunk is Color 1, and so on. Color 0 is at the end.
     for i in range(1, 256):
-        if i < len(PALETTE_COLORS):
-            r, g, b, a = PALETTE_COLORS[i]
-            content += struct.pack('<BBBB', r, g, b, a)
-        else:
-            # Fill rest with default grey
-            content += struct.pack('<BBBB', 150, 150, 150, 255)
+        r, g, b, a = PALETTE_COLORS[i]
+        content += struct.pack('<BBBB', r, g, b, a)
+    # Last color in chunk
+    r, g, b, a = PALETTE_COLORS[0]
+    content += struct.pack('<BBBB', r, g, b, a)
     return content

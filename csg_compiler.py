@@ -39,6 +39,17 @@ class VoxelModel:
                         to_keep[coord] = self.voxels[coord]
         self.voxels = to_keep
 
+    def _pack_string(self, s):
+        b = s.encode('utf-8')
+        return struct.pack('<I', len(b)) + b
+
+    def _pack_dict(self, d):
+        content = struct.pack('<I', len(d))
+        for k, v in d.items():
+            content += self._pack_string(str(k))
+            content += self._pack_string(str(v))
+        return content
+
     def save(self, filename):
         if not self.voxels:
             print(f"Warning: Model {filename} is empty.")
@@ -47,7 +58,6 @@ class VoxelModel:
         print(f"Saving {len(self.voxels)} voxels to {filename}...")
         
         # 1. Prepare Data
-        # MagicaVoxel expects XYZI data
         vox_data = []
         for (x,y,z), color in self.voxels.items():
             vox_data.append((x, y, z, color))
@@ -62,38 +72,70 @@ class VoxelModel:
             # Header
             f.write(b'VOX ' + struct.pack('<I', 150))
             
-            # Main Chunk Container
-            children = b''
+            # Chunks Container
+            chunks = b''
+            
+            # PACK Chunk
+            chunks += self._make_chunk(b'PACK', struct.pack('<I', 1))
             
             # SIZE Chunk
-            children += self._make_chunk(b'SIZE', struct.pack('<III', mx, my, mz))
+            chunks += self._make_chunk(b'SIZE', struct.pack('<III', mx, my, mz))
             
             # XYZI Chunk (Voxel Data)
-            # Normalize coordinates
             normalized_vox_data = []
             for v in vox_data:
                 normalized_vox_data.append((v[0]-min_x, v[1]-min_y, v[2]-min_z, v[3]))
             
             xyzi_content = struct.pack('<I', len(normalized_vox_data))
             for v in normalized_vox_data:
-                # x, y, z, color_index
                 xyzi_content += struct.pack('<BBBB', v[0], v[1], v[2], v[3])
-            children += self._make_chunk(b'XYZI', xyzi_content)
+            chunks += self._make_chunk(b'XYZI', xyzi_content)
             
             # RGBA Chunk (Palette)
-            pal_content = b''
-            # Write our defined colors first
+            pal_bytes = bytearray(1024)
             for i in range(1, 256):
-                if i < len(self.palette):
-                    r,g,b,a = self.palette[i]
-                    pal_content += struct.pack('<BBBB', r, g, b, a)
-                else:
-                    # Fill rest with default grey
-                    pal_content += struct.pack('<BBBB', 150, 150, 150, 255)
-            children += self._make_chunk(b'RGBA', pal_content)
+                c = self.palette[i] if i < len(self.palette) else (150, 150, 150, 255)
+                pal_bytes[(i-1)*4 : i*4] = struct.pack('<BBBB', *c)
+            chunks += self._make_chunk(b'RGBA', pal_bytes)
+            
+            # LAYR Chunk
+            layr_content = struct.pack('<I', 0) # Layer ID
+            layr_content += self._pack_dict({"_name": "Base"}) # Attributes
+            layr_content += struct.pack('<i', -1) # Reserved
+            chunks += self._make_chunk(b'LAYR', layr_content)
+
+            # SCENE GRAPH CHUNKS (nTRN, nSHP)
+            # Root Node (0) -> Shape Node (1) -> Model (0)
+            tx = min_x + (mx // 2)
+            ty = min_y + (my // 2)
+            tz = min_z + (mz // 2)
+            
+            # Root nTRN
+            root_payload = struct.pack('<I', 0)
+            root_payload += self._pack_dict({"_name": os.path.basename(filename)})
+            root_payload += struct.pack('<I', 1) # Child is Shape node
+            root_payload += struct.pack('<i', -1)
+            root_payload += struct.pack('<i', 0)
+            root_payload += struct.pack('<I', 1)
+            root_payload += self._pack_dict({"_t": f"{tx} {ty} {tz}"})
+            chunks += self._make_chunk(b'nTRN', root_payload)
+            
+            # Shape nSHP
+            shp_content = struct.pack('<I', 1)
+            shp_content += self._pack_dict({})
+            shp_content += struct.pack('<I', 1)
+            shp_content += struct.pack('<I', 0) # Model 0
+            shp_content += self._pack_dict({})
+            chunks += self._make_chunk(b'nSHP', shp_content)
+            
+            # MATL Chunks (Indices 1 to 255)
+            for i in range(1, 256):
+                matl_payload = struct.pack('<I', i)
+                matl_payload += self._pack_dict({"_type": "_diffuse"})
+                chunks += self._make_chunk(b'MATL', matl_payload)
             
             # Write Main Chunk
-            f.write(b'MAIN' + struct.pack('<II', 0, len(children)) + children)
+            f.write(b'MAIN' + struct.pack('<II', 0, len(chunks)) + chunks)
 
     def _make_chunk(self, tag, content):
         return tag + struct.pack('<II', len(content), 0) + content

@@ -2,302 +2,165 @@ import struct
 import json
 import sys
 import os
-import palette # Import shared palette
+import palette
 
-# --- 1. HELPER: MagicaVoxel Chunk Writer ---
 class VoxWriter:
     def __init__(self):
         self.palette = palette.PALETTE_COLORS
-        self.models = [] # List of (size, voxels) tuples
-        self.nodes = [] # List of node byte blocks
-        self.next_node_id = 0
+        self.models = [] # list of (size, voxels)
 
     def add_model(self, voxels):
-        """
-        voxels: list of (x, y, z, c)
-        Returns: model_id
-        """
         if not voxels:
-            # Empty model placeholder
             self.models.append(((1,1,1), []))
             return len(self.models) - 1
-
         xs, ys, zs = zip(*[(v[0], v[1], v[2]) for v in voxels])
         min_x, min_y, min_z = min(xs), min(ys), min(zs)
         mx, my, mz = max(xs)-min_x+1, max(ys)-min_y+1, max(zs)-min_z+1
-        
-        # Normalize
         norm_voxels = [(v[0]-min_x, v[1]-min_y, v[2]-min_z, v[3]) for v in voxels]
-        
         self.models.append(((mx, my, mz), norm_voxels))
         return len(self.models) - 1
 
-    def _pack_string(self, s):
+    def _pack_str(self, s):
         b = s.encode('utf-8')
         return struct.pack('<I', len(b)) + b
 
     def _pack_dict(self, d):
-        # Format: NumPairs (I) + (Key (String) + Value (String))...
         content = struct.pack('<I', len(d))
         for k, v in d.items():
-            content += self._pack_string(str(k))
-            content += self._pack_string(str(v))
+            content += self._pack_str(str(k))
+            content += self._pack_str(str(v))
         return content
 
     def _make_chunk(self, tag, content):
         return tag + struct.pack('<II', len(content), 0) + content
 
-    def create_transform_node(self, child_node_id, translation=(0,0,0), rotation=0, layer_id=0):
-        # nTRN
-        node_id = self.next_node_id
-        self.next_node_id += 1
-        
-        # Rotation byte:
-        # 0: identity
-        # standard magicavoxel rotation encoding is complex, assuming simplified 0-3 for now
-        # Actually MagicaVoxel stores rotation as a byte.
-        # Bits 0-1: index of row 0 (0=x, 1=y, 2=z)
-        # Bits 2-3: index of row 1
-        # ...
-        # Standard: 4 (00000100) -> X Y Z ? No.
-        # Let's stick to translation first. Rotation logic needs lookup.
-        # 0 = identity.
-        rot_byte = 0 
-        # Simple lookup for Z-rotation
-        if rotation == 90: rot_byte = (1 << 0) | (0 << 2) # Swap X/Y ?
-        # MagicaVoxel Rotation is tricky without a library.
-        # Use simple mapping if possible, or 0.
-        # Valid rotation byte: (1<<0) | (2<<2) | (0<<4) | ...
-        # Let's use a dictionary for common Z rotations if needed, or 0.
-        # 0 is Identity.
-        # 90 deg Z: R = [0 -1 0; 1 0 0; 0 0 1]
-        # internal format:
-        # bit 0-1: row 0 index (0=x, 1=y, 2=z) -> 1 (y)
-        # bit 2-3: row 1 index -> 0 (x)
-        # bit 4: row 0 neg -> 1 (neg)
-        # bit 5: row 1 neg -> 0
-        # bit 6: row 2 neg -> 0
-        # row 2 index implied as remaining.
-        # 90 deg: row0 is -y. row1 is x. row2 is z.
-        # row0 idx=1 (y). bit0-1=1.
-        # row1 idx=0 (x). bit2-3=0.
-        # row0 neg? yes. bit4=1.
-        # row1 neg? no. bit5=0.
-        # byte: 1 | (0<<2) | (1<<4) = 1 | 16 = 17.
-        
-        rot_map = {
-            0: 4,   # Identity (row0=x, row1=y) -> 0|1<<2 = 4? Wait.
-                    # row0=0(x), row1=1(y). bits: 00 01. 0 | 4 = 4. Correct.
-            90: 22, # 90 Z: x->y, y->-x.
-                    # row0=y (1). row1=x (0).
-                    # row0 sign +. row1 sign -.
-                    # byte = 1 | (0<<2) | (0<<4) | (1<<5) = 1 | 32 = 33? 
-                    # This is complex. Let's pass 'rotation' as a string in dictionary for now?
-                    # No, nTRN uses a byte `_r`.
-                    
-                    # For now, let's implement just translation to be safe, or guess.
-                    # MagicaVoxel 0.99a+ uses `_r` string in dictionary OR `rot` byte.
-                    # Modern vox uses `_r` byte inside the content.
-        }
-        
-        # Standard rotations (Z axis)
-        # 0: 4
-        # 90: 22 (from PyVox libraries)
-        # 180: 21
-        # 270: 38
-        
-        r_byte = 4
-        if rotation == 90: r_byte = 22 # Approx
-        elif rotation == 180: r_byte = 21 # Approx
-        elif rotation == 270: r_byte = 38 # Approx
-        
-        # Make dictionary
-        frames = []
-        # Frame 0
-        frame_dict = {
-            "_t": f"{translation[0]} {translation[1]} {translation[2]}",
-            "_r": f"{r_byte}" # nTRN uses string for transform??
-            # Spec says:
-            # DICT: node attributes
-            # DICT: frame attributes (for each frame)
-            #   _t : translation
-            #   _r : rotation (byte as string? or just byte?)
-            # Usually _r is a byte, but stored in the dictionary as a string value?
-            # actually MagicaVoxel documentation says `_r` stores the rotation byte as a string (e.g. "4").
-        }
-        
-        content = struct.pack('<I', node_id)
-        content += self._pack_dict({}) # Node attributes
-        content += struct.pack('<I', child_node_id)
-        content += struct.pack('<I', 0) # Reserved
-        content += struct.pack('<I', layer_id) # Layer ID
-        content += struct.pack('<I', 1) # Num Frames
-        content += self._pack_dict(frame_dict)
-        
-        return self._make_chunk(b'nTRN', content)
-
-    def create_group_node(self, child_ids):
-        # nGRP
-        node_id = self.next_node_id
-        self.next_node_id += 1
-        
-        content = struct.pack('<I', node_id)
-        content += self._pack_dict({})
-        content += struct.pack('<I', len(child_ids))
-        for cid in child_ids:
-            content += struct.pack('<I', cid)
-            
-        return self._make_chunk(b'nGRP', content)
-
-    def create_shape_node(self, model_id):
-        # nSHP
-        node_id = self.next_node_id
-        self.next_node_id += 1
-        
-        content = struct.pack('<I', node_id)
-        content += self._pack_dict({})
-        content += struct.pack('<I', 1) # Num Models
-        content += struct.pack('<I', model_id)
-        content += self._pack_dict({}) # Model Attributes
-        
-        return self._make_chunk(b'nSHP', content)
-
     def save(self, filename, scene_instances):
-        """
-        scene_instances: list of (model_index, pos, rot)
-        """
-        if not self.models:
-            print("No models to save.")
-            return
-
-        print(f"Saving Scene with {len(self.models)} unique models and {len(scene_instances)} instances to {filename}...")
-        
+        """scene_instances: list of (model_index, pos, rot, name)"""
         chunks = b''
         
-        # 1. Models (SIZE + XYZI)
+        # 1. Models (Must come before Scene Graph)
+        chunks += self._make_chunk(b'PACK', struct.pack('<I', len(self.models)))
         for size, voxels in self.models:
             chunks += self._make_chunk(b'SIZE', struct.pack('<III', *size))
-            xyzi_content = struct.pack('<I', len(voxels))
-            for v in voxels:
-                 xyzi_content += struct.pack('<BBBB', *v)
-            chunks += self._make_chunk(b'XYZI', xyzi_content)
-            
+            xyzi_payload = struct.pack('<I', len(voxels))
+            for v in voxels: xyzi_payload += struct.pack('<BBBB', *v)
+            chunks += self._make_chunk(b'XYZI', xyzi_payload)
+
         # 2. Scene Graph
-        # Tree:
-        # World (nTRN) -> Group (nGRP) -> [Instances (nTRN -> nSHP)]
-        
-        # Create Instance Nodes (Shape + Transform)
-        instance_node_ids = []
-        # We need to build bottom-up or just collect chunks?
-        # Nodes are referenced by ID. Order in file doesn't strictly matter if IDs are valid, 
-        # but usually defined before use or just listed.
-        # We'll generate the chunks and append them.
-        
+        # STRICT ORDER: Root TRN (0), then Group (1), then others.
         graph_chunks = []
+        instance_trn_ids = []
+        next_id = 2
+
+        # PRE-GENERATE Instances to know their IDs
+        instance_chunks = b''
+        for model_idx, pos, rot, name in scene_instances:
+            m_size, _ = self.models[model_idx]
+            tx, ty, tz = pos[0] + m_size[0]//2, pos[1] + m_size[1]//2, pos[2] + m_size[2]//2
+            
+            shp_id = next_id; next_id += 1
+            trn_id = next_id; next_id += 1
+            instance_trn_ids.append(trn_id)
+            
+            # nSHP
+            shp_payload = struct.pack('<I', shp_id) + self._pack_dict({})
+            shp_payload += struct.pack('<I', 1) + struct.pack('<I', model_idx) + self._pack_dict({})
+            instance_chunks += self._make_chunk(b'nSHP', shp_payload)
+            
+            # Rotation around Z axis in MagicaVoxel
+            # Spec: bits 0-1 (col0 idx), 2-3 (col1 idx), 4 (col0 sign), 5 (col1 sign), 6 (col2 sign)
+            # 0: 4, 90: 33, 180: 52, 270: 17
+            r_byte = {0: 4, 90: 33, 180: 52, 270: 17}.get(rot, 4)
+            trn_payload = struct.pack('<I', trn_id) + self._pack_dict({"_name": name})
+            trn_payload += struct.pack('<I', shp_id) + struct.pack('<i', -1) + struct.pack('<i', 0)
+            trn_payload += struct.pack('<I', 1) + self._pack_dict({"_t": f"{tx} {ty} {tz}", "_r": str(r_byte)})
+            instance_chunks += self._make_chunk(b'nTRN', trn_payload)
+
+        # Root nTRN (ID 0)
+        root_payload = struct.pack('<I', 0) + self._pack_dict({"_name": "root"})
+        root_payload += struct.pack('<I', 1) + struct.pack('<i', -1) + struct.pack('<i', 0)
+        root_payload += struct.pack('<I', 1) + self._pack_dict({})
+        chunks += self._make_chunk(b'nTRN', root_payload)
+
+        # Main Group (ID 1)
+        grp_payload = struct.pack('<I', 1) + self._pack_dict({})
+        grp_payload += struct.pack('<I', len(instance_trn_ids))
+        for tid in instance_trn_ids: grp_payload += struct.pack('<I', tid)
+        chunks += self._make_chunk(b'nGRP', grp_payload)
         
-        for model_idx, pos, rot in scene_instances:
-            # Shape Node
-            shp_chunk = self.create_shape_node(model_idx)
-            shp_id = self.next_node_id - 1
-            graph_chunks.append(shp_chunk)
-            
-            # Transform Node
-            trn_chunk = self.create_transform_node(shp_id, pos, rot)
-            trn_id = self.next_node_id - 1
-            graph_chunks.append(trn_chunk)
-            
-            instance_node_ids.append(trn_id)
-            
-        # Group Node containing all instances
-        grp_chunk = self.create_group_node(instance_node_ids)
-        grp_id = self.next_node_id - 1
-        graph_chunks.append(grp_chunk)
+        # Add instances
+        chunks += instance_chunks
+
+        # 3. Metadata chunks
+        chunks += self._make_chunk(b'LAYR', struct.pack('<I', 0) + self._pack_dict({"_name": "Base"}) + struct.pack('<i', -1))
         
-        # Root Transform
-        root_chunk = self.create_transform_node(grp_id)
-        # root_id = self.next_node_id - 1
-        graph_chunks.append(root_chunk)
-        
-        # Add graph chunks (reversed? No, order doesn't matter much but root last is conventional)
-        # Let's add them in creation order
-        for c in graph_chunks:
-            chunks += c
-            
-        # 3. Palette
-        pal_content = b''
+        pal_bytes = bytearray(1024)
         for i in range(1, 256):
-            if i < len(self.palette):
-                pal_content += struct.pack('<BBBB', *self.palette[i])
-            else:
-                pal_content += struct.pack('<BBBB', 150, 150, 150, 255)
-        chunks += self._make_chunk(b'RGBA', pal_content)
-        
+            c = self.palette[i] if i < len(self.palette) else (150,150,150,255)
+            for j in range(4): pal_bytes[(i-1)*4 + j] = c[j]
+        chunks += self._make_chunk(b'RGBA', pal_bytes)
+
+        for i in range(1, 256):
+            chunks += self._make_chunk(b'MATL', struct.pack('<I', i) + self._pack_dict({"_type": "_diffuse"}))
+
         # Write File
         with open(filename, 'wb') as f:
             f.write(b'VOX ' + struct.pack('<I', 150))
             f.write(b'MAIN' + struct.pack('<II', 0, len(chunks)) + chunks)
 
-# --- 2. SCENE COMPOSER ---
-def load_vox_data(filename):
+def load_vox_voxels(filename):
     if not os.path.exists(filename):
-        print(f"Error: Asset file '{filename}' not found.")
+        print(f"File not found: {filename}")
         return []
-
-    voxels = []
-    with open(filename, 'rb') as f:
-        if f.read(4) != b'VOX ': return []
-        f.read(4) # Version
-        f.read(4) # MAIN
-        f.read(4) # size
-        f.read(4) # children
-        
-        while True:
-            chunk_id = f.read(4)
-            if len(chunk_id) < 4: break
-            content_size = struct.unpack('<I', f.read(4))[0]
-            children_size = struct.unpack('<I', f.read(4))[0]
-            content = f.read(content_size)
+    try:
+        with open(filename, 'rb') as f:
+            if f.read(4) != b'VOX ': return []
+            f.read(4) # version
+            if f.read(4) != b'MAIN': return []
+            f.read(8) # main sizes
             
-            if chunk_id == b'XYZI':
-                num_voxels = struct.unpack('<I', content[:4])[0]
-                for i in range(num_voxels):
-                    x, y, z, c = struct.unpack('<BBBB', content[4+i*4 : 4+(i+1)*4])
-                    voxels.append((x, y, z, c))
-            
-            if children_size > 0:
-                f.read(children_size)
-    return voxels
+            # Read subchunks of MAIN
+            while True:
+                cid = f.read(4)
+                if not cid: break
+                cs, chs = struct.unpack('<II', f.read(8))
+                if cid == b'XYZI':
+                    nv = struct.unpack('<I', f.read(4))[0]
+                    voxels = []
+                    for _ in range(nv):
+                        voxels.append(struct.unpack('<BBBB', f.read(4)))
+                    return voxels
+                else:
+                    f.read(cs + chs)
+    except Exception as e:
+        print(f"Error reading {filename}: {e}")
+    return []
 
 def run_composer(layout_file, output_file="final_scene.vox"):
+    print(f"Composing Scene from {layout_file}...")
     with open(layout_file, 'r') as f:
         scene_data = json.load(f)
     
     writer = VoxWriter()
-    
-    # Cache loaded models: asset_id -> model_index
     loaded_models = {}
-    
     scene_instances = []
     
-    print(f"Composing Scene: {layout_file}")
     for item in scene_data:
-        asset_id = item['asset_id']
+        aid = item['asset_id']
         pos = item['pos']
         rot = item.get('rot', 0)
         
-        if asset_id not in loaded_models:
-            filename = f"{asset_id}.vox"
-            voxels = load_vox_data(filename)
-            model_idx = writer.add_model(voxels)
-            loaded_models[asset_id] = model_idx
+        if aid not in loaded_models:
+            vox_file = f"{aid}.vox"
+            voxels = load_vox_voxels(vox_file)
+            print(f"  Loading {vox_file}: {len(voxels)} voxels")
+            loaded_models[aid] = writer.add_model(voxels)
         
-        model_idx = loaded_models[asset_id]
-        scene_instances.append((model_idx, pos, rot))
-        
+        scene_instances.append((loaded_models[aid], pos, rot, aid))
+    
     writer.save(output_file, scene_instances)
+    print(f"Done! Scene saved to {output_file}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python scene_composer.py scene_layout.json")
-    else:
-        run_composer(sys.argv[1])
+    if len(sys.argv) < 2: print("Usage: python scene_composer.py layout.json")
+    else: run_composer(sys.argv[1])
