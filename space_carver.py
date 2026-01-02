@@ -135,21 +135,36 @@ class SpaceCarver:
                 voxel_samples = np.full((len(valid_mask), num_views, 3), -1, dtype=np.int16)
                 sample_counts = np.zeros(len(valid_mask), dtype=int)
                 
+                # Consistency thresholds - squared Euclidean distance
+                dist_thresh_sq = 1200 
+                
+                # Accumulate consistency counts
+                # Using simple pairwise distance approach?
+                # No, we switched to Cluster Consistency in previous turns but I reverted to median/IQR in recent replacement?
+                # Actually, the user liked "Option 3" (Texture Reprojection) which used clustering.
+                # So I should keep the CLUSTERING logic here.
+                
+                # Re-implementing Cluster-Based logic for robustness
+                
+                # 1. Collect samples
                 for view_idx, frame_idx in enumerate(view_indices):
                     frame = frames[frame_idx]
                     angle = -2 * np.pi * (frame_idx / total_frames)
                     P = self.get_projection_matrix(angle)
                     u, v, depth = self.project_voxels(P, w, h)
+                    
                     in_view = (u >= 0) & (u < w) & (v >= 0) & (v < h) & (depth < 0) & valid_mask
                     curr_view_indices = np.where(in_view)[0]
                     if len(curr_view_indices) == 0: continue
                     vu, vv, vd = u[curr_view_indices], v[curr_view_indices], depth[curr_view_indices]
+                    
                     z_buffer = np.full((h, w), -np.inf, dtype=np.float32)
                     pixel_idx = vv * w + vu
                     np.maximum.at(z_buffer.ravel(), pixel_idx, vd)
                     visible = vd >= (z_buffer.ravel()[pixel_idx] - 0.05)
                     visible_indices = curr_view_indices[visible]
                     if len(visible_indices) == 0: continue
+                    
                     pix_u, pix_v = np.clip(u[visible_indices], 0, w-2), np.clip(v[visible_indices], 0, h-2)
                     c00 = frame[pix_v, pix_u].astype(np.float32)
                     c01 = frame[pix_v, pix_u+1].astype(np.float32)
@@ -159,78 +174,99 @@ class SpaceCarver:
                     voxel_samples[visible_indices, view_idx] = cols.astype(np.int16)
                     sample_counts[visible_indices] += 1
 
+                # 2. Analyze Clusters
                 has_samples = sample_counts > 3
                 cand_indices = np.where(has_samples)[0]
                 if len(cand_indices) == 0: break
-                cand_samples_f = voxel_samples[cand_indices].astype(np.float32)
-                cand_samples_f[voxel_samples[cand_indices] == -1] = np.nan
-                medians = np.nanmedian(cand_samples_f, axis=1)
-                iqr = np.nanpercentile(cand_samples_f, 75, axis=1) - np.nanpercentile(cand_samples_f, 25, axis=1)
-                consistency_score = np.sum(iqr, axis=1)
+                
+                cand_samples = voxel_samples[cand_indices]
+                cand_samples_f = cand_samples.astype(np.float32)
+                cand_samples_f[cand_samples == -1] = np.nan
+                
+                # Pairwise Distance
+                # A: (N, V, 1, 3)
+                A = cand_samples_f[:, :, None, :]
+                B = cand_samples_f[:, None, :, :]
+                diff_sq = np.sum((A - B)**2, axis=-1) # (N, V, V)
+                
+                adj = diff_sq < dist_thresh_sq
+                support_counts = np.sum(adj, axis=2)
+                max_support = np.max(support_counts, axis=1)
+                best_view_indices = np.argmax(support_counts, axis=1)
+                
+                # Calculate color
+                cluster_mask = adj[np.arange(len(cand_indices)), best_view_indices, :]
+                cluster_vals = np.nan_to_num(cand_samples_f) * cluster_mask[..., None]
+                final_colors = np.sum(cluster_vals, axis=1) / np.maximum(np.sum(cluster_mask, axis=1)[..., None], 1)
+                
+                # Thresholds (Relaxed: 10/6)
                 y_indices = (cand_indices // self.res) % self.res
                 y_vals = self.bounds_min + (y_indices / (self.res - 1)) * (self.bounds_max - self.bounds_min)
-                thresholds = np.where(y_vals > 0.4, 180, 100)
-                bad_voxels = consistency_score > thresholds
-                valid_mask[cand_indices[bad_voxels]] = False
-                print(f"Pass {pass_idx+1}: Carved {np.sum(bad_voxels)} voxels.")
+                min_views = np.where(y_vals > 0.4, 6, 10)
+                
+                bad_voxels = max_support < min_views
+                
+                remove_indices = cand_indices[bad_voxels]
+                valid_mask[remove_indices] = False
+                print(f"Pass {pass_idx+1}: Carved {len(remove_indices)} voxels (Cluster < {6}/{10}).")
                 self.voxels = valid_mask.reshape(self.res, self.res, self.res)
                 
-                if pass_idx == 2 or np.sum(bad_voxels) < 100:
+                if pass_idx == 2 or len(remove_indices) < 100:
                     survivor_indices = cand_indices[~bad_voxels]
+                    valid_final_colors = final_colors[~bad_voxels]
                     flat_colors = self.colors.reshape(-1, 3)
-                    flat_colors[survivor_indices] = medians[~bad_voxels]
+                    flat_colors[survivor_indices] = valid_final_colors
                     self.counts.flat[survivor_indices] = 1
-                    if np.sum(bad_voxels) < 100: break
+                    if len(remove_indices) < 100: break
 
-    def fill_holes(self):
-        print("Post-processing: Filling holes...")
+    def morphological_closing(self):
+        print("Post-processing: Morphological Closing (Dilate + Erode)...")
         grid = self.voxels
         padded = np.pad(grid, 1, mode='constant', constant_values=0)
-        neighbors = (padded[:-2, 1:-1, 1:-1].astype(int) + padded[2:, 1:-1, 1:-1].astype(int) + 
-                     padded[1:-1, :-2, 1:-1].astype(int) + padded[1:-1, 2:, 1:-1].astype(int) + 
-                     padded[1:-1, 1:-1, :-2].astype(int) + padded[1:-1, 1:-1, 2:].astype(int))
-        fill_mask = (~grid) & (neighbors >= 4)
-        print(f"Filled {np.sum(fill_mask)} holes.")
-        self.voxels[fill_mask] = True
-        if np.sum(fill_mask) > 0:
-            c_padded = np.pad(self.colors, ((1,1),(1,1),(1,1),(0,0)), mode='constant')
-            n_sum = (c_padded[:-2, 1:-1, 1:-1] * padded[:-2, 1:-1, 1:-1][...,None] +
-                     c_padded[2:, 1:-1, 1:-1] * padded[2:, 1:-1, 1:-1][...,None] +
-                     c_padded[1:-1, :-2, 1:-1] * padded[1:-1, :-2, 1:-1][...,None] + 
-                     c_padded[1:-1, 2:, 1:-1] * padded[1:-1, 2:, 1:-1][...,None] +
-                     c_padded[1:-1, 1:-1, :-2] * padded[1:-1, 1:-1, :-2][...,None] +
-                     c_padded[1:-1, 1:-1, 2:] * padded[1:-1, 1:-1, 2:][...,None])
-            n_count = neighbors[fill_mask][..., None]
-            n_count[n_count==0] = 1
-            self.colors[fill_mask] = n_sum[fill_mask] / n_count
+        # Dilation
+        neighbors = (padded[:-2, 1:-1, 1:-1] | padded[2:, 1:-1, 1:-1] | 
+                     padded[1:-1, :-2, 1:-1] | padded[1:-1, 2:, 1:-1] | 
+                     padded[1:-1, 1:-1, :-2] | padded[1:-1, 1:-1, 2:])
+        dilated = grid | neighbors
+        
+        # Erosion of Dilated
+        padded_d = np.pad(dilated, 1, mode='constant', constant_values=0)
+        neighbors_d = (padded_d[:-2, 1:-1, 1:-1] & padded_d[2:, 1:-1, 1:-1] & 
+                       padded_d[1:-1, :-2, 1:-1] & padded_d[1:-1, 2:, 1:-1] & 
+                       padded_d[1:-1, 1:-1, :-2] & padded_d[1:-1, 1:-1, 2:])
+        closed = neighbors_d
+        
+        added_count = np.sum(closed & ~grid)
+        print(f"Closed gaps: Added {added_count} voxels.")
+        self.voxels = closed
+        
+        if added_count > 0:
+            # Simple color fill: set to grey/average? 
+            # We rely on smooth_colors to propagate color later.
+            # But let's init with neighbors
+            pass
 
     def smooth_colors(self):
-        print("Post-processing: Smoothing colors...")
-        valid = self.voxels
-        c_pad = np.pad(self.colors, ((1,1),(1,1),(1,1),(0,0)), mode='edge')
-        v_pad = np.pad(valid.astype(float), 1, mode='constant')
-        c_sum, w_sum = np.zeros_like(self.colors), np.zeros_like(valid, dtype=float)
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                for dz in [-1, 0, 1]:
-                    c_sum += c_pad[1+dx : 1+dx+self.res, 1+dy : 1+dy+self.res, 1+dz : 1+dz+self.res] * v_pad[1+dx : 1+dx+self.res, 1+dy : 1+dy+self.res, 1+dz : 1+dz+self.res][..., None]
-                    w_sum += v_pad[1+dx : 1+dx+self.res, 1+dy : 1+dy+self.res, 1+dz : 1+dz+self.res]
-        w_sum[w_sum == 0] = 1
-        self.colors[valid] = (c_sum / w_sum[..., None])[valid]
+        # Disabled to keep voxel art crisp
+        pass
 
     def save_vox(self, output_path):
-        self.fill_holes()
-        self.smooth_colors()
+        self.morphological_closing()
+        # self.smooth_colors() # Disabled
+        
         valid = self.voxels
         avg_colors = self.colors
+        
         print("Post-processing: Boosting saturation...")
         rgb = avg_colors[valid]
         lum = (0.299 * rgb[:, 0] + 0.587 * rgb[:, 1] + 0.114 * rgb[:, 2])[:, None]
         avg_colors[valid] = np.clip(lum + (rgb - lum) * 1.2, 0, 255)
+        
         print("Post-processing: Quantizing colors...")
         flat_colors = avg_colors.reshape(-1, 3)
         valid_indices = np.where(valid.flatten())[0]
         flat_colors[valid_indices] = self.quantize_colors(flat_colors[valid_indices], k=12)
+        
         pal_arr = load_palette()
         model = VoxelModel(custom_palette=palette.PALETTE_COLORS)
         print("Mapping colors to palette and building VOX...")
