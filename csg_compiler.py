@@ -6,11 +6,11 @@ import palette # Import shared palette
 
 # --- 1. THE VOX WRITER (With CSG Logic) ---
 class VoxelModel:
-    def __init__(self):
+    def __init__(self, custom_palette=None):
         # Sparse storage: Key=(x,y,z), Value=ColorIndex
         self.voxels = {}
-        # Use shared palette
-        self.palette = palette.PALETTE_COLORS
+        # Use shared palette or custom one
+        self.palette = custom_palette if custom_palette else palette.PALETTE_COLORS
 
     def add_cuboid(self, x, y, z, dx, dy, dz, color):
         """Standard 'Union' Operation"""

@@ -30,6 +30,11 @@ set_color(43, 50, 50, 200)   # Generic Blue
 set_color(44, 235, 225, 200) # Beige Light
 set_color(45, 230, 220, 195) # Beige Medium
 set_color(46, 225, 215, 190) # Beige Dark
+set_color(47, 40, 40, 40)    # Charcoal (Robes)
+set_color(48, 100, 20, 20)   # Deep Red (Sash)
+set_color(49, 80, 0, 100)    # Dark Purple (Book)
+set_color(251, 160, 32, 240) # Electric Purple (Magic)
+set_color(252, 255, 50, 255) # Bright Magenta (Magic)
 
 # --- EMISSIVE RANGE (240-255) ---
 set_color(240, 255, 100, 0)   # Fire Orange (Core)
