@@ -88,49 +88,49 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 556608,
+      "byteLength": 559296,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 556608,
-      "byteLength": 556608,
+      "byteOffset": 559296,
+      "byteLength": 559296,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1113216,
-      "byteLength": 371072,
+      "byteOffset": 1118592,
+      "byteLength": 372864,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1484288,
-      "byteLength": 278304,
+      "byteOffset": 1491456,
+      "byteLength": 279648,
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteOffset": 1762592,
-      "byteLength": 49776,
+      "byteOffset": 1771104,
+      "byteLength": 50256,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1812368,
-      "byteLength": 49776,
+      "byteOffset": 1821360,
+      "byteLength": 50256,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1862144,
-      "byteLength": 33184,
+      "byteOffset": 1871616,
+      "byteLength": 33504,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1895328,
-      "byteLength": 24888,
+      "byteOffset": 1905120,
+      "byteLength": 25128,
       "target": 34963
     }
   ],
@@ -138,7 +138,7 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 46384,
+      "count": 46608,
       "type": "VEC3",
       "max": [
         23.0,
@@ -154,25 +154,25 @@
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 46384,
+      "count": 46608,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 46384,
+      "count": 46608,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 69576,
+      "count": 69912,
       "type": "SCALAR"
     },
     {
       "bufferView": 4,
       "componentType": 5126,
-      "count": 4148,
+      "count": 4188,
       "type": "VEC3",
       "max": [
         4.0,
@@ -180,7 +180,7 @@
         -10.0
       ],
       "min": [
-        -24.0,
+        -25.0,
         4.0,
         -39.0
       ]
@@ -188,25 +188,25 @@
     {
       "bufferView": 5,
       "componentType": 5126,
-      "count": 4148,
+      "count": 4188,
       "type": "VEC3"
     },
     {
       "bufferView": 6,
       "componentType": 5126,
-      "count": 4148,
+      "count": 4188,
       "type": "VEC2"
     },
     {
       "bufferView": 7,
       "componentType": 5125,
-      "count": 6222,
+      "count": 6282,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 1920216,
+      "byteLength": 1930248,
       "uri": "pyromancer_ultra.bin"
     }
   ]

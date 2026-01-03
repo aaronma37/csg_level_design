@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 66768,
+      "byteLength": 41616,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 66768,
-      "byteLength": 66768,
+      "byteOffset": 41616,
+      "byteLength": 41616,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 133536,
-      "byteLength": 44512,
+      "byteOffset": 83232,
+      "byteLength": 27744,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 178048,
-      "byteLength": 33384,
+      "byteOffset": 110976,
+      "byteLength": 20808,
       "target": 34963
     }
   ],
@@ -105,12 +105,12 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 5564,
+      "count": 3468,
       "type": "VEC3",
       "max": [
-        164.0,
+        160.0,
         2.0,
-        256.0
+        160.0
       ],
       "min": [
         0.0,
@@ -121,25 +121,25 @@
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 5564,
+      "count": 3468,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 5564,
+      "count": 3468,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 8346,
+      "count": 5202,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 211432,
+      "byteLength": 131784,
       "uri": "wooden_floor.bin"
     }
   ]

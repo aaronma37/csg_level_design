@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 164640,
+      "byteLength": 164928,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 164640,
-      "byteLength": 164640,
+      "byteOffset": 164928,
+      "byteLength": 164928,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 329280,
-      "byteLength": 109760,
+      "byteOffset": 329856,
+      "byteLength": 109952,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 439040,
-      "byteLength": 82320,
+      "byteOffset": 439808,
+      "byteLength": 82464,
       "target": 34963
     }
   ],
@@ -105,7 +105,7 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 13720,
+      "count": 13744,
       "type": "VEC3",
       "max": [
         52.0,
@@ -121,25 +121,25 @@
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 13720,
+      "count": 13744,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 13720,
+      "count": 13744,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 20580,
+      "count": 20616,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 521360,
+      "byteLength": 522272,
       "uri": "stone_fireplace.bin"
     }
   ]

@@ -38,8 +38,12 @@ This workflow describes the process of reconstructing a 3D voxel model from a 36
     *   **Morphological Closing**: Automatic hole filling to bridge gaps.
     *   **K-Means Quantization**: Snaps noisy video colors to the clean character palette.
 
-### Asset Iteration
-*   **Creating an asset**: Create a python generation script given a description. After iterating on the asset parameters, ensure it is added to the scene layout (e.g., `tavern_layout.json`) and compile the full scene if necessary.
+### Logical Composition Pipeline (Micro-Props)
+This workflow is used for assets smaller than 16x16, or complex props made of repeating modular parts.
+
+1.  **Define Logical Primitives**: Create a function in a `patterns/` file that builds a specific component (e.g., a `make_brick()` or `make_skull()`) using `VoxelBuilder`.
+2.  **Compose Asset**: Create a generator script that imports these primitives and uses `builder.add_component(component, offset)` to arrange them.
+3.  **Compile & Deploy**: Use the standard `csg_compiler.py` and `deploy_assets.sh` as usual.
 
 ## Notes
 *   The `view_vox.sh` script does not work currently. Do not use it.

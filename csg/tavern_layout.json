@@ -1,0 +1,542 @@
+[
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      0,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      0,
+      160,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      160,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      160,
+      160,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "timber_wall",
+    "pos": [
+      0,
+      308,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "timber_wall",
+    "pos": [
+      64,
+      308,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "timber_wall",
+    "pos": [
+      308,
+      0,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "timber_wall",
+    "pos": [
+      308,
+      64,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      0,
+      200,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      160,
+      200,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      200,
+      0,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "wooden_floor",
+    "pos": [
+      200,
+      160,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "stairs",
+    "pos": [
+      10,
+      160,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "door",
+    "pos": [
+      311,
+      24,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "door",
+    "pos": [
+      84,
+      311,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "door",
+    "pos": [
+      204,
+      311,
+      80
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "bar_counter",
+    "pos": [
+      228,
+      274,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "shelf",
+    "pos": [
+      228,
+      309,
+      40
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "barstool",
+    "pos": [
+      235,
+      260,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "bottle",
+    "pos": [
+      239,
+      283,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      241,
+      281,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "barstool",
+    "pos": [
+      255,
+      260,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "bottle",
+    "pos": [
+      259,
+      283,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      261,
+      281,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "barstool",
+    "pos": [
+      275,
+      260,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "bottle",
+    "pos": [
+      279,
+      283,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      281,
+      281,
+      38
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "ornate_rug",
+    "pos": [
+      137,
+      107,
+      1
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "medieval_feast_table",
+    "pos": [
+      128,
+      124,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      135,
+      145,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      171,
+      145,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      135,
+      121,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      171,
+      121,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      141,
+      147,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "mug",
+    "pos": [
+      172,
+      148,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chandelier",
+    "pos": [
+      149,
+      128,
+      70
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "ornate_rug",
+    "pos": [
+      57,
+      47,
+      1
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "medieval_feast_table",
+    "pos": [
+      48,
+      64,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      55,
+      85,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      91,
+      85,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      55,
+      61,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      91,
+      61,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      61,
+      87,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "mug",
+    "pos": [
+      92,
+      88,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chandelier",
+    "pos": [
+      69,
+      68,
+      70
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "ornate_rug",
+    "pos": [
+      197,
+      47,
+      1
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "medieval_feast_table",
+    "pos": [
+      188,
+      64,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      195,
+      85,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      231,
+      85,
+      2
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      195,
+      61,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "chair",
+    "pos": [
+      231,
+      61,
+      2
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "tankard",
+    "pos": [
+      201,
+      87,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "mug",
+    "pos": [
+      232,
+      88,
+      25
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "chandelier",
+    "pos": [
+      209,
+      68,
+      70
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "stone_fireplace",
+    "pos": [
+      300,
+      133,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "window",
+    "pos": [
+      82,
+      305,
+      68
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "window",
+    "pos": [
+      210,
+      305,
+      68
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "window",
+    "pos": [
+      305,
+      82,
+      68
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "window",
+    "pos": [
+      305,
+      210,
+      68
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "weapon_rack",
+    "pos": [
+      22,
+      308,
+      0
+    ],
+    "rot": 0
+  }
+]

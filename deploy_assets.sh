@@ -17,27 +17,29 @@ if [[ "$1" == "--no-recompile" ]]; then
     echo "Skipping recompile step as requested."
 fi
 
-# 1. Convert any .vox in root to .gltf (if newer than target)
+# 1. Convert any .vox in vox/ to .gltf (if newer than target)
 if [ "$SKIP_RECOMPILE" = false ]; then
-    for vox_file in *.vox; do
+    for vox_path in vox/*.vox; do
         # Skip if no vox files
-        [ -e "$vox_file" ] || continue
+        [ -e "$vox_path" ] || continue
         
+        vox_file=$(basename "$vox_path")
         base_name=$(basename "$vox_file" .vox)
         gltf_file="$ASSET_DIR/$base_name.gltf"
         
         # Check if recompile is needed (vox newer than gltf)
-        if [ ! -f "$gltf_file" ] || [ "$vox_file" -nt "$gltf_file" ]; then
-            echo "Processing $vox_file (needs update)..."
+        if [ ! -f "$gltf_file" ] || [ "$vox_path" -nt "$gltf_file" ]; then
+            echo "Processing $vox_path (needs update)..."
             # Run converter
-            ./venv/bin/python vox_to_gltf.py "$vox_file"
+            python3 vox_to_gltf.py "$vox_path"
             
-            # Move to assets dir
-            mv "${base_name}.gltf" "$ASSET_DIR/" 2>/dev/null
-            mv "${base_name}.bin" "$ASSET_DIR/" 2>/dev/null
+            # Move to assets dir from the location where vox_to_gltf generated them
+            # vox_to_gltf.py outputs to the same dir as the input .vox
+            mv "vox/${base_name}.gltf" "$ASSET_DIR/" 2>/dev/null
+            mv "vox/${base_name}.bin" "$ASSET_DIR/" 2>/dev/null
             mv "palette_texture.png" "$ASSET_DIR/" 2>/dev/null
         else
-            echo "Skipping $vox_file (already up to date)."
+            echo "Skipping $vox_path (already up to date)."
         fi
     done
 fi

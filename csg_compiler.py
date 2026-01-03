@@ -3,6 +3,7 @@ import json
 import sys
 import os
 import palette # Import shared palette
+from primitives import volumes
 
 # --- 1. THE VOX WRITER (With CSG Logic) ---
 class VoxelModel:
@@ -12,32 +13,33 @@ class VoxelModel:
         # Use shared palette or custom one
         self.palette = custom_palette if custom_palette else palette.PALETTE_COLORS
 
+    def apply_operation(self, op_type, coords, color=1):
+        if op_type == "add":
+            for c in coords:
+                self.voxels[c] = color
+        elif op_type == "subtract":
+            for c in coords:
+                if c in self.voxels:
+                    del self.voxels[c]
+        elif op_type == "intersect":
+            to_keep = {}
+            coord_set = set(coords)
+            for c in self.voxels:
+                if c in coord_set:
+                    to_keep[c] = self.voxels[c]
+            self.voxels = to_keep
+
     def add_cuboid(self, x, y, z, dx, dy, dz, color):
-        """Standard 'Union' Operation"""
-        for i in range(dx):
-            for j in range(dy):
-                for k in range(dz):
-                    self.voxels[(x+i, y+j, z+k)] = color
+        coords = volumes.get_cuboid_voxels(x, y, z, dx, dy, dz)
+        self.apply_operation("add", coords, color)
 
     def subtract_cuboid(self, x, y, z, dx, dy, dz):
-        """Standard 'Difference' Operation (The Crack Maker)"""
-        for i in range(dx):
-            for j in range(dy):
-                for k in range(dz):
-                    coord = (x+i, y+j, z+k)
-                    if coord in self.voxels:
-                        del self.voxels[coord]
+        coords = volumes.get_cuboid_voxels(x, y, z, dx, dy, dz)
+        self.apply_operation("subtract", coords)
 
     def intersect_cuboid(self, x, y, z, dx, dy, dz):
-        """Standard 'Intersection' (Keep only what overlaps)"""
-        to_keep = {}
-        for i in range(dx):
-            for j in range(dy):
-                for k in range(dz):
-                    coord = (x+i, y+j, z+k)
-                    if coord in self.voxels:
-                        to_keep[coord] = self.voxels[coord]
-        self.voxels = to_keep
+        coords = volumes.get_cuboid_voxels(x, y, z, dx, dy, dz)
+        self.apply_operation("intersect", coords)
 
     def _pack_string(self, s):
         b = s.encode('utf-8')
@@ -152,20 +154,48 @@ def compile_asset(json_path):
     
     # Execute Instructions in Order
     for op in data.get("instructions", []):
-        action = op.get("op")
-        x, y, z = op.get("pos", [0,0,0])
-        dx, dy, dz = op.get("size", [1,1,1])
+        action = op.get("op") # e.g., "add", "subtract", "intersect"
+        shape = op.get("shape", "cuboid")
+        pos = op.get("pos", [0,0,0])
         color = op.get("color", 1)
         
-        if action == "add":
-            model.add_cuboid(x, y, z, dx, dy, dz, color)
-        elif action == "subtract":
-            model.subtract_cuboid(x, y, z, dx, dy, dz)
-        elif action == "intersect":
-            model.intersect_cuboid(x, y, z, dx, dy, dz)
+        coords = []
+        if shape == "cuboid":
+            size = op.get("size", [1,1,1])
+            coords = volumes.get_cuboid_voxels(pos[0], pos[1], pos[2], size[0], size[1], size[2])
+        elif shape == "sphere":
+            radius = op.get("radius", 1)
+            coords = volumes.get_sphere_voxels(pos[0], pos[1], pos[2], radius)
+        elif shape == "cylinder":
+            radius = op.get("radius", 1)
+            height = op.get("height", 1)
+            axis = op.get("axis", "z")
+            coords = volumes.get_cylinder_voxels(pos[0], pos[1], pos[2], radius, height, axis)
+        elif shape == "cone":
+            radius_bottom = op.get("radius_bottom", 1)
+            radius_top = op.get("radius_top", 0)
+            height = op.get("height", 1)
+            axis = op.get("axis", "z")
+            coords = volumes.get_cone_voxels(pos[0], pos[1], pos[2], radius_bottom, radius_top, height, axis)
+        elif shape == "point_cloud":
+            points = op.get("points", [])
+            # points are relative to pos
+            coords = [(p[0] + pos[0], p[1] + pos[1], p[2] + pos[2]) for p in points]
+            
+        # Legacy Support for "op": "add", "subtract", "intersect" as separate actions
+        # if "shape" is not provided but "op" is one of the old actions.
+        if action in ["add", "subtract", "intersect"]:
+            # If shape was "cuboid" by default, we use it.
+            # size might have been in the old format.
+            if shape == "cuboid" and not coords:
+                 size = op.get("size", [1,1,1])
+                 coords = volumes.get_cuboid_voxels(pos[0], pos[1], pos[2], size[0], size[1], size[2])
+            model.apply_operation(action, coords, color)
             
     # Output Filename
     output_filename = f"{asset_name}.vox"
+    if os.path.exists("vox") and os.path.isdir("vox"):
+        output_filename = os.path.join("vox", output_filename)
     model.save(output_filename)
 
 if __name__ == "__main__":

@@ -182,6 +182,7 @@ class VoxToGltf:
                                     row_ok = False; break
                             if not row_ok: break
                             h += 1
+                        # Group 240-255 as emissive (includes visible and ghost ranges)
                         g = groups["emissive" if color >= 240 else "standard"]
                         v_start = len(g["verts"])
                         uv_x = (color + 0.5) / 256.0

@@ -56,7 +56,14 @@ class VoxWriter:
         instance_chunks = b''
         for model_idx, pos, rot, name in scene_instances:
             m_size, _ = self.models[model_idx]
-            tx, ty, tz = pos[0] + m_size[0]//2, pos[1] + m_size[1]//2, pos[2] + m_size[2]//2
+            
+            # Handle rotation-swapped dimensions for center calculation
+            # 0 and 180: dimensions stay the same. 90 and 270: swap X and Y.
+            cur_w, cur_d = m_size[0], m_size[1]
+            if rot == 90 or rot == 270:
+                cur_w, cur_d = m_size[1], m_size[0]
+                
+            tx, ty, tz = pos[0] + cur_w // 2, pos[1] + cur_d // 2, pos[2] + m_size[2] // 2
             
             shp_id = next_id; next_id += 1
             trn_id = next_id; next_id += 1
@@ -136,7 +143,12 @@ def load_vox_voxels(filename):
         print(f"Error reading {filename}: {e}")
     return []
 
-def run_composer(layout_file, output_file="final_scene.vox"):
+def run_composer(layout_file, output_file=None):
+    if output_file is None:
+        output_file = "final_scene.vox"
+        if os.path.exists("vox") and os.path.isdir("vox"):
+            output_file = os.path.join("vox", output_file)
+            
     print(f"Composing Scene from {layout_file}...")
     with open(layout_file, 'r') as f:
         scene_data = json.load(f)
@@ -152,6 +164,9 @@ def run_composer(layout_file, output_file="final_scene.vox"):
         
         if aid not in loaded_models:
             vox_file = f"{aid}.vox"
+            if not os.path.exists(vox_file) and os.path.exists(os.path.join("vox", vox_file)):
+                vox_file = os.path.join("vox", vox_file)
+            
             voxels = load_vox_voxels(vox_file)
             print(f"  Loading {vox_file}: {len(voxels)} voxels")
             loaded_models[aid] = writer.add_model(voxels)
@@ -162,5 +177,8 @@ def run_composer(layout_file, output_file="final_scene.vox"):
     print(f"Done! Scene saved to {output_file}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2: print("Usage: python scene_composer.py layout.json")
-    else: run_composer(sys.argv[1])
+    if len(sys.argv) < 2:
+        print("Usage: python scene_composer.py layout.json [output.vox]")
+    else:
+        out_file = sys.argv[2] if len(sys.argv) > 2 else None
+        run_composer(sys.argv[1], out_file)
