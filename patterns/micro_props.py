@@ -324,6 +324,41 @@ def make_shelf(width=60, tiers=3):
         b.fill(hw-7, 0, z-5, hw-5, 2, z, palette.WOOD_DARK)
     return b
 
+def make_railing(length=160, height=15):
+    """Returns a wooden railing with periodic posts."""
+    b = VoxelBuilder()
+    # Top Rail
+    b.fill(0, 0, height-2, length, 2, height, palette.WOOD_BROWN)
+    # Posts every 20 voxels
+    for x in range(0, length + 1, 20):
+        b.fill(x, 0, 0, x+2, 2, height-2, palette.WOOD_DARK)
+    return b
+
+def make_stair_railing(length=160, height_delta=80, rail_height=15):
+    """Returns a diagonal railing for stairs."""
+    b = VoxelBuilder()
+    # Posts every 32 units along length
+    # As x increases, z_base should increase to follow the stairs.
+    for x in range(0, length + 1, 32):
+        z_base = int((x / length) * height_delta)
+        b.fill(x, 0, z_base, x+2, 2, z_base + rail_height, palette.WOOD_DARK)
+    
+    # Diagonal Top Rail (Slopes from Z=15 at X=0 to Z=95 at X=160)
+    b.line(0, 1, rail_height, length, 1, height_delta + rail_height, palette.WOOD_BROWN)
+    b.line(0, 0, rail_height, length, 0, height_delta + rail_height, palette.WOOD_BROWN)
+    return b
+
+def make_walkway_tile(width=160, depth=64):
+    """Returns a narrow floor tile for mezzanines."""
+    b = VoxelBuilder()
+    # Solid backing
+    b.fill(0, 0, 0, width, depth, 0, palette.WOOD_DARK)
+    # Planks (simpler than the full floor generator for micro-props)
+    for y in range(0, depth, 8):
+        color = palette.WOOD_BROWN if (y//8) % 2 == 0 else palette.WOOD_LIGHT
+        b.fill(0, y, 1, width, y+6, 1, color)
+    return b
+
 def make_chain_link():
     """Returns a single small iron chain link."""
     b = VoxelBuilder()

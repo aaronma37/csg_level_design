@@ -88,49 +88,49 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 700944,
+      "byteLength": 928320,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 700944,
-      "byteLength": 700944,
+      "byteOffset": 928320,
+      "byteLength": 928320,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1401888,
-      "byteLength": 467296,
+      "byteOffset": 1856640,
+      "byteLength": 618880,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 1869184,
-      "byteLength": 350472,
+      "byteOffset": 2475520,
+      "byteLength": 464160,
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteOffset": 2219656,
-      "byteLength": 3840,
+      "byteOffset": 2939680,
+      "byteLength": 7584,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 2223496,
-      "byteLength": 3840,
+      "byteOffset": 2947264,
+      "byteLength": 7584,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 2227336,
-      "byteLength": 2560,
+      "byteOffset": 2954848,
+      "byteLength": 5056,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 2229896,
-      "byteLength": 1920,
+      "byteOffset": 2959904,
+      "byteLength": 3792,
       "target": 34963
     }
   ],
@@ -138,75 +138,75 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 58412,
+      "count": 77360,
       "type": "VEC3",
       "max": [
-        455.0,
+        328.0,
         140.0,
-        333.0
+        322.0
       ],
       "min": [
+        -1.0,
         0.0,
-        0.0,
-        -121.0
+        -1.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 58412,
+      "count": 77360,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 58412,
+      "count": 77360,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 87618,
+      "count": 116040,
       "type": "SCALAR"
     },
     {
       "bufferView": 4,
       "componentType": 5126,
-      "count": 320,
+      "count": 632,
       "type": "VEC3",
       "max": [
-        248.0,
-        70.0,
-        328.0
+        312.0,
+        99.0,
+        316.0
       ],
       "min": [
-        50.0,
+        32.0,
         8.0,
-        161.0
+        69.0
       ]
     },
     {
       "bufferView": 5,
       "componentType": 5126,
-      "count": 320,
+      "count": 632,
       "type": "VEC3"
     },
     {
       "bufferView": 6,
       "componentType": 5126,
-      "count": 320,
+      "count": 632,
       "type": "VEC2"
     },
     {
       "bufferView": 7,
       "componentType": 5125,
-      "count": 480,
+      "count": 948,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 2231816,
+      "byteLength": 2963696,
       "uri": "tavern.bin"
     }
   ]

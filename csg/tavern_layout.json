@@ -72,49 +72,94 @@
     "rot": 90
   },
   {
-    "asset_id": "wooden_floor",
+    "asset_id": "walkway_tile",
     "pos": [
       0,
-      200,
+      256,
       80
     ],
     "rot": 0
   },
   {
-    "asset_id": "wooden_floor",
+    "asset_id": "walkway_tile",
     "pos": [
       160,
-      200,
+      256,
       80
     ],
     "rot": 0
   },
   {
-    "asset_id": "wooden_floor",
+    "asset_id": "railing_long",
     "pos": [
-      200,
+      39,
+      255,
+      82
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "railing_long",
+    "pos": [
+      159,
+      255,
+      82
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "walkway_tile",
+    "pos": [
+      256,
       0,
       80
     ],
-    "rot": 0
+    "rot": 90
   },
   {
-    "asset_id": "wooden_floor",
+    "asset_id": "walkway_tile",
     "pos": [
-      200,
+      256,
       160,
       80
     ],
-    "rot": 0
+    "rot": 90
+  },
+  {
+    "asset_id": "railing_long",
+    "pos": [
+      255,
+      -1,
+      82
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "railing_long",
+    "pos": [
+      255,
+      159,
+      82
+    ],
+    "rot": 90
   },
   {
     "asset_id": "stairs",
     "pos": [
-      10,
-      160,
+      0,
+      96,
       0
     ],
     "rot": 0
+  },
+  {
+    "asset_id": "stair_railing",
+    "pos": [
+      39,
+      95,
+      0
+    ],
+    "rot": 270
   },
   {
     "asset_id": "door",
