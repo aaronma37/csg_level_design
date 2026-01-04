@@ -42,7 +42,7 @@ def generate_fireplace():
         "op": "add",
         "pos": [fp_x + 2, fp_y + 2, z_base],
         "size": [w_base - 4, d_base - 4, h_base],
-        "color": palette.STONE_DARKER
+        "color": palette.STONE_DARK
     })
     
     step_h = 2
@@ -56,7 +56,7 @@ def generate_fireplace():
             "op": "add",
             "pos": [fp_x + off_x + 2, fp_y + off_y + 2, z_taper + z],
             "size": [cur_w - 4, cur_d - 4, step_h],
-            "color": palette.STONE_DARKER
+            "color": palette.STONE_DARK
         })
         
     off_x_stack = int((w_base - w_stack) * align_x)
@@ -65,7 +65,7 @@ def generate_fireplace():
         "op": "add",
         "pos": [fp_x + off_x_stack + 2, fp_y + off_y_stack + 2, z_stack],
         "size": [w_stack - 4, d_stack - 4, h_stack],
-        "color": palette.STONE_DARKER
+        "color": palette.STONE_DARK
     })
 
     # --- 1. BRICK STRUCTURE ---
@@ -133,7 +133,7 @@ def generate_fireplace():
         "op": "add",
         "pos": [pot_x, pot_y, z_crown + 2],
         "size": [pot_w, pot_d, 2],
-        "color": palette.STONE_DARKER
+        "color": palette.STONE_DARK
     })
     
     # --- 2. CARVING ---
@@ -187,13 +187,13 @@ def generate_fireplace():
         "op": "add",
         "pos": [fire_x + 10, fp_y + 6, fire_z + 2],
         "size": [fire_w - 20, 4, 8],
-        "color": palette.RED
+        "color": palette.FIRE_CORE
     })
     instructions.append({
         "op": "add",
         "pos": [fire_x + 12, fp_y + 7, fire_z + 3],
         "size": [fire_w - 24, 2, 6],
-        "color": palette.FIRE_ORANGE
+        "color": palette.FIRE_GLOW
     })
 
     data = {

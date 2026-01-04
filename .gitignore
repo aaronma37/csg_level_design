@@ -1,0 +1,33 @@
+# Python
+*.pyc
+__pycache__/
+.venv/
+env/
+venv/
+build/
+dist/
+*.egg-info/
+
+# Assets & Build Artifacts
+# These are generated from CSG definitions and shouldn't be tracked
+vox/*.vox
+vox/*.bin
+vox/*.gltf
+csg_assets/*.bin
+csg_assets/*.gltf
+csg_assets/*.png
+csg_assets/*.lua
+csg_assets/scenes/
+assets/
+
+# Temporary / OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

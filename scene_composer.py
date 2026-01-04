@@ -143,42 +143,66 @@ def load_vox_voxels(filename):
         print(f"Error reading {filename}: {e}")
     return []
 
-def run_composer(layout_file, output_file=None):
-    if output_file is None:
-        output_file = "final_scene.vox"
-        if os.path.exists("vox") and os.path.isdir("vox"):
-            output_file = os.path.join("vox", output_file)
-            
+def run_composer(layout_file, output_file=None, merge=False):
     print(f"Composing Scene from {layout_file}...")
     with open(layout_file, 'r') as f:
         scene_data = json.load(f)
     
-    writer = VoxWriter()
-    loaded_models = {}
-    scene_instances = []
+    # Generate Lua version of the layout
+    base_name = os.path.basename(layout_file).replace(".json", "")
+    scenes_dir = os.path.join("csg_assets", "scenes")
+    lua_output = os.path.join(scenes_dir, f"{base_name}.lua")
     
+    lua_lines = ["-- Layout generated procedurally.", "return {"]
     for item in scene_data:
         aid = item['asset_id']
         pos = item['pos']
         rot = item.get('rot', 0)
-        
-        if aid not in loaded_models:
-            vox_file = f"{aid}.vox"
-            if not os.path.exists(vox_file) and os.path.exists(os.path.join("vox", vox_file)):
-                vox_file = os.path.join("vox", vox_file)
-            
-            voxels = load_vox_voxels(vox_file)
-            print(f"  Loading {vox_file}: {len(voxels)} voxels")
-            loaded_models[aid] = writer.add_model(voxels)
-        
-        scene_instances.append((loaded_models[aid], pos, rot, aid))
+        lua_lines.append(f"    {{ asset_id = '{aid}', pos = {{{pos[0]}, {pos[1]}, {pos[2]}}}, rot = {rot} }},")
+    lua_lines.append("}")
     
-    writer.save(output_file, scene_instances)
-    print(f"Done! Scene saved to {output_file}")
+    os.makedirs(scenes_dir, exist_ok=True)
+    with open(lua_output, 'w') as f:
+        f.write("\n".join(lua_lines) + "\n")
+    print(f"  Lua layout saved to {lua_output}")
+
+    if merge:
+        if output_file is None:
+            output_file = f"{base_name}.vox"
+            if os.path.exists("vox") and os.path.isdir("vox"):
+                output_file = os.path.join("vox", output_file)
+        
+        writer = VoxWriter()
+        loaded_models = {}
+        scene_instances = []
+        
+        for item in scene_data:
+            aid = item['asset_id']
+            pos = item['pos']
+            rot = item.get('rot', 0)
+            
+            if aid not in loaded_models:
+                vox_file = f"{aid}.vox"
+                if not os.path.exists(vox_file) and os.path.exists(os.path.join("vox", vox_file)):
+                    vox_file = os.path.join("vox", vox_file)
+                
+                voxels = load_vox_voxels(vox_file)
+                print(f"  Loading {vox_file}: {len(voxels)} voxels")
+                loaded_models[aid] = writer.add_model(voxels)
+            
+            scene_instances.append((loaded_models[aid], pos, rot, aid))
+        
+        writer.save(output_file, scene_instances)
+        print(f"  Merged VOX scene saved to {output_file}")
+    else:
+        print("  Skipping VOX merge (use --merge to enable).")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python scene_composer.py layout.json [output.vox]")
-    else:
-        out_file = sys.argv[2] if len(sys.argv) > 2 else None
-        run_composer(sys.argv[1], out_file)
+    import argparse
+    parser = argparse.ArgumentParser(description="Compose a scene from a layout JSON.")
+    parser.add_argument("layout", help="Path to the layout JSON file.")
+    parser.add_argument("output", nargs="?", help="Optional path to the output VOX file.")
+    parser.add_argument("--merge", action="store_true", help="Merge all assets into a single VOX file.")
+    
+    args = parser.parse_args()
+    run_composer(args.layout, args.output, args.merge)

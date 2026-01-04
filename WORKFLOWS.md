@@ -8,7 +8,12 @@
 ### CSG to Game Asset Pipeline
 This workflow describes the process of creating a procedural asset and deploying it to the game engine.
 
-1.  **Generate CSG**: Run a generator script (e.g., `generate_figurine.py`) to produce a CSG JSON definition (e.g., `figurine.json`).
+1.  **Generate CSG**: Run a generator script (e.g., `generate_figurine.py`) to produce a CSG JSON definition (e.g., `figurine.json`). Note: Most generator scripts use relative paths and should be executed from within the `generators/` directory.
+    ```bash
+    cd generators
+    python3 generate_chair.py
+    cd ..
+    ```
 2.  **Compile to VOX**: Use the compiler to convert the JSON definition into a `.vox` model.
     ```bash
     python3 csg_compiler.py figurine.json

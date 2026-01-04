@@ -51,6 +51,6 @@ fi
 
 # 2. Copy all assets to game directory
 echo "Copying to game directory: $GAME_ASSET_DIR"
-cp -v "$ASSET_DIR"/* "$GAME_ASSET_DIR/"
+cp -rv "$ASSET_DIR"/* "$GAME_ASSET_DIR/"
 
 echo "Done."
