@@ -13,8 +13,8 @@ def generate_mezzanine_assets():
     out_sr = os.path.join(os.path.dirname(__file__), "../csg/stair_railing.json")
     with open(out_sr, "w") as f: json.dump(data_sr, f, indent=2)
     
-    # 2. Walkway Tile (160x64)
-    scene_wt = make_walkway_tile(160, 64)
+    # 2. Walkway Tile (160x32)
+    scene_wt = make_walkway_tile(160, 32)
     data_wt = {"name": "walkway_tile", "instructions": scene_wt.get_instructions()}
     out_wt = os.path.join(os.path.dirname(__file__), "../csg/walkway_tile.json")
     with open(out_wt, "w") as f: json.dump(data_wt, f, indent=2)

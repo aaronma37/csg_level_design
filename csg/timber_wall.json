@@ -25411,5 +25411,9 @@
       ],
       "color": 2
     }
-  ]
+  ],
+  "snap_points": {
+    "next_segment": { "pos": [256, 0, 0], "rot": 0 },
+    "corner_turn": { "pos": [256, 0, 0], "rot": 90 }
+  }
 }

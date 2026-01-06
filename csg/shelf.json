@@ -33550,5 +33550,16 @@
       ],
       "color": 2
     }
-  ]
+  ],
+  "snap_points": {
+    "tier1_left": { "pos": [-20, 5, 3], "rot": 0 },
+    "tier1_center": { "pos": [0, 5, 3], "rot": 0 },
+    "tier1_right": { "pos": [20, 5, 3], "rot": 0 },
+    "tier2_left": { "pos": [-20, 5, 28], "rot": 0 },
+    "tier2_center": { "pos": [0, 5, 28], "rot": 0 },
+    "tier2_right": { "pos": [20, 5, 28], "rot": 0 },
+    "tier3_left": { "pos": [-20, 5, 53], "rot": 0 },
+    "tier3_center": { "pos": [0, 5, 53], "rot": 0 },
+    "tier3_right": { "pos": [20, 5, 53], "rot": 0 }
+  }
 }

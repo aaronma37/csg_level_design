@@ -102274,5 +102274,12 @@
       ],
       "color": 22
     }
-  ]
+  ],
+  "snap_points": {
+    "stool_1": { "pos": [-20, 22, 0], "rot": 0 },
+    "stool_2": { "pos": [0, 22, 0], "rot": 0 },
+    "stool_3": { "pos": [20, 22, 0], "rot": 0 },
+    "top_left": { "pos": [-15, 8, 39], "rot": 0 },
+    "top_right": { "pos": [15, 8, 39], "rot": 0 }
+  }
 }

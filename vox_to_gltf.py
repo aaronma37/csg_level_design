@@ -46,6 +46,7 @@ class VoxToGltf:
         return d
 
     def load_vox(self):
+        self.palette = []
         with open(self.vox_path, 'rb') as f:
             if f.read(4) != b'VOX ': raise ValueError("Not a VOX file")
             f.read(4) # version
@@ -53,16 +54,24 @@ class VoxToGltf:
                 cid = f.read(4)
                 if not cid: break
                 cs, chs = struct.unpack('<II', f.read(8))
+                print(f"DEBUG: Found chunk {cid} cs={cs} chs={chs}")
                 if cid == b'MAIN': continue
                 
                 start_p = f.tell()
                 if cid == b'SIZE':
-                    self.models.append({"dims": struct.unpack('<III', f.read(12)), "voxels": {}})
+                    dims = struct.unpack('<III', f.read(12))
+                    print(f"DEBUG: SIZE {dims}")
+                    self.models.append({"dims": dims, "voxels": {}})
                 elif cid == b'XYZI':
                     n = struct.unpack('<I', f.read(4))[0]
+                    print(f"DEBUG: XYZI {n} voxels")
                     for _ in range(n):
                         x, y, z, c = struct.unpack('<BBBB', f.read(4))
                         self.models[-1]["voxels"][(x, y, z)] = c
+                elif cid == b'RGBA':
+                    for _ in range(256):
+                        r, g, b, a = struct.unpack('<BBBB', f.read(4))
+                        self.palette.append((r, g, b, a))
                 elif cid == b'nTRN':
                     nid = struct.unpack('<I', f.read(4))[0]
                     attr = self._read_dict(f)
@@ -70,19 +79,40 @@ class VoxToGltf:
                     f.read(12)
                     frame_attr = self._read_dict(f)
                     self.nodes[nid] = {"type": "TRN", "child": child, "t": frame_attr.get("_t", "0 0 0"), "r": frame_attr.get("_r", "4")}
+                    print(f"DEBUG: nTRN {nid} -> {child}")
                 elif cid == b'nGRP':
                     nid = struct.unpack('<I', f.read(4))[0]
                     attr = self._read_dict(f)
                     num_children = struct.unpack('<I', f.read(4))[0]
                     children = [struct.unpack('<I', f.read(4))[0] for _ in range(num_children)]
                     self.nodes[nid] = {"type": "GRP", "children": children}
+                    print(f"DEBUG: nGRP {nid} kids={children}")
                 elif cid == b'nSHP':
                     nid = struct.unpack('<I', f.read(4))[0]
                     attr = self._read_dict(f)
                     f.read(4)
                     mid = struct.unpack('<I', f.read(4))[0]
                     self.nodes[nid] = {"type": "SHP", "model": mid}
+                    print(f"DEBUG: nSHP {nid} model={mid}")
                 f.seek(start_p + cs)
+
+    def write_palette_png(self, filename):
+        import zlib
+        pal = self.palette if self.palette and len(self.palette) == 256 else palette.PALETTE_COLORS
+        signature = b'\x89PNG\r\n\x1a\n'
+        ihdr_data = struct.pack('>IIBBBBB', 256, 1, 8, 2, 0, 0, 0)
+        def make_chunk(tag, data):
+            return struct.pack('>I', len(data)) + tag + data + struct.pack('>I', zlib.crc32(tag + data) & 0xffffffff)
+        ihdr = make_chunk(b'IHDR', ihdr_data)
+        raw_data = b'\x00'
+        for i in range(256):
+            r, g, b, a = pal[i]
+            raw_data += struct.pack('BBB', r, g, b)
+        idat = make_chunk(b'IDAT', zlib.compress(raw_data))
+        iend = make_chunk(b'IEND', b'')
+        with open(filename, 'wb') as f:
+            f.write(signature + ihdr + idat + iend)
+        print(f"Generated {filename}")
 
     def recompose_world(self):
         print(f"Recomposing {len(self.models)} models into world space...")

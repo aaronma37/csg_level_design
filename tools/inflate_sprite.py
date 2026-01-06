@@ -49,7 +49,7 @@ class CustomVoxelModel:
         
         xyzi_content = struct.pack('<I', len(normalized_vox))
         for v in normalized_vox:
-            chunks += struct.pack('<BBBB', v[0], v[1], v[2], v[3])
+            xyzi_content += struct.pack('<BBBB', v[0], v[1], v[2], v[3])
         chunks += self._make_chunk(b'XYZI', xyzi_content)
         
         # 4. RGBA (Custom Palette)

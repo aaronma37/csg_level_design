@@ -143,10 +143,141 @@ def load_vox_voxels(filename):
         print(f"Error reading {filename}: {e}")
     return []
 
+import math
+
+def rotate_point(x, y, angle_deg):
+    """Rotates a 2D point around (0,0)."""
+    if angle_deg == 0: return x, y
+    rad = math.radians(angle_deg)
+    # Standard rotation matrix
+    cos_a = math.cos(rad)
+    sin_a = math.sin(rad)
+    # MagicaVoxel/Menori coordinate systems might need specific checks, 
+    # but standard math is:
+    # x' = x cos - y sin
+    # y' = x sin + y cos
+    # NOTE: Check if we need to invert for coordinate system (Y-down vs Y-up)
+    # Assuming standard Euclidean for now.
+    new_x = x * cos_a - y * sin_a
+    new_y = x * sin_a + y * cos_a
+    return new_x, new_y
+
+def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
+    if not os.path.exists(layout_path):
+        print(f"Warning: Layout file not found: {layout_path}")
+        return []
+
+    with open(layout_path, 'r') as f:
+        data = json.load(f)
+    
+    flat_items = []
+    local_instances = {} # id -> { pos, rot, asset_id } (Local to this layout, but parent-transform applied?? No, let's store local-to-parent to be safe, or just resolved global?)
+    # Easier to store RESOLVED GLOBAL coords in local_instances for easy math, 
+    # BUT we need to be careful about the hierarchy. 
+    # Let's store RESOLVED GLOBAL.
+    
+    for item in data:
+        aid = item['asset_id']
+        
+        # 1. Determine Local Transform (lx, ly, lz, lr)
+        if 'snap_to' in item:
+            # Resolution Logic
+            target_id, point_name = item['snap_to'].split('.')
+            if target_id not in local_instances:
+                print(f"Error: Snap target '{target_id}' not found (must be defined before use).")
+                continue
+            
+            t_info = local_instances[target_id]
+            t_aid = t_info['asset_id']
+            t_pos = t_info['pos'] # Global
+            t_rot = t_info['rot'] # Global
+            
+            # Load target asset to get snap points
+            # Search in csg/ or same dir
+            # We assume t_aid is a leaf asset for now, or a collection that has snap_points at top level?
+            # Usually assets have snap_points.
+            t_path = os.path.join(os.path.dirname(layout_path), f"{t_aid}.json")
+            if not os.path.exists(t_path): t_path = os.path.join("csg", f"{t_aid}.json")
+            
+            snap_def = None
+            if os.path.exists(t_path):
+                try:
+                    with open(t_path, 'r') as tf:
+                        t_data = json.load(tf)
+                        if 'snap_points' in t_data:
+                            snap_def = t_data['snap_points'].get(point_name)
+                except: pass
+            
+            if not snap_def:
+                print(f"Error: Snap point '{point_name}' not found on asset '{t_aid}'.")
+                continue
+                
+            # Apply Snap Point Transform
+            # The snap point (sx, sy, sz, sr) is local to the target asset (which is at t_pos, t_rot)
+            sx, sy, sz = snap_def['pos']
+            sr = snap_def.get('rot', 0)
+            
+            # Rotate snap point by target's global rotation
+            rsx, rsy = rotate_point(sx, sy, t_rot)
+            
+            # New Global Pos = Target Global + Rotated Snap Offset
+            gx = t_pos[0] + rsx
+            gy = t_pos[1] + rsy
+            gz = t_pos[2] + sz
+            gr = (t_rot + sr) % 360
+            
+        else:
+            # Standard explicit transform
+            lx, ly, lz = item.get('pos', [0,0,0])
+            lr = item.get('rot', 0)
+            
+            # Apply parent rotation to local position
+            rx, ry = rotate_point(lx, ly, parent_rot)
+            
+            gx = parent_pos[0] + rx
+            gy = parent_pos[1] + ry
+            gz = parent_pos[2] + lz
+            gr = (lr + parent_rot) % 360
+
+        # 2. Store if ID is present
+        if 'id' in item:
+            local_instances[item['id']] = {
+                'pos': (gx, gy, gz),
+                'rot': gr,
+                'asset_id': aid
+            }
+
+        # 3. Process Asset (Leaf or Collection)
+        collection_path = os.path.join(os.path.dirname(layout_path), f"{aid}.json")
+        if not os.path.exists(collection_path):
+            collection_path = os.path.join("csg", f"{aid}.json")
+        
+        is_collection = False
+        if os.path.exists(collection_path):
+            try:
+                with open(collection_path, 'r') as cf:
+                    c_data = json.load(cf)
+                if isinstance(c_data, list) and len(c_data) > 0 and isinstance(c_data[0], dict) and 'asset_id' in c_data[0]:
+                    is_collection = True
+            except:
+                pass
+
+        if is_collection:
+            flat_items.extend(load_layout_recursively(collection_path, (gx, gy, gz), gr))
+        else:
+            flat_items.append({
+                'asset_id': aid,
+                'pos': [int(gx), int(gy), int(gz)],
+                'rot': int(gr)
+            })
+            
+    return flat_items
+
 def run_composer(layout_file, output_file=None, merge=False):
     print(f"Composing Scene from {layout_file}...")
-    with open(layout_file, 'r') as f:
-        scene_data = json.load(f)
+    
+    # Use recursive loader instead of direct json.load
+    scene_data = load_layout_recursively(layout_file)
     
     # Generate Lua version of the layout
     base_name = os.path.basename(layout_file).replace(".json", "")

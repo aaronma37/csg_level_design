@@ -363030,5 +363030,8 @@
       ],
       "color": 1
     }
-  ]
+  ],
+  "snap_points": {
+    "railing_side": { "pos": [-20, 0, 0], "rot": 270 }
+  }
 }

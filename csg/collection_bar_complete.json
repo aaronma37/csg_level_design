@@ -1,0 +1,28 @@
+[
+  {
+    "id": "base_bar",
+    "asset_id": "collection_bar_set",
+    "pos": [0, 0, 0],
+    "rot": 0
+  },
+  {
+    "asset_id": "shelf",
+    "pos": [0, -15, 40],
+    "rot": 0
+  },
+  {
+    "asset_id": "barrel",
+    "pos": [-15, -20, 0],
+    "rot": 327
+  },
+  {
+    "asset_id": "barrel",
+    "pos": [-15, -40, 0],
+    "rot": 57
+  },
+  {
+    "asset_id": "barrel",
+    "pos": [-15, -60, 0],
+    "rot": 12
+  }
+]

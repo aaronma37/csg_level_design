@@ -1,0 +1,27 @@
+{
+  "name": "corner_pillar",
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [0, 0, 0],
+      "size": [12, 12, 140],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [-1, -1, 0],
+      "size": [14, 14, 6],
+      "color": 23
+    },
+    {
+      "op": "add",
+      "pos": [-1, -1, 40],
+      "size": [14, 14, 6],
+      "color": 23
+    }
+  ],
+  "snap_points": {
+    "wall_north": { "pos": [0, 0, 0], "rot": 180 },
+    "wall_east": { "pos": [12, 0, 0], "rot": 90 }
+  }
+}

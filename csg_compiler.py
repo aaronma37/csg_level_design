@@ -147,7 +147,8 @@ def compile_asset(json_path):
     with open(json_path, 'r') as f:
         data = json.load(f)
     
-    model = VoxelModel()
+    custom_pal = data.get("palette")
+    model = VoxelModel(custom_palette=custom_pal)
     asset_name = data.get("name", "unknown")
     
     print(f"Compiling Asset: {asset_name}...")

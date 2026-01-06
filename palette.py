@@ -13,6 +13,7 @@
 # 21-40: Stone textures
 # 41-99: Misc / General
 # 100-149: Character Range (PROTECTED: Used for Voxel Character Reconstructions)
+# 150-199: Sprite Workspace (Reserved for active sprite prototyping)
 # 240-249: Standard Emissive (Visible)
 # 250-255: Ghost Emissive (Alpha 0, high bloom)
 
@@ -62,6 +63,29 @@ set_color(136, 146, 94, 27); set_color(137, 157, 149, 132); set_color(138, 239, 
 set_color(140, 242, 217, 163); set_color(141, 195, 159, 120); set_color(142, 37, 51, 71); set_color(143, 195, 197, 187)
 set_color(144, 60, 21, 66); set_color(145, 97, 94, 93); set_color(146, 27, 27, 45); set_color(147, 169, 12, 214)
 set_color(148, 127, 79, 201); set_color(149, 48, 52, 43)
+
+# --- SPRITE WORKSPACE (150-199) ---
+# Reserved for active sprite prototyping.
+set_color(150, 44, 37, 13)
+set_color(151, 63, 55, 29)
+set_color(152, 103, 89, 54)
+set_color(153, 86, 75, 41)
+set_color(154, 159, 134, 95)
+set_color(155, 187, 166, 123)
+set_color(156, 78, 5, 88)
+set_color(157, 130, 113, 87)
+set_color(158, 227, 12, 60)
+set_color(159, 118, 8, 166)
+set_color(160, 145, 39, 39)
+set_color(161, 251, 254, 241)
+set_color(162, 145, 5, 110)
+set_color(163, 169, 12, 214)
+set_color(164, 61, 14, 13)
+set_color(165, 202, 183, 165)
+set_color(166, 96, 19, 16)
+set_color(167, 78, 32, 25)
+set_color(168, 29, 38, 38)
+set_color(169, 54, 64, 64)
 
 # --- STANDARD EMISSIVE (240-249) ---
 set_color(240, 255, 100, 0)   # Fire Orange

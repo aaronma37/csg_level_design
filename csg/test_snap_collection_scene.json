@@ -1,0 +1,17 @@
+[
+    {
+        "asset_id": "wooden_floor",
+        "pos": [0, 0, 0],
+        "rot": 0
+    },
+    {
+        "asset_id": "collection_dining_snapped",
+        "pos": [50, 50, 2],
+        "rot": 45
+    },
+    {
+        "asset_id": "collection_dining_snapped",
+        "pos": [150, 80, 2],
+        "rot": 135
+    }
+]

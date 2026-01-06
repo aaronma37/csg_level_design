@@ -1,7 +1,7 @@
 # Workflows
 
 ## Core Principles
-*   **Palette Integrity**: `palette.py` is the master definition for materials in CSG assets. It maps specific indices to material types (Wood, Stone, etc.) used by the renderer. **Do not modify `palette.py` for temporary tasks** (like space carving); create separate palette files if needed. Always use `palette.py` for CSG definitions to ensure consistent material mapping.
+*   **Palette Integrity**: `palette.py` is the master definition for materials in CSG assets. It maps specific indices to material types (Wood, Stone, etc.) used by the renderer. **Do not modify `palette.py` for temporary tasks**; create separate palette files if needed. Always use `palette.py` for CSG definitions to ensure consistent material mapping.
 
 ## Pipelines
 
@@ -27,21 +27,16 @@ This workflow describes the process of creating a procedural asset and deploying
     mv figurine.gltf figurine.bin ~/love_exp/assets/csg_assets/
     ```
 
-### Video to Voxel (Space Carving) Pipeline
-This workflow describes the process of reconstructing a 3D voxel model from a 360-degree turntable video.
+### Sprite to Animated 3D Model Pipeline
+This workflow bridges 2D pixel art and 3D animation by generating rigged voxel assets from sprites.
 
-1.  **Setup Environment**: Ensure `opencv-python-headless` and `numpy` are installed in a virtual environment.
-2.  **Configure Palette**: Ensure `character_palette.py` contains the desired target colors.
-3.  **Run Carver**: Execute the `space_carver.py` script.
-    ```bash
-    .venv/bin/python -u space_carver.py input.mp4 output.vox [resolution] [consistency_check]
-    ```
-    *   **Resolution**: Recommended `112` for balanced detail and solidity.
-    *   **Consistency Check**: Use `1` to enable advanced multi-pass cluster consistency (removes concave "blobs").
-4.  **Post-Processing**: The script automatically performs:
-    *   **Flood-Fill Hull**: Intelligent background removal.
-    *   **Morphological Closing**: Automatic hole filling to bridge gaps.
-    *   **K-Means Quantization**: Snaps noisy video colors to the clean character palette.
+1.  **Schema (Phase 1)**: Define a `blueprint.json` mapping the sprite to a Skeleton and defining Primitives (hair, cape).
+2.  **Generation (Phase 2)**: Generate volumetric mass for each primitive and paint it by projecting the sprite's colors.
+3.  **Rigging (Phase 4)**: Assign bone weights and physics properties (elasticity, mass) to every voxel.
+4.  **Baking (Phase 5)**: Simulate skeletal animations with soft-body physics, snap voxels back to the grid per-frame, and export as a sequence of GLTF meshes.
+
+
+
 
 ### Logical Composition Pipeline (Micro-Props)
 This workflow is used for assets smaller than 16x16, or complex props made of repeating modular parts.
