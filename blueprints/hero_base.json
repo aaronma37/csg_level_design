@@ -1,0 +1,53 @@
+{
+  "name": "Hero_Base",
+  "skeleton": "HumanoidSkeleton",
+  "height": 50,
+  "topology": {
+    "root": null,
+    "pelvis": "root",
+    "spine": "pelvis",
+    "head": "spine",
+    "shoulder_L": "spine",
+    "elbow_L": "shoulder_L",
+    "hand_L": "elbow_L",
+    "shoulder_R": "spine",
+    "elbow_R": "shoulder_R",
+    "hand_R": "elbow_R",
+    "hip_L": "pelvis",
+    "knee_L": "hip_L",
+    "foot_L": "knee_L",
+    "hip_R": "pelvis",
+    "knee_R": "hip_R",
+    "foot_R": "knee_R"
+  },
+  "primitives": [
+    {
+      "name": "Iron_Helmet",
+      "parent_bone": "head",
+      "type": "static_mesh",
+      "params": {
+        "shape": "cube",
+        "dimensions": [
+          8,
+          8,
+          8
+        ],
+        "offset": [
+          0,
+          4,
+          0
+        ]
+      }
+    },
+    {
+      "name": "Red_Cape",
+      "parent_bone": "spine",
+      "type": "ribbon",
+      "params": {
+        "length": 25,
+        "width": 12,
+        "flexibility": 0.9
+      }
+    }
+  ]
+}

@@ -38,29 +38,26 @@ This pipeline describes a high-fidelity workflow for creating rich, animated 3D 
     *   User provides feedback (e.g., "Cape too thick," "Sword too low").
 3.  **Refinement:** Adjust blueprint parameters or generation logic and regenerate until approved.
 
-### Phase 4: Rigging & Data Preparation
-**Goal:** Create a "Smart Voxel Cloud" aware of simulation properties.
-1.  **Data Structuring:** Flatten the model into a list/database of voxels.
-2.  **Voxel Attributes:**
-    *   **Position:** `{x, y, z}` in rest pose.
-    *   **Color:** Palette index.
-    *   **Bone ID:** Primary parent bone.
-    *   **Bone Weight:** Soft deformation influence.
-    *   **Simulation Props:** Inertia, elasticity, mass (derived from Primitive type).
-3.  **Semantic Enrichment:** Use the reference sprite to fine-tune weights (e.g., rigid chest vs. flowing hair).
+### Phase 4: Rigging (Decomposition)
+**Goal:** Split the monolithic voxel cloud into separate, rigid parts.
+1.  **Decomposition:**
+    *   Iterate through all voxels.
+    *   Group them by their assigned **Bone ID**.
+2.  **Local Coordinate Conversion:**
+    *   Calculate the **Local Position** of each voxel relative to its parent bone's pivot point (Rest Pose Position).
+    *   `LocalPos = WorldPos - BoneRestPos`.
+3.  **Output:** A dictionary of "Parts", where each part corresponds to a bone and contains a local cloud of voxels.
 
-### Phase 5: Animation & Baking
-**Goal:** Generate the final stop-motion assets.
-1.  **Animation Reuse:** Apply shared skeletal animations (Run, Attack) to the rig.
-2.  **Simulation:**
-    *   Run soft-body/physics simulation per frame.
-    *   Calculate continuous positions for every voxel.
-3.  **Quantization (The Snap):**
-    *   Round continuous positions to the nearest integer grid coordinate.
-    *   Resolve collisions (depth/priority) to maintain grid validity.
-4.  **Export:**
-    *   **Greedy Meshing:** Optimize the mesh for the current frame.
-    *   **GLTF Sequence:** Export a unique mesh per frame (e.g., `run_01.gltf`, `run_02.gltf`).
+### Phase 5: Export & Runtime Integration
+**Goal:** Prepare hierarchical assets for the game engine.
+1.  **Format:**
+    *   **Hierarchical Asset:** A JSON/GLTF structure defining a tree of nodes (Bones).
+    *   **Payload:** Each node contains its own specific **Mesh** (the local voxel cloud).
+2.  **Runtime Rendering:**
+    *   The game engine treats each part as a separate entity attached to the skeleton.
+    *   **Simplification:** This removes the need for vertex skinning or Inverse Bind Matrices. The engine simply rotates the bone nodes, and the attached voxel parts move with them rigidly.
+    *   **Step Interpolation:** Animation frames update the node transforms.
+
 
 ### Phase 6: Custom Format Optimization (Stretch Goal)
 **Goal:** optimize storage and runtime performance.

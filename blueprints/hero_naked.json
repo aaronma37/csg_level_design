@@ -1,0 +1,24 @@
+{
+  "name": "Hero_Naked",
+  "skeleton": "HumanoidSkeleton",
+  "height": 50,
+  "topology": {
+    "root": null,
+    "pelvis": "root",
+    "spine": "pelvis",
+    "head": "spine",
+    "shoulder_L": "spine",
+    "elbow_L": "shoulder_L",
+    "hand_L": "elbow_L",
+    "shoulder_R": "spine",
+    "elbow_R": "shoulder_R",
+    "hand_R": "elbow_R",
+    "hip_L": "pelvis",
+    "knee_L": "hip_L",
+    "foot_L": "knee_L",
+    "hip_R": "pelvis",
+    "knee_R": "hip_R",
+    "foot_R": "knee_R"
+  },
+  "primitives": []
+}

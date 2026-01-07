@@ -16,3 +16,10 @@
     - Seat Height: 0.25 CU (12-14v)
     - Counter Height: 0.7 - 0.8 CU (35-40v)
     - Stair Rise: 1.6 CU per floor (80v)
+
+## 4. Sprite to Animated 3D Pipeline
+- **BBox over Tile Size:** Always analyze the visible bounding box of a sprite to determine world scale. A 64x64 tile may only contain a 50-voxel character; failing to account for this leads to misaligned skeletons.
+- **Semantic Painting:** Projecting colors based on **Bone Regions** (e.g., Head Region, Leg Region) is more robust than absolute spatial projection. It ensures facial features land on the head regardless of pose or offset.
+- **Median Luminance Heuristics:** When extracting base colors (like skin tone) from a shaded sprite, use the **Median Brightness** of the region. Mode-based extraction often picks dark outlines or highlights, causing color mismatches.
+- **Transform vs. Mass:** Not all bones in a topology require volume. The 'Root -> Pelvis' connection is usually purely logical; drawing it as mass creates a "third leg" pillar.
+- **Stop-Motion Baking:** Generating a unique mesh per frame ("Baked Voxel Sequence") is the most reliable way to preserve the voxel-grid aesthetic while allowing for fluid soft-body/physics simulations.
