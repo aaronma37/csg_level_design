@@ -12,10 +12,14 @@ local App = {
 	animation_speed = 12,
 
 	-- Camera Params
-	cam_angle = math.pi / 2,
-	cam_dist = 120,
-	cam_height = 25,
+	cam_angle = math.pi / 4, -- 45 degrees for isometric feel
+	cam_dist = 150,
+	cam_height = 80,         -- Elevated for isometric look
 	cam_center = vec3(0, 25, 0),
+
+	-- Skin Tint
+	skin_tint = { 1.0, 0.7, 0.7 }, -- Default to slight red tint
+	skin_tint_strength = 1.0,      -- Default to full strength
 }
 
 local DEBUG_COLORS = {
@@ -34,7 +38,22 @@ function App:load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	-- 1. Load Custom Shader (Restored)
-	self.shader = love.graphics.newShader("shaders/lighting.glsl")
+	-- Wrap in pcall to catch compilation errors
+	local status, shader_or_err = pcall(love.graphics.newShader, "shaders/lighting.glsl")
+	if status then
+		self.shader = shader_or_err
+		self.shader_error = nil
+	else
+		self.shader_error = shader_or_err
+		print("Shader Error:", self.shader_error)
+		-- Fallback to a dummy shader to prevent crash, though it won't light up
+		self.shader = love.graphics.newShader([[
+			vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
+				return Texel(tex, texture_coords) * color;
+			}
+		]])
+	end
+	
 	self.palette = love.graphics.newImage("assets/palette_texture.png")
 
 	local ok, res = pcall(love.graphics.newImage, "assets/t_pose_sprite.png")
@@ -129,15 +148,15 @@ function App:build_voxel_mesh(voxels)
 		local u = (c + 0.5) / 256.0
 		local x, y, z = vx, vy, vz
 		local faces = {
-			{ n = { 0, 1, 0 }, v = { { 0, 1, 0 }, { 1, 1, 0 }, { 1, 1, 1 }, { 0, 1, 1 } } }, -- Top
-			{ n = { 0, -1, 0 }, v = { { 0, 0, 1 }, { 1, 0, 1 }, { 1, 0, 0 }, { 0, 0, 0 } } }, -- Bottom
+			{ n = { 0, 1, 0 }, v = { { 0, 1, 1 }, { 1, 1, 1 }, { 1, 1, 0 }, { 0, 1, 0 } } }, -- Top (Reordered to CCW)
+			{ n = { 0, -1, 0 }, v = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 1 }, { 0, 0, 1 } } }, -- Bottom (Reordered to CCW)
 			{ n = { 0, 0, 1 }, v = { { 0, 0, 1 }, { 1, 0, 1 }, { 1, 1, 1 }, { 0, 1, 1 } } }, -- Front
 			{ n = { 0, 0, -1 }, v = { { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 } } }, -- Back
 			{ n = { 1, 0, 0 }, v = { { 1, 0, 0 }, { 1, 0, 1 }, { 1, 1, 1 }, { 1, 1, 0 } } }, -- Right
 			{ n = { -1, 0, 0 }, v = { { 0, 0, 1 }, { 0, 0, 0 }, { 0, 1, 0 }, { 0, 1, 1 } } }, -- Left
 		}
 		for _, f in ipairs(faces) do
-			for _, i in ipairs({ 1, 2, 3, 1, 3, 4 }) do
+			for _, i in ipairs({ 1, 3, 2, 1, 4, 3 }) do -- Reverse to CW
 				local vert = f.v[i]
 				table.insert(vertices, {
 					x + vert[1],
@@ -196,6 +215,7 @@ function App:build_skeleton(parent_node)
 			mat:set_shader(self.shader)
 			mat:set("unlit", false)
 			local mnode = menori.ModelNode(mesh, mat)
+			mnode.material:set_shader(self.shader) -- FORCE shader after ModelNode init
 			node:attach(mnode)
 			table.insert(self.standard_mesh_nodes, mnode)
 			-- Debug
@@ -206,6 +226,7 @@ function App:build_skeleton(parent_node)
 			dmat:set_shader(self.shader)
 			dmat:set("unlit", false)
 			local dnode = menori.ModelNode(mesh, dmat)
+			dnode.material:set_shader(self.shader) -- FORCE shader here too
 			node:attach(dnode)
 			table.insert(self.debug_mesh_nodes, dnode)
 			color_idx = color_idx + 1
@@ -226,6 +247,43 @@ function App:update(dt)
 	end
 	if love.keyboard.isDown("down") then
 		self.cam_dist = self.cam_dist + dt * 100
+	end
+	if love.keyboard.isDown("w") then
+		self.cam_height = self.cam_height + dt * 100
+	end
+	if love.keyboard.isDown("s") then
+		self.cam_height = self.cam_height - dt * 100
+	end
+
+	-- Skin Tint Controls
+	local tint_speed = dt * 0.5
+	if love.keyboard.isDown("r") then
+		if love.keyboard.isDown("lshift") then
+			self.skin_tint[1] = math.min(1, self.skin_tint[1] + tint_speed)
+		else
+			self.skin_tint[1] = math.max(0, self.skin_tint[1] - tint_speed)
+		end
+	end
+	if love.keyboard.isDown("g") then
+		if love.keyboard.isDown("lshift") then
+			self.skin_tint[2] = math.min(1, self.skin_tint[2] + tint_speed)
+		else
+			self.skin_tint[2] = math.max(0, self.skin_tint[2] - tint_speed)
+		end
+	end
+	if love.keyboard.isDown("b") then
+		if love.keyboard.isDown("lshift") then
+			self.skin_tint[3] = math.min(1, self.skin_tint[3] + tint_speed)
+		else
+			self.skin_tint[3] = math.max(0, self.skin_tint[3] - tint_speed)
+		end
+	end
+	if love.keyboard.isDown("t") then
+		if love.keyboard.isDown("lshift") then
+			self.skin_tint_strength = math.min(1, self.skin_tint_strength + tint_speed)
+		else
+			self.skin_tint_strength = math.max(0, self.skin_tint_strength - tint_speed)
+		end
 	end
 
 	local aspect = self.view_w / self.view_h
@@ -298,6 +356,12 @@ function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
 	if self.shader:hasUniform("eyePosition") then
 		self.shader:send("eyePosition", { camera.eye:unpack() })
 	end
+	if self.shader:hasUniform("skinTint") then
+		self.shader:send("skinTint", self.skin_tint)
+	end
+	if self.shader:hasUniform("skinTintStrength") then
+		self.shader:send("skinTintStrength", self.skin_tint_strength)
+	end
 
 	self.scene:render_nodes(self.root, self.env)
 
@@ -339,6 +403,23 @@ function App:draw()
 	love.graphics.print("2: Mesh Alignment", self.view_w + 10, 10)
 	love.graphics.print("3: Animation Preview", 10, self.view_h + 10)
 	love.graphics.print("4: Bone Asset Debug", self.view_w + 10, self.view_h + 10)
+	love.graphics.print(
+		string.format(
+			"Skin Tint (R/G/B/T): %.2f, %.2f, %.2f | %.2f",
+			self.skin_tint[1],
+			self.skin_tint[2],
+			self.skin_tint[3],
+			self.skin_tint_strength
+		),
+		10,
+		self.view_h * 2 - 20
+	)
+
+	if self.shader_error then
+		love.graphics.setColor(1, 0, 0)
+		love.graphics.print("SHADER ERROR: " .. tostring(self.shader_error), 10, self.view_h * 2 - 40)
+		love.graphics.setColor(1, 1, 1)
+	end
 end
 
 function love.load()
