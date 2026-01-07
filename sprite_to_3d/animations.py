@@ -1,12 +1,25 @@
 import math
+import json
 
 class Animation:
     def __init__(self, duration_frames):
         self.duration = duration_frames
+        self.type = 'euler'
 
     def get_pose(self, frame):
-        """Returns a dict of bone_name -> (rx, ry, rz) rotations in radians."""
+        """Returns a dict of bone_name -> (rx, ry, rz) rotations in radians OR 4x4 matrix."""
         pass
+
+class JsonAnimation(Animation):
+    def __init__(self, json_path):
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+        super().__init__(data['duration'])
+        self.frames = data['frames']
+        self.type = data.get('type', 'euler')
+
+    def get_pose(self, frame):
+        return self.frames[frame % self.duration]
 
 class WalkAnimation(Animation):
     def get_pose(self, frame):

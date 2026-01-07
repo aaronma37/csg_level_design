@@ -67,10 +67,13 @@ function App:load()
 		self.rig_data = json.decode(f:read("*all"))
 		f:close()
 	end
-	local f_anim = io.open(ANIM_PATH, "r")
+	f_anim = io.open(ANIM_PATH, "r")
 	if f_anim then
 		self.anim_data = json.decode(f_anim:read("*all"))
 		f_anim:close()
+        print("Loaded Animation: " .. ANIM_PATH .. " | Frames: " .. tostring(self.anim_data.duration))
+    else
+        print("FAILED TO LOAD ANIMATION: " .. ANIM_PATH)
 	end
 
 	-- 3. Scene
@@ -319,27 +322,64 @@ function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
 	love.graphics.setColor(1, 1, 1, 1)
 
 	if is_tpose then
-		for _, n in pairs(self.bones) do
-			n:set_rotation(quat())
+		local bind_matrices = self.rig_data.skeleton.bind_matrices
+		for bone_name, n in pairs(self.bones) do
+			if bind_matrices and bind_matrices[bone_name] then
+				local m_data = bind_matrices[bone_name]
+				n.local_matrix = ml.mat4(
+					m_data[1], m_data[5], m_data[9], m_data[13],
+					m_data[2], m_data[6], m_data[10], m_data[14],
+					m_data[3], m_data[7], m_data[11], m_data[15],
+					m_data[4], m_data[8], m_data[12], m_data[16]
+				)
+			else
+				-- Fallback to rest_pose (Euler logic)
+				local bp = self.rig_data.skeleton.rest_pose[bone_name]
+				local parent_name = self.rig_data.skeleton.topology[bone_name]
+				if parent_name and self.rig_data.skeleton.rest_pose[parent_name] then
+					local pp = self.rig_data.skeleton.rest_pose[parent_name]
+					n:set_position(vec3(bp[1] - pp[1], bp[2] - pp[2], bp[3] - pp[3]))
+				else
+					n:set_position(vec3(unpack(bp)))
+				end
+				n:set_rotation(quat())
+			end
+			n._transform_flag = true
 		end
 	elseif self.anim_data then
-		local frame = self.anim_data.frames[math.floor(self.time * self.animation_speed) % self.anim_data.duration + 1]
+		local frame_count = self.anim_data.duration
+		local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
+		local frame = self.anim_data.frames[current_frame_idx + 1]
+		local is_matrix = self.anim_data.type == "matrix"
+
+        if idx == 3 and math.floor(self.time) % 5 == 0 then
+            print("Anim Debug: Frame " .. current_frame_idx .. "/" .. frame_count .. " | Matrix: " .. tostring(is_matrix))
+        end
+
 		for b, data in pairs(frame) do
-			if self.bones[b] then
-				-- Handle rotation
-				if data.rot then
-					self.bones[b]:set_rotation(quat.from_euler_angles(unpack(data.rot)))
+			local node = self.bones[b]
+			if node then
+				if is_matrix then
+					-- DAE is row-major, Menori is column-major.
+					local m = ml.mat4(
+						data[1], data[5], data[9], data[13],
+						data[2], data[6], data[10], data[14],
+						data[3], data[7], data[11], data[15],
+						data[4], data[8], data[12], data[16]
+					)
+					node.local_matrix = m
+				else
+					-- Euler path
+					if data.rot then
+						node:set_rotation(quat.from_euler_angles(unpack(data.rot)))
+					end
+					if (b == "pelvis" or b == "mixamorig_Hips") and data.pos then
+						local rest_pos = self.rig_data.skeleton.rest_pose[b]
+						local dx, dy, dz = data.pos[1], data.pos[2], data.pos[3]
+						node:set_position(vec3(rest_pos[1] + dx, rest_pos[2] + dy, rest_pos[3]))
+					end
 				end
-				-- Handle translation (Pelvis bob)
-				if b == "pelvis" and data.pos then
-					local rest_pos = self.rig_data.skeleton.rest_pose[b]
-					-- We only want the RELATIVE movement (bobbing)
-					-- Mixamo root is usually at (0,0,0) in the DAE, 
-					-- so we add its movement to our rest position.
-					-- We zero out the Z (forward) movement to keep it in place for the preview.
-					local dx, dy, dz = data.pos[1], data.pos[2], data.pos[3]
-					self.bones[b]:set_position(vec3(rest_pos[1] + dx, rest_pos[2] + dy, rest_pos[3]))
-				end
+				node._transform_flag = true
 			end
 		end
 	end
@@ -360,6 +400,7 @@ function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
 	self.env.camera = camera
 	self.root:traverse(function(n)
 		n._transform_flag = true
+        if n.update_transform then n:update_transform() end
 	end)
 	self.scene:update_nodes(self.root, self.env)
 

@@ -44,9 +44,9 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     vec4 texColor = Texel(tex, v_texCoord);
     if (texColor.a < 0.1) discard;
 
-    // Apply Skin Tint to Beige Range (44-46)
+    // Apply Skin Tint to Beige Range (44-46) and our new extracted index (153)
     float paletteIndex = floor(v_texCoord.x * 256.0 + 0.1);
-    if (paletteIndex >= 44.0 && paletteIndex <= 46.0) {
+    if ((paletteIndex >= 44.0 && paletteIndex <= 46.0) || paletteIndex == 153.0) {
         vec3 tinted = texColor.rgb * skinTint;
         texColor.rgb = mix(texColor.rgb, tinted, skinTintStrength);
     }

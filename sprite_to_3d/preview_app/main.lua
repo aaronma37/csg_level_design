@@ -19,7 +19,7 @@ local App = {
 function App:load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     
-    -- 1. Shader with explicit attribute declaration for LÖVE 11
+    -- 1. Shader
     local vertex_code = [[ 
         attribute vec3 VertexNormal;
         uniform mat4 m_projection;
@@ -31,7 +31,7 @@ function App:load()
         vec4 position(mat4 transform_projection, vec4 vertex_position) {
             v_normal = normalize(mat3(m_model) * VertexNormal);
             v_color = VertexColor;
-            v_texcoord = VertexTexCoord.xy; -- FIX: Use .xy
+            v_texcoord = VertexTexCoord.xy;
             return m_projection * m_view * m_model * vertex_position;
         }
     ]]
@@ -49,14 +49,7 @@ function App:load()
         }
     ]]
     
-    local status, result = pcall(love.graphics.newShader, vertex_code, pixel_code)
-    if not status then
-        print("INTERNAL SHADER ERROR:\n" .. result)
-        self.shader = nil
-    else
-        self.shader = result
-        print("Internal debug shader compiled")
-    end
+    self.shader = love.graphics.newShader(vertex_code, pixel_code)
 
     self.palette = love.graphics.newImage("assets/palette_texture.png")
     
@@ -64,6 +57,12 @@ function App:load()
     local f = io.open(RIG_PATH, "r")
     if f then
         self.rig_data = json.decode(f:read("*all"))
+        f:close()
+    end
+    
+    f = io.open(ANIM_PATH, "r")
+    if f then
+        self.anim_data = json.decode(f:read("*all"))
         f:close()
     end
 
@@ -78,16 +77,7 @@ function App:load()
     self.camera:update_projection()
     self.camera:update_view_matrix()
 
-    -- 4. DEBUG CUBE
-    local box_mesh = menori.Box(10, 10, 10)
-    local box_mat = menori.Material()
-    if self.shader then box_mat:set_shader(self.shader) end
-    box_mat.mesh_cull_mode = "none"
-    local box_node = menori.ModelNode(box_mesh, box_mat)
-    box_node:set_position(vec3(0, 10, 0))
-    self.root:attach(box_node)
-
-    -- 5. Character
+    -- 4. Character
     if self.rig_data then
         self.char_root = menori.Node()
         self.root:attach(self.char_root)
@@ -107,7 +97,7 @@ function App:build_voxel_mesh(voxels)
     for _, v in ipairs(voxels) do
         local vx, vy, vz, c = v[1], v[2], v[3], v[4]
         local u = (c + 0.5) / 256.0
-        local x, y, z = vx, vz, vy
+        local x, y, z = vx, vy, vz -- Use consistent Y-up
         local faces = {
             {n={0,1,0}, v={{0,1,0}, {1,1,0}, {1,1,1}, {0,1,1}}},
             {n={0,-1,0}, v={{0,0,1}, {1,0,1}, {1,0,0}, {0,0,0}}},
@@ -144,15 +134,11 @@ function App:build_skeleton(parent_node)
     for bone_name, parent_name in pairs(topology) do
         local node = self.bones[bone_name]
         local bp = rest_pose[bone_name]
-        local world_pos = vec3(bp[1], bp[3], bp[2])
         
         if parent_name and self.bones[parent_name] then
             self.bones[parent_name]:attach(node)
-            local pp = rest_pose[parent_name]
-            node:set_position(world_pos - vec3(pp[1], pp[3], pp[2]))
         else
             parent_node:attach(node)
-            node:set_position(world_pos)
         end
         
         if parts[bone_name] and #parts[bone_name].voxels > 0 then
@@ -174,7 +160,26 @@ function App:update(dt)
     self.camera.eye.z = math.sin(self.cam_angle) * self.cam_dist
     self.camera:update_view_matrix()
     
-    self.root:traverse(function(n) n._transform_flag = true end)
+    if self.anim_data then
+        self.time = self.time + dt
+        local frame_idx = math.floor(self.time * self.animation_speed) % self.anim_data.duration
+        local frame = self.anim_data.frames[frame_idx + 1]
+        
+        for bone_name, m_data in pairs(frame) do
+            local node = self.bones[bone_name]
+            if node then
+                -- DAE is row-major, Menori is column-major. Transpose while loading.
+                local m = ml.mat4(
+                    m_data[1], m_data[5], m_data[9], m_data[13],
+                    m_data[2], m_data[6], m_data[10], m_data[14],
+                    m_data[3], m_data[7], m_data[11], m_data[15],
+                    m_data[4], m_data[8], m_data[12], m_data[16]
+                )
+                node.local_matrix = m
+                node._transform_flag = true
+            end
+        end
+    end
 end
 
 function App:draw()

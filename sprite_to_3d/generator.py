@@ -8,6 +8,7 @@ from PIL import Image
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from skeletons.humanoid import HumanoidSkeleton
+from skeletons.mixamo import MixamoSkeleton
 from tools.builder import VoxelBuilder
 import palette
 
@@ -19,7 +20,14 @@ class VoxelGenerator:
         self.height = self.blueprint['height']
         self.builder = VoxelBuilder()
         self.voxel_owners = {} # (x,y,z) -> bone_name
-        self.pose = HumanoidSkeleton.get_t_pose(self.height)
+        
+        skeleton_type = self.blueprint.get('skeleton', 'HumanoidSkeleton')
+        if skeleton_type == "MixamoSkeleton":
+            self.skeleton_class = MixamoSkeleton
+        else:
+            self.skeleton_class = HumanoidSkeleton
+            
+        self.pose = self.skeleton_class.get_t_pose(self.height)
         self.palette_map = self._load_palette()
         
     def _load_palette(self):
@@ -83,12 +91,19 @@ class VoxelGenerator:
         
         # Define thickness for body parts (Start Radius, End Radius)
         radius_map = {
-            "spine": (3.5, 3.0),     # Spine -> Head
-            "pelvis": (3.0, 3.5),    # Pelvis -> Spine
-            "shoulder": (2.2, 1.8),  # Shoulder -> Elbow
-            "elbow": (1.8, 1.2),     # Elbow -> Hand
-            "hip": (2.5, 2.0),       # Hip -> Knee
-            "knee": (2.0, 1.5),      # Knee -> Foot
+            "spine": (3.5, 3.0),
+            "pelvis": (3.0, 3.5),
+            "Hips": (3.0, 3.5),
+            "Spine": (3.5, 3.0),
+            "Shoulder": (1.8, 1.8),
+            "Arm": (2.2, 1.8),
+            "ForeArm": (1.8, 1.2),
+            "UpLeg": (2.5, 2.0),
+            "Leg": (2.0, 1.5),
+            "shoulder": (2.2, 1.8),
+            "elbow": (1.8, 1.2),
+            "hip": (2.5, 2.0),
+            "knee": (2.0, 1.5),
         }
         
         base_color = 48 
@@ -100,7 +115,6 @@ class VoxelGenerator:
             p2 = self.pose[bone]
             
             # Segment Ownership: The PARENT bone should own the voxels it moves.
-            # Except for the pelvis->spine connection, which pelvis should own.
             owner = parent
             
             r1, r2 = (2.0, 2.0)
@@ -109,24 +123,34 @@ class VoxelGenerator:
                     r1, r2 = radii
                     break
             
-            if bone == "head":
-                # Draw Neck (Owned by spine/neck)
-                self.draw_tapered_capsule(p1, p2, 3.5, 3.0, base_color, "spine")
-                # Draw Head Volume (Owned by head)
+            # Special Handling for Mixamo vs Humanoid
+            is_mixamo = "mixamorig" in bone
+            
+            head_bone = "mixamorig_Head" if is_mixamo else "head"
+            hand_suffix = "Hand" if is_mixamo else "hand"
+            foot_suffix = "Foot" if is_mixamo else "foot"
+            
+            if bone == head_bone:
+                # Draw Neck
+                self.draw_tapered_capsule(p1, p2, 3.0, 2.8, base_color, parent)
+                # Draw Head Volume
                 hx, hy, hz = p2
-                self.draw_tapered_capsule((hx, hy, hz), (hx, hy+7, hz), 4.5, 4.0, base_color, "head")
-            elif "hand" in bone:
-                # Draw Forearm (Owned by elbow)
+                self.draw_tapered_capsule((hx, hy, hz), (hx, hy+7, hz), 4.5, 4.0, base_color, bone)
+            elif hand_suffix in bone and "Thumb" not in bone and "Index" not in bone and "Middle" not in bone and "Ring" not in bone and "Pinky" not in bone:
+                # Draw Forearm
                 self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
-                # Draw Hand Volume (Owned by hand)
+                # Draw Hand Volume
                 self.draw_tapered_capsule(p2, (p2[0], p2[1]-2, p2[2]), 1.5, 1.2, base_color, bone)
-            elif "foot" in bone:
-                # Draw Shin (Owned by knee)
+            elif foot_suffix in bone and "Toe" not in bone:
+                # Draw Shin
                 self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
-                # Draw Foot Volume (Owned by foot)
+                # Draw Foot Volume
                 self.draw_tapered_capsule(p2, (p2[0], p2[1], p2[2]+3), 1.5, 2.0, base_color, bone)
+            elif any(x in bone for x in ["Thumb", "Index", "Middle", "Ring", "Pinky", "Toe", "HeadTop"]):
+                # Skip finger/toe/end bones for now to keep it simple, or draw tiny capsules
+                continue
             else:
-                # Standard segment (e.g. Shoulder -> Elbow) owned by Shoulder
+                # Standard segment
                 self.draw_tapered_capsule(p1, p2, r1, r2, base_color, owner)
 
     def generate_primitives(self):
@@ -247,10 +271,10 @@ class VoxelGenerator:
         print(f"Saved {len(self.builder.voxels)} voxels to {output_path}")
 
 if __name__ == "__main__":
-    gen = VoxelGenerator("blueprints/hero_naked.json")
-    print("Generating Base Body...")
+    gen = VoxelGenerator("blueprints/hero_mixamo.json")
+    print("Generating Base Body (Mixamo)...")
     gen.generate_base_body()
-    # gen.generate_primitives() # Naked for now
+    # gen.generate_primitives() 
     print("Painting Symbolically...")
     gen.symbolic_paint("textures/character_spritesheet.png")
     

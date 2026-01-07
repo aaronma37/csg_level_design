@@ -49,14 +49,20 @@ class VoxelRigger:
         return parts
 
     def export(self, output_path):
+        skeleton_info = {
+            "name": self.generator.blueprint['skeleton'],
+            "topology": self.topology,
+            "rest_pose": self.pose
+        }
+        
+        # Check if skeleton class has bind matrices
+        if hasattr(self.generator.skeleton_class, "BIND_MATRICES"):
+            skeleton_info["bind_matrices"] = self.generator.skeleton_class.BIND_MATRICES
+
         data = {
             "unit_name": self.generator.blueprint['name'],
             "height": self.generator.height,
-            "skeleton": {
-                "name": self.generator.blueprint['skeleton'],
-                "topology": self.topology,
-                "rest_pose": self.pose
-            },
+            "skeleton": skeleton_info,
             "parts": self.decompose_parts()
         }
         
@@ -71,7 +77,7 @@ if __name__ == "__main__":
     # Integration test with generator
     from generator import VoxelGenerator
     
-    gen = VoxelGenerator("blueprints/hero_naked.json")
+    gen = VoxelGenerator("blueprints/hero_mixamo.json")
     gen.generate_base_body()
     gen.symbolic_paint("textures/character_spritesheet.png")
     

@@ -38,14 +38,16 @@ class VoxelAnimator:
         
         self.parts = self.data['parts'] # Now a dict: bone_name -> { voxels: [...] }
         self.height = self.data['height']
-        self.topology = HumanoidSkeleton.get_topology()
-        self.rest_pose = HumanoidSkeleton.get_t_pose(self.height)
+        self.topology = self.data['skeleton']['topology']
+        self.rest_pose = self.data['skeleton']['rest_pose']
         
-        # No Inverse Bind Matrices needed! 
-        # The voxels are already in local space.
+        # Ensure rest_pose values are tuples
+        for k, v in self.rest_pose.items():
+            self.rest_pose[k] = tuple(v)
 
     def animate_frame(self, animation, frame_idx):
-        pose_rotations = animation.get_pose(frame_idx)
+        pose_data = animation.get_pose(frame_idx)
+        is_matrix = getattr(animation, 'type', 'euler') == 'matrix'
         
         # 1. Calculate World Matrices for Current Pose
         world_matrices = {}
@@ -64,19 +66,31 @@ class VoxelAnimator:
 
         for bone in ordered_bones:
             parent = self.topology[bone]
-            rot = pose_rotations.get(bone, (0, 0, 0))
-            rot_m = get_rotation_matrix(*rot)
             
-            bx, by, bz = self.rest_pose[bone]
-            
-            if parent is None:
-                world_matrices[bone] = rot_m # Root only rotates (assuming root is at 0,0,0 relative to world for now)
+            if is_matrix:
+                m_data = pose_data.get(bone)
+                if m_data:
+                    local_m = np.array(m_data).reshape(4, 4)
+                else:
+                    # Identity if missing
+                    local_m = np.identity(4)
+                
+                if parent is None:
+                    world_matrices[bone] = local_m
+                else:
+                    world_matrices[bone] = world_matrices[parent] @ local_m
             else:
-                px, py, pz = self.rest_pose[parent]
-                # Translation is the vector from Parent Pivot to Child Pivot
-                # T = ChildRest - ParentRest
-                local_trans = get_translation_matrix(bx - px, by - py, bz - pz)
-                world_matrices[bone] = world_matrices[parent] @ local_trans @ rot_m
+                # Euler path (legacy/fallback)
+                rot = pose_data.get(bone, (0, 0, 0))
+                rot_m = get_rotation_matrix(*rot)
+                bx, by, bz = self.rest_pose[bone]
+                
+                if parent is None:
+                    world_matrices[bone] = rot_m
+                else:
+                    px, py, pz = self.rest_pose[parent]
+                    local_trans = get_translation_matrix(bx - px, by - py, bz - pz)
+                    world_matrices[bone] = world_matrices[parent] @ local_trans @ rot_m
 
         # 2. Transform Parts
         new_grid = {} # (x,y,z) -> color_index
@@ -135,13 +149,21 @@ class VoxelAnimator:
     def export_animation(self, animation, output_path):
         data = {
             "duration": animation.duration,
+            "type": getattr(animation, 'type', 'euler'),
             "frames": []
         }
         
         for f in range(animation.duration):
             pose = animation.get_pose(f)
-            # Convert tuples to lists for JSON
-            frame_data = {k: list(v) for k, v in pose.items()}
+            # Convert tuples/numpy arrays to lists for JSON
+            frame_data = {}
+            for k, v in pose.items():
+                if isinstance(v, (list, tuple)):
+                    frame_data[k] = list(v)
+                elif hasattr(v, 'tolist'):
+                    frame_data[k] = v.tolist()
+                else:
+                    frame_data[k] = v
             data["frames"].append(frame_data)
             
         with open(output_path, 'w') as f:
@@ -149,11 +171,14 @@ class VoxelAnimator:
         print(f"Exported animation data to {output_path}")
 
 if __name__ == "__main__":
+    from animations import JsonAnimation
+    
     animator = VoxelAnimator("output/hero_rigged.json")
-    walk = WalkAnimation(duration_frames=8) # 8 frame loop
+    # Load the matrix animation we extracted from DAE
+    anim = JsonAnimation("sprite_to_3d/preview_v2/hero_anim.json")
     
     # Export Animation Data for Runtime Preview
-    animator.export_animation(walk, "output/hero_anim.json")
+    animator.export_animation(anim, "output/hero_anim.json")
     
     # Bake for legacy/debug check (optional, but keeping it for now)
-    animator.bake_animation(walk, "output/walk_cycle", "hero_walk")
+    # animator.bake_animation(anim, "output/walk_cycle", "hero_walk")
