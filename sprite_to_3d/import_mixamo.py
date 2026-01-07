@@ -64,16 +64,15 @@ def convert_dae_to_json(dae_path, out_path):
     for anim in animations:
         name = anim.get('name') or anim.get('id').replace("-anim", "")
         if BONE_MAP.get(name) == "pelvis":
-            output_source = None
-            for src in anim.findall("ns:source", ns):
-                if 'Matrix-animation-output' in src.get('id', ''):
-                    output_source = src
+            src = None
+            for s in anim.findall("ns:source", ns):
+                if 'Matrix-animation-output' in s.get('id', ''):
+                    src = s
                     break
-            if output_source is not None:
-                fa = output_source.find("ns:float_array", ns)
-                if fa is not None:
-                    d = [float(x) for x in fa.text.split()]
-                    initial_pelvis_pos = extract_pos_from_matrix(d[:16])
+            if src is not None:
+                fa = src.find("ns:float_array", ns)
+                d = [float(x) for x in fa.text.split()]
+                initial_pelvis_pos = extract_pos_from_matrix(d[:16])
             break
 
     for anim in animations:
@@ -81,20 +80,19 @@ def convert_dae_to_json(dae_path, out_path):
         hero_bone = BONE_MAP.get(name)
         if not hero_bone: continue
 
-        output_source = None
-        for src in anim.findall("ns:source", ns):
-            if 'Matrix-animation-output' in src.get('id', ''):
-                output_source = src
+        src = None
+        for s in anim.findall("ns:source", ns):
+            if 'Matrix-animation-output' in s.get('id', ''):
+                src = s
                 break
             
-        if output_source is not None:
-            float_array = output_source.find("ns:float_array", ns)
+        if src is not None:
+            float_array = src.find("ns:float_array", ns)
             data = [float(x) for x in float_array.text.split()]
             matrices = [data[i:i+16] for i in range(0, len(data), 16)]
-            
             raw_data = [extract_euler_from_matrix(m) for m in matrices]
             
-            # Calculate averages for centering
+            # Centering averages
             avgs = [sum(r[j] for r in raw_data)/len(matrices) for j in range(3)]
 
             final_data = []
@@ -102,39 +100,31 @@ def convert_dae_to_json(dae_path, out_path):
                 m = matrices[i]
                 pos = extract_pos_from_matrix(m) if hero_bone == "pelvis" else None
                 rx, ry, rz = rot
-                
-                # Center the main walking signal
-                crx = rx - avgs[0]
-                crz = rz - avgs[2]
+                crx, cry, crz = rx - avgs[0], ry - avgs[1], rz - avgs[2]
                 
                 side, swing, twist = 0, 0, 0
+                
                 if "shoulder" in hero_bone or "elbow" in hero_bone or "hand" in hero_bone:
-                    side_offset = -1.57 if "shoulder" in hero_bone else 0
-                    
-                    # For arms, use the real ELBOW data found on rz (crz)
-                    # For shoulders, use rx for the swing.
+                    # Arms (Points along X)
+                    # Shoulder Swing is on RX, Elbow Swing is on RZ (from diagnostics)
                     val = crx if "shoulder" in hero_bone else crz
+                    base_side = -1.57 if "shoulder" in hero_bone else 0
                     
                     if hero_bone not in RIGHT_SIDE:
-                        # Left side (+X)
-                        side, swing, twist = side_offset, val * 1.5, 0
+                        side, swing, twist = base_side, val, 0
                     else:
-                        # Right side (-X)
-                        side = -side_offset
-                        # If it was bending the wrong way, we flip the mirrored sign.
-                        # For elbows, flexion should be symmetric.
-                        swing = (val * 1.5) if "elbow" in hero_bone else (-val * 1.5)
-                        twist = 0
-
+                        side, swing, twist = -base_side, -val if "shoulder" in hero_bone else val, 0
+                
                 elif "hip" in hero_bone or "knee" in hero_bone or "foot" in hero_bone:
-                    # Restore the GOOD leg mapping
+                    # Legs (Points along Y)
+                    # Bend is on -RX
                     side, swing, twist = 0, 0, -rx
                     if "foot" in hero_bone: twist = -twist
                     if hero_bone in RIGHT_SIDE: twist = twist # Symmetric bend
-
                 else:
-                    # Pelvis/Torso
-                    side, swing, twist = rz, rx, ry
+                    # Torso/Pelvis/Hips
+                    # Keep full data to capture body sway
+                    side, swing, twist = crz, crx, cry
 
                 bf = {"rot": [side, swing, twist]}
                 if pos and initial_pelvis_pos:
@@ -153,7 +143,7 @@ def convert_dae_to_json(dae_path, out_path):
 
     with open(out_path, 'w') as f:
         json.dump({"duration": duration, "frames": frames}, f, indent=2)
-    print(f"Recovered and improved: Converted {dae_path} -> {out_path}")
+    print(f"Principled Matched Mapping: {dae_path} -> {out_path}")
 
 if __name__ == "__main__":
     convert_dae_to_json("sprite_to_3d/imports/Standard Walk.dae", "sprite_to_3d/preview_v2/hero_anim.json")
