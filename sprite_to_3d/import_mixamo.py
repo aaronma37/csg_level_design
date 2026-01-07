@@ -28,9 +28,8 @@ def extract_euler_from_matrix(m):
     return [x, y, z]
 
 def extract_pos_from_matrix(m):
-    # Translation is in the last column (3, 7, 11 for Row-Major 4x4)
-    # Scaled to voxel space (Mixamo is often in cm, we are ~50 units tall)
-    # Mixamo Y is Up. Our Y is Up.
+    # Translation is in the last column
+    # Scale: Mixamo is often ~100 units tall, we are 50. So 0.5 is correct.
     return [m[3] * 0.5, m[7] * 0.5, m[11] * 0.5]
 
 BONE_MAP = {
@@ -63,6 +62,25 @@ def convert_dae_to_json(dae_path, out_path):
     extracted_anims = {}
     duration = 0
 
+    # First Pass: Find initial pelvis position for relative offset
+    initial_pelvis_pos = None
+
+    for anim in animations:
+        name = anim.get('name') or anim.get('id').replace("-anim", "")
+        hero_bone = BONE_MAP.get(name)
+        if hero_bone == "pelvis":
+            output_source = None
+            for src in anim.findall("ns:source", ns):
+                if 'Matrix-animation-output' in src.get('id', ''):
+                    output_source = src
+                    break
+            if output_source is not None:
+                float_array = output_source.find("ns:float_array", ns)
+                data = [float(x) for x in float_array.text.split()]
+                first_matrix = data[:16]
+                initial_pelvis_pos = extract_pos_from_matrix(first_matrix)
+            break
+
     for anim in animations:
         name = anim.get('name') or anim.get('id').replace("-anim", "")
         hero_bone = BONE_MAP.get(name)
@@ -82,23 +100,42 @@ def convert_dae_to_json(dae_path, out_path):
             final_data = []
             for m in matrices:
                 rot = extract_euler_from_matrix(m)
-                pos = extract_pos_from_matrix(m) if hero_bone == "pelvis" else None
+                pos = None
+                if hero_bone == "pelvis":
+                    raw_pos = extract_pos_from_matrix(m)
+                    # Make it relative to the start of the animation
+                    pos = [
+                        raw_pos[0] - initial_pelvis_pos[0],
+                        raw_pos[1] - initial_pelvis_pos[1],
+                        raw_pos[2] - initial_pelvis_pos[2]
+                    ]
                 
                 rx, ry, rz = rot
                 side, swing, twist = 0, 0, 0
                 
                 if "shoulder" in hero_bone or "elbow" in hero_bone or "hand" in hero_bone:
+                    # Arms (Along X)
                     side_offset = -1.57 if "shoulder" in hero_bone else 0
+                    
                     if hero_bone not in RIGHT_SIDE:
-                        side, swing, twist = side_offset, rx, ry
+                        # Left side (+X)
+                        # side = Abduction (keep at offset to point down)
+                        # swing = Flexion (walking swing)
+                        # twist = Rotation
+                        side = side_offset # Ignore rx if it pushes arms out
+                        swing = -rx       # Use rx for swing
+                        twist = ry
                     else:
-                        side, swing, twist = -side_offset, -rx, -ry
+                        # Right side (-X)
+                        side = -side_offset 
+                        swing = rx
+                        twist = -ry
                 elif "hip" in hero_bone or "knee" in hero_bone or "foot" in hero_bone:
-                    # Target 2 (X) is Bend for legs.
+                    # Legs (Along Y)
                     side, swing, twist = 0, 0, -rx
                     if "foot" in hero_bone: twist = -twist
                 else:
-                    # Pelvis/Torso
+                    # Torso
                     side, swing, twist = rz, rx, ry
 
                 bone_frame = {"rot": [side, swing, twist]}
