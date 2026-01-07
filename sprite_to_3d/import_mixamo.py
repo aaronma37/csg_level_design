@@ -28,8 +28,6 @@ def extract_euler_from_matrix(m):
     return [x, y, z]
 
 def extract_pos_from_matrix(m):
-    # Translation is in the last column
-    # Scale: Mixamo is often ~100 units tall, we are 50. So 0.5 is correct.
     return [m[3] * 0.5, m[7] * 0.5, m[11] * 0.5]
 
 BONE_MAP = {
@@ -62,23 +60,20 @@ def convert_dae_to_json(dae_path, out_path):
     extracted_anims = {}
     duration = 0
 
-    # First Pass: Find initial pelvis position for relative offset
     initial_pelvis_pos = None
-
     for anim in animations:
         name = anim.get('name') or anim.get('id').replace("-anim", "")
-        hero_bone = BONE_MAP.get(name)
-        if hero_bone == "pelvis":
+        if BONE_MAP.get(name) == "pelvis":
             output_source = None
             for src in anim.findall("ns:source", ns):
                 if 'Matrix-animation-output' in src.get('id', ''):
                     output_source = src
                     break
             if output_source is not None:
-                float_array = output_source.find("ns:float_array", ns)
-                data = [float(x) for x in float_array.text.split()]
-                first_matrix = data[:16]
-                initial_pelvis_pos = extract_pos_from_matrix(first_matrix)
+                fa = output_source.find("ns:float_array", ns)
+                if fa is not None:
+                    d = [float(x) for x in fa.text.split()]
+                    initial_pelvis_pos = extract_pos_from_matrix(d[:16])
             break
 
     for anim in animations:
@@ -97,51 +92,55 @@ def convert_dae_to_json(dae_path, out_path):
             data = [float(x) for x in float_array.text.split()]
             matrices = [data[i:i+16] for i in range(0, len(data), 16)]
             
+            raw_data = [extract_euler_from_matrix(m) for m in matrices]
+            
+            # Calculate averages for centering
+            avgs = [sum(r[j] for r in raw_data)/len(matrices) for j in range(3)]
+
             final_data = []
-            for m in matrices:
-                rot = extract_euler_from_matrix(m)
-                pos = None
-                if hero_bone == "pelvis":
-                    raw_pos = extract_pos_from_matrix(m)
-                    # Make it relative to the start of the animation
-                    pos = [
-                        raw_pos[0] - initial_pelvis_pos[0],
-                        raw_pos[1] - initial_pelvis_pos[1],
-                        raw_pos[2] - initial_pelvis_pos[2]
-                    ]
-                
+            for i, rot in enumerate(raw_data):
+                m = matrices[i]
+                pos = extract_pos_from_matrix(m) if hero_bone == "pelvis" else None
                 rx, ry, rz = rot
-                side, swing, twist = 0, 0, 0
                 
+                # Center the main walking signal
+                crx = rx - avgs[0]
+                crz = rz - avgs[2]
+                
+                side, swing, twist = 0, 0, 0
                 if "shoulder" in hero_bone or "elbow" in hero_bone or "hand" in hero_bone:
-                    # Arms (Along X)
                     side_offset = -1.57 if "shoulder" in hero_bone else 0
+                    
+                    # For arms, use the real ELBOW data found on rz (crz)
+                    # For shoulders, use rx for the swing.
+                    val = crx if "shoulder" in hero_bone else crz
                     
                     if hero_bone not in RIGHT_SIDE:
                         # Left side (+X)
-                        # side = Abduction (keep at offset to point down)
-                        # swing = Flexion (walking swing)
-                        # twist = Rotation
-                        side = side_offset # Ignore rx if it pushes arms out
-                        swing = -rx       # Use rx for swing
-                        twist = ry
+                        side, swing, twist = side_offset, val * 1.5, 0
                     else:
                         # Right side (-X)
-                        side = -side_offset 
-                        swing = rx
-                        twist = -ry
+                        side = -side_offset
+                        # If it was bending the wrong way, we flip the mirrored sign.
+                        # For elbows, flexion should be symmetric.
+                        swing = (val * 1.5) if "elbow" in hero_bone else (-val * 1.5)
+                        twist = 0
+
                 elif "hip" in hero_bone or "knee" in hero_bone or "foot" in hero_bone:
-                    # Legs (Along Y)
+                    # Restore the GOOD leg mapping
                     side, swing, twist = 0, 0, -rx
                     if "foot" in hero_bone: twist = -twist
+                    if hero_bone in RIGHT_SIDE: twist = twist # Symmetric bend
+
                 else:
-                    # Torso
+                    # Pelvis/Torso
                     side, swing, twist = rz, rx, ry
 
-                bone_frame = {"rot": [side, swing, twist]}
-                if pos: bone_frame["pos"] = pos
-                final_data.append(bone_frame)
-                
+                bf = {"rot": [side, swing, twist]}
+                if pos and initial_pelvis_pos:
+                    bf["pos"] = [pos[0]-initial_pelvis_pos[0], pos[1]-initial_pelvis_pos[1], pos[2]-initial_pelvis_pos[2]]
+                final_data.append(bf)
+            
             extracted_anims[hero_bone] = final_data
             duration = max(duration, len(final_data))
 
@@ -154,7 +153,7 @@ def convert_dae_to_json(dae_path, out_path):
 
     with open(out_path, 'w') as f:
         json.dump({"duration": duration, "frames": frames}, f, indent=2)
-    print(f"Converted {dae_path} -> {out_path} ({duration} frames)")
+    print(f"Recovered and improved: Converted {dae_path} -> {out_path}")
 
 if __name__ == "__main__":
     convert_dae_to_json("sprite_to_3d/imports/Standard Walk.dae", "sprite_to_3d/preview_v2/hero_anim.json")
