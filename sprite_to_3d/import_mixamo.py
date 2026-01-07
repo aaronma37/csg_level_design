@@ -95,35 +95,48 @@ def convert_dae_to_json(dae_path, out_path):
             # Centering averages
             avgs = [sum(r[j] for r in raw_data)/len(matrices) for j in range(3)]
 
+            # Step 1: Calculate Variance for each axis
+            variances = [0, 0, 0]
+            if len(raw_data) > 1:
+                for j in range(3):
+                    c_avg = avgs[j]
+                    variances[j] = sum((r[j] - c_avg)**2 for r in raw_data) / len(raw_data)
+            
+            # Step 2: Auto-select the swing value from the best variance axis
+            best_axis_idx = variances.index(max(variances))
+            
             final_data = []
             for i, rot in enumerate(raw_data):
                 m = matrices[i]
                 pos = extract_pos_from_matrix(m) if hero_bone == "pelvis" else None
-                rx, ry, rz = rot
-                crx, cry, crz = rx - avgs[0], ry - avgs[1], rz - avgs[2]
+                
+                # Centered versions of all three channels
+                crots = [rot[j] - avgs[j] for j in range(3)]
+                best_swing = crots[best_axis_idx]
                 
                 side, swing, twist = 0, 0, 0
                 
                 if "shoulder" in hero_bone or "elbow" in hero_bone or "hand" in hero_bone:
-                    # Arms (Points along X)
-                    # Shoulder Swing is on RX, Elbow Swing is on RZ (from diagnostics)
-                    val = crx if "shoulder" in hero_bone else crz
                     base_side = -1.57 if "shoulder" in hero_bone else 0
-                    
                     if hero_bone not in RIGHT_SIDE:
-                        side, swing, twist = base_side, val, 0
+                        side, swing, twist = base_side, best_swing, 0
                     else:
-                        side, swing, twist = -base_side, -val if "shoulder" in hero_bone else val, 0
+                        side = -base_side
+                        # Use best_swing directly. Mixamo already handled the phase/timing.
+                        swing = best_swing
+                        twist = 0
                 
                 elif "hip" in hero_bone or "knee" in hero_bone or "foot" in hero_bone:
-                    # Legs (Points along Y)
-                    # Bend is on -RX
-                    side, swing, twist = 0, 0, -rx
+                    # Leg Bend (Target 2/Twist)
+                    val = -crots[0]
+                    
+                    side, swing, twist = 0, 0, val
                     if "foot" in hero_bone: twist = -twist
-                    if hero_bone in RIGHT_SIDE: twist = twist # Symmetric bend
+                    if hero_bone in RIGHT_SIDE:
+                        twist = twist 
                 else:
-                    # Torso/Pelvis/Hips
-                    # Keep full data to capture body sway
+                    # Torso/Hips
+                    crx, cry, crz = crots
                     side, swing, twist = crz, crx, cry
 
                 bf = {"rot": [side, swing, twist]}
@@ -143,7 +156,7 @@ def convert_dae_to_json(dae_path, out_path):
 
     with open(out_path, 'w') as f:
         json.dump({"duration": duration, "frames": frames}, f, indent=2)
-    print(f"Principled Matched Mapping: {dae_path} -> {out_path}")
+    print(f"Variance Step 1 Complete: Converted {dae_path}")
 
 if __name__ == "__main__":
     convert_dae_to_json("sprite_to_3d/imports/Standard Walk.dae", "sprite_to_3d/preview_v2/hero_anim.json")
