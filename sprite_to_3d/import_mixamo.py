@@ -120,16 +120,44 @@ def convert_dae_to_json(dae_path, out_path):
                     new_e = [final_rz, final_ry, final_rx]
                     
                 elif hero_bone in ARM_BONES:
-                    # Arms: Zero for now
-                    new_e = [0, 0, 0]
+                    # Arms: Map [rz, rx, ry]
+                    # Rig is Straight Down (Fixed).
+                    # But Mixamo Data is relative to T-Pose (Horizontal).
+                    # So we MUST offset by -1.57 to bring animation to Down space?
+                    # Wait. If Rig is Down. And Mixamo is 0 (Horizontal).
+                    # If we apply 0, Rig stays Down?
+                    # User said "Stick out 90". So Mixamo 0 maps to 90 offset?
+                    # This implies Menori/Rig T-Pose is 0. And Fixed Rig is T-Pose?
+                    # No, I moved bones.
+                    
+                    # Arms: Map [rz, rx, ry]
+                    # Arg 1 (Z) = Side (rz)
+                    # Arg 2 (Y) = Swing (rx) -> Arg 2 is Swing.
+                    # Arg 3 (X) = Twist (0) -> Arg 3 is Twist.
+                    
+                    final_rz = -1.57 # Down
+                    
+                    offset_rx = rx
+                    if hero_bone in RIGHT_SIDE:
+                        offset_rx *= -2
+                    else:
+                        offset_rx *= 2
+                    
+                    # Map to [Side, Swing, Twist] -> [rz, rx, 0]
+                    new_e = [final_rz, offset_rx, 0]
+                    # new_e = [final_rz, offset_rx, 0]
                     
                 else:
+                    # Torso
                     new_e = [rz, rx, ry]
 
                 if hero_bone in RIGHT_SIDE:
                     if hero_bone in LEG_BONES:
                         # Legs: Invert Side (0), Twist (1). KEEP Bend (2).
                         new_e = [-new_e[0], -new_e[1], new_e[2]]
+                    elif hero_bone in ARM_BONES:
+                        # Arms: Invert Side (0), Twist (2). KEEP Swing (1).
+                        new_e = [-new_e[0], new_e[1], -new_e[2]]
                     else:
                         new_e = [-new_e[0], -new_e[1], -new_e[2]]
                     
