@@ -27,39 +27,32 @@ def extract_euler_from_matrix(m):
         
     return [x, y, z]
 
+def extract_pos_from_matrix(m):
+    # Translation is in the last column (3, 7, 11 for Row-Major 4x4)
+    # Scaled to voxel space (Mixamo is often in cm, we are ~50 units tall)
+    # Mixamo Y is Up. Our Y is Up.
+    return [m[3] * 0.5, m[7] * 0.5, m[11] * 0.5]
+
 BONE_MAP = {
     "mixamorig_Hips": "pelvis",
     "mixamorig_Spine": "spine",
     "mixamorig_Neck": "neck",
     "mixamorig_Head": "head",
-    "mixamorig_LeftArm": "shoulder_L",
-    "mixamorig_RightArm": "shoulder_R",
-    "mixamorig_LeftForeArm": "elbow_L",
-    "mixamorig_RightForeArm": "elbow_R",
-    "mixamorig_LeftHand": "hand_L",
-    "mixamorig_RightHand": "hand_R",
-    "mixamorig_LeftUpLeg": "hip_L",
-    "mixamorig_RightUpLeg": "hip_R",
-    "mixamorig_LeftLeg": "knee_L",
-    "mixamorig_RightLeg": "knee_R",
-    "mixamorig_LeftFoot": "foot_L",
-    "mixamorig_RightFoot": "foot_R"
+    "mixamorig_LeftArm": "shoulder_R",
+    "mixamorig_RightArm": "shoulder_L",
+    "mixamorig_LeftForeArm": "elbow_R",
+    "mixamorig_RightForeArm": "elbow_L",
+    "mixamorig_LeftHand": "hand_R",
+    "mixamorig_RightHand": "hand_L",
+    "mixamorig_LeftUpLeg": "hip_R",
+    "mixamorig_RightUpLeg": "hip_L",
+    "mixamorig_LeftLeg": "knee_R",
+    "mixamorig_RightLeg": "knee_L",
+    "mixamorig_LeftFoot": "foot_R",
+    "mixamorig_RightFoot": "foot_L"
 }
 
-RIGHT_SIDE = {
-    "shoulder_R", "elbow_R", "hand_R",
-    "hip_R", "knee_R", "foot_R"
-}
-
-LEG_BONES = {
-    "hip_L", "knee_L", "foot_L",
-    "hip_R", "knee_R", "foot_R"
-}
-
-ARM_BONES = {
-    "shoulder_L", "elbow_L", "hand_L",
-    "shoulder_R", "elbow_R", "hand_R"
-}
+RIGHT_SIDE = {"shoulder_R", "elbow_R", "hand_R", "hip_R", "knee_R", "foot_R"}
 
 def convert_dae_to_json(dae_path, out_path):
     tree = ET.parse(dae_path)
@@ -67,23 +60,17 @@ def convert_dae_to_json(dae_path, out_path):
     ns = {'ns': 'http://www.collada.org/2005/11/COLLADASchema'}
 
     animations = root.findall('.//ns:library_animations/ns:animation', ns)
-    
     extracted_anims = {}
     duration = 0
 
     for anim in animations:
-        name = anim.get('name')
-        if not name:
-            name = anim.get('id').replace("-anim", "")
-            
+        name = anim.get('name') or anim.get('id').replace("-anim", "")
         hero_bone = BONE_MAP.get(name)
-        if not hero_bone:
-            continue
+        if not hero_bone: continue
 
         output_source = None
         for src in anim.findall("ns:source", ns):
-            src_id = src.get('id', '')
-            if 'Matrix-animation-output-transform' in src_id or 'Matrix-animation-output' in src_id:
+            if 'Matrix-animation-output' in src.get('id', ''):
                 output_source = src
                 break
             
@@ -92,98 +79,45 @@ def convert_dae_to_json(dae_path, out_path):
             data = [float(x) for x in float_array.text.split()]
             matrices = [data[i:i+16] for i in range(0, len(data), 16)]
             
-            raw_eulers = [extract_euler_from_matrix(m) for m in matrices]
-            final_eulers = []
-
-            for e in raw_eulers:
-                rx, ry, rz = e[0], e[1], e[2]
+            final_data = []
+            for m in matrices:
+                rot = extract_euler_from_matrix(m)
+                pos = extract_pos_from_matrix(m) if hero_bone == "pelvis" else None
                 
-                if hero_bone in LEG_BONES:
-                    # Legs: 
-                    # Arg 1 (Side) = Static 180 + 0.1 (Abduct). Ignore 'rz' to stop Twist.
-                    # Arg 2 (Twist) = 0.
-                    # Arg 3 (Bend) = rx.
-                    
-                    final_rz = 0
-                    final_rx = rx
-                    final_ry = 0 # Twist 0
-                    
-                    # Fix Hips Pointing Up (Add 180 to Side/Arg 1)
-                    # Removing PI offset as Rig Fix seems to have aligned it?
-                    if hero_bone in ["hip_L", "hip_R"]:
-                        pass
-                        # final_rz += math.pi
-                        
-                    if hero_bone in LEG_BONES:
-                        final_rz += 0.1 # Abduct
-                        
-                    new_e = [final_rz, final_ry, final_rx]
-                    
-                elif hero_bone in ARM_BONES:
-                    # Arms: Map [rz, rx, ry]
-                    # Rig is Straight Down (Fixed).
-                    # But Mixamo Data is relative to T-Pose (Horizontal).
-                    # So we MUST offset by -1.57 to bring animation to Down space?
-                    # Wait. If Rig is Down. And Mixamo is 0 (Horizontal).
-                    # If we apply 0, Rig stays Down?
-                    # User said "Stick out 90". So Mixamo 0 maps to 90 offset?
-                    # This implies Menori/Rig T-Pose is 0. And Fixed Rig is T-Pose?
-                    # No, I moved bones.
-                    
-                    # Arms: Map [rz, rx, ry]
-                    # Arg 1 (Z) = Side (rz)
-                    # Arg 2 (Y) = Swing (rx) -> Arg 2 is Swing.
-                    # Arg 3 (X) = Twist (0) -> Arg 3 is Twist.
-                    
-                    final_rz = -1.57 # Down
-                    
-                    offset_rx = rx
-                    if hero_bone in RIGHT_SIDE:
-                        offset_rx *= -2
+                rx, ry, rz = rot
+                side, swing, twist = 0, 0, 0
+                
+                if "shoulder" in hero_bone or "elbow" in hero_bone or "hand" in hero_bone:
+                    side_offset = -1.57 if "shoulder" in hero_bone else 0
+                    if hero_bone not in RIGHT_SIDE:
+                        side, swing, twist = side_offset, rx, ry
                     else:
-                        offset_rx *= 2
-                    
-                    # Map to [Side, Swing, Twist] -> [rz, rx, 0]
-                    new_e = [final_rz, offset_rx, 0]
-                    # new_e = [final_rz, offset_rx, 0]
-                    
+                        side, swing, twist = -side_offset, -rx, -ry
+                elif "hip" in hero_bone or "knee" in hero_bone or "foot" in hero_bone:
+                    # Target 2 (X) is Bend for legs.
+                    side, swing, twist = 0, 0, -rx
+                    if "foot" in hero_bone: twist = -twist
                 else:
-                    # Torso
-                    new_e = [rz, rx, ry]
+                    # Pelvis/Torso
+                    side, swing, twist = rz, rx, ry
 
-                if hero_bone in RIGHT_SIDE:
-                    if hero_bone in LEG_BONES:
-                        # Legs: Invert Side (0), Twist (1). KEEP Bend (2).
-                        new_e = [-new_e[0], -new_e[1], new_e[2]]
-                    elif hero_bone in ARM_BONES:
-                        # Arms: Invert Side (0), Twist (2). KEEP Swing (1).
-                        new_e = [-new_e[0], new_e[1], -new_e[2]]
-                    else:
-                        new_e = [-new_e[0], -new_e[1], -new_e[2]]
-                    
-                final_eulers.append(new_e)
+                bone_frame = {"rot": [side, swing, twist]}
+                if pos: bone_frame["pos"] = pos
+                final_data.append(bone_frame)
                 
-            extracted_anims[hero_bone] = final_eulers
-            duration = max(duration, len(final_eulers))
+            extracted_anims[hero_bone] = final_data
+            duration = max(duration, len(final_data))
 
     frames = []
     for i in range(duration):
         frame = {}
-        for bone, eulers in extracted_anims.items():
-            if i < len(eulers):
-                frame[bone] = eulers[i]
+        for bone, data in extracted_anims.items():
+            if i < len(data): frame[bone] = data[i]
         frames.append(frame)
 
-    output = {
-        "duration": duration,
-        "frames": frames
-    }
-
     with open(out_path, 'w') as f:
-        json.dump(output, f, indent=2)
+        json.dump({"duration": duration, "frames": frames}, f, indent=2)
     print(f"Converted {dae_path} -> {out_path} ({duration} frames)")
 
 if __name__ == "__main__":
-    dae_file = "sprite_to_3d/imports/Standard Walk.dae"
-    out_file = "sprite_to_3d/preview_v2/hero_anim.json"
-    convert_dae_to_json(dae_file, out_file)
+    convert_dae_to_json("sprite_to_3d/imports/Standard Walk.dae", "sprite_to_3d/preview_v2/hero_anim.json")

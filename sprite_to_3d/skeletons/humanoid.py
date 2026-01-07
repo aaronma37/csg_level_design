@@ -77,15 +77,15 @@ class HumanoidSkeleton:
             "elbow_R": (-13, 32, 0),
             "hand_R": (-19, 32, 0),
             
-            # Left Leg (Offset +X, angled in a V)
-            "hip_L": (3, 21, 0),
-            "knee_L": (5, 11, 0),
-            "foot_L": (7, 0, 0),
+            # Left Leg (Straight Down)
+            "hip_L": (4, 21, 0),
+            "knee_L": (4, 11, 0),
+            "foot_L": (4, 0, 0),
             
-            # Right Leg (Offset -X, angled in a V)
-            "hip_R": (-3, 21, 0),
-            "knee_R": (-5, 11, 0),
-            "foot_R": (-7, 0, 0),
+            # Right Leg (Straight Down)
+            "hip_R": (-4, 21, 0),
+            "knee_R": (-4, 11, 0),
+            "foot_R": (-4, 0, 0),
         }
         
         # Apply scaling

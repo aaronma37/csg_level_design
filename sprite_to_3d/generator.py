@@ -82,9 +82,8 @@ class VoxelGenerator:
         topology = self.blueprint['topology']
         
         # Define thickness for body parts (Start Radius, End Radius)
-        # Parent -> Child
         radius_map = {
-            "spine": (3.5, 3.0),     # Spine -> Head (neck area)
+            "spine": (3.5, 3.0),     # Spine -> Head
             "pelvis": (3.0, 3.5),    # Pelvis -> Spine
             "shoulder": (2.2, 1.8),  # Shoulder -> Elbow
             "elbow": (1.8, 1.2),     # Elbow -> Hand
@@ -92,44 +91,43 @@ class VoxelGenerator:
             "knee": (2.0, 1.5),      # Knee -> Foot
         }
         
-        # Default color (Skin tone - usually around index 45-50 in standard palettes, using 48 as placeholder)
         base_color = 48 
 
         for bone, parent in topology.items():
-            if parent is None: continue
-            
-            # Skip drawing the logical root connection (it creates a 'third leg' pillar)
-            if parent == "root": continue
+            if parent is None or parent == "root": continue
             
             p1 = self.pose[parent]
             p2 = self.pose[bone]
             
-            # Determine radius based on connection
-            r1, r2 = (2.0, 2.0)
+            # Segment Ownership: The PARENT bone should own the voxels it moves.
+            # Except for the pelvis->spine connection, which pelvis should own.
+            owner = parent
             
-            # Check based on parent bone name (source of the limb segment)
+            r1, r2 = (2.0, 2.0)
             for key, radii in radius_map.items():
                 if key in parent:
                     r1, r2 = radii
                     break
             
-            # Special case for Head: Parent is Spine. 
-            # We want to draw the HEAD volume, not the neck.
-            # The topology edge "spine" -> "head" is the neck.
-            # We should draw the head explicitly at the 'head' position?
-            # Or treat the bone as the volume?
-            # Current logic draws edges.
-            
             if bone == "head":
-                # Draw Neck
-                self.draw_tapered_capsule(p1, p2, 4.0, 3.5, base_color, "neck") # neck is part of spine usually, but let's label it neck
-                # Draw Head Volume explicitly
+                # Draw Neck (Owned by spine/neck)
+                self.draw_tapered_capsule(p1, p2, 3.5, 3.0, base_color, "spine")
+                # Draw Head Volume (Owned by head)
                 hx, hy, hz = p2
-                # Sphere for head
                 self.draw_tapered_capsule((hx, hy, hz), (hx, hy+7, hz), 4.5, 4.0, base_color, "head")
+            elif "hand" in bone:
+                # Draw Forearm (Owned by elbow)
+                self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
+                # Draw Hand Volume (Owned by hand)
+                self.draw_tapered_capsule(p2, (p2[0], p2[1]-2, p2[2]), 1.5, 1.2, base_color, bone)
+            elif "foot" in bone:
+                # Draw Shin (Owned by knee)
+                self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
+                # Draw Foot Volume (Owned by foot)
+                self.draw_tapered_capsule(p2, (p2[0], p2[1], p2[2]+3), 1.5, 2.0, base_color, bone)
             else:
-                # Use the bone name as the owner
-                self.draw_tapered_capsule(p1, p2, r1, r2, base_color, bone)
+                # Standard segment (e.g. Shoulder -> Elbow) owned by Shoulder
+                self.draw_tapered_capsule(p1, p2, r1, r2, base_color, owner)
 
     def generate_primitives(self):
         for prim in self.blueprint['primitives']:

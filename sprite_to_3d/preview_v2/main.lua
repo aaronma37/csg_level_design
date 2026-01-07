@@ -201,8 +201,14 @@ function App:build_skeleton(parent_node)
 		end
 	end
 
+	-- Deterministic sorting for bone colors
+	local sorted_bone_names = {}
+	for name, _ in pairs(self.bones) do table.insert(sorted_bone_names, name) end
+	table.sort(sorted_bone_names)
+
 	local color_idx = 1
-	for bone_name, node in pairs(self.bones) do
+	for _, bone_name in ipairs(sorted_bone_names) do
+		local node = self.bones[bone_name]
 		if not node.parent then
 			parent_node:attach(node)
 		end
@@ -318,9 +324,22 @@ function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
 		end
 	elseif self.anim_data then
 		local frame = self.anim_data.frames[math.floor(self.time * self.animation_speed) % self.anim_data.duration + 1]
-		for b, r in pairs(frame) do
+		for b, data in pairs(frame) do
 			if self.bones[b] then
-				self.bones[b]:set_rotation(quat.from_euler_angles(unpack(r)))
+				-- Handle rotation
+				if data.rot then
+					self.bones[b]:set_rotation(quat.from_euler_angles(unpack(data.rot)))
+				end
+				-- Handle translation (Pelvis bob)
+				if b == "pelvis" and data.pos then
+					local rest_pos = self.rig_data.skeleton.rest_pose[b]
+					-- We only want the RELATIVE movement (bobbing)
+					-- Mixamo root is usually at (0,0,0) in the DAE, 
+					-- so we add its movement to our rest position.
+					-- We zero out the Z (forward) movement to keep it in place for the preview.
+					local dx, dy, dz = data.pos[1], data.pos[2], data.pos[3]
+					self.bones[b]:set_position(vec3(rest_pos[1] + dx, rest_pos[2] + dy, rest_pos[3]))
+				end
 			end
 		end
 	end
@@ -403,6 +422,28 @@ function App:draw()
 	love.graphics.print("2: Mesh Alignment", self.view_w + 10, 10)
 	love.graphics.print("3: Animation Preview", 10, self.view_h + 10)
 	love.graphics.print("4: Bone Asset Debug", self.view_w + 10, self.view_h + 10)
+	
+	-- Legend for View 4
+	local lx, ly = self.view_w + 10, self.view_h + 30
+	local color_idx = 1
+	-- Sort bones so legend is consistent
+	local sorted_bones = {}
+	for name, _ in pairs(self.bones) do table.insert(sorted_bones, name) end
+	table.sort(sorted_bones)
+
+	for _, name in ipairs(sorted_bones) do
+		local parts = self.rig_data.parts
+		if parts[name] and #parts[name].voxels > 0 then
+			local c = DEBUG_COLORS[((color_idx - 1) % #DEBUG_COLORS) + 1]
+			love.graphics.setColor(c[1], c[2], c[3])
+			love.graphics.rectangle("fill", lx, ly, 10, 10)
+			love.graphics.setColor(1, 1, 1)
+			love.graphics.print(name, lx + 15, ly - 2)
+			ly = ly + 15
+			color_idx = color_idx + 1
+		end
+	end
+
 	love.graphics.print(
 		string.format(
 			"Skin Tint (R/G/B/T): %.2f, %.2f, %.2f | %.2f",
