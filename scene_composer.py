@@ -11,13 +11,13 @@ class VoxWriter:
 
     def add_model(self, voxels):
         if not voxels:
-            self.models.append(((1,1,1), []))
+            self.models.append(((1,1,1), [], (0,0,0)))
             return len(self.models) - 1
         xs, ys, zs = zip(*[(v[0], v[1], v[2]) for v in voxels])
         min_x, min_y, min_z = min(xs), min(ys), min(zs)
-        mx, my, mz = max(xs)-min_x+1, max(ys)-min_y+1, max(zs)-min_z+1
-        norm_voxels = [(v[0]-min_x, v[1]-min_y, v[2]-min_z, v[3]) for v in voxels]
-        self.models.append(((mx, my, mz), norm_voxels))
+        mx, my, mz = int(max(xs)-min_x+1), int(max(ys)-min_y+1), int(max(zs)-min_z+1)
+        norm_voxels = [(int(v[0]-min_x), int(v[1]-min_y), int(v[2]-min_z), int(v[3])) for v in voxels]
+        self.models.append(((mx, my, mz), norm_voxels, (min_x, min_y, min_z)))
         return len(self.models) - 1
 
     def _pack_str(self, s):
@@ -40,14 +40,13 @@ class VoxWriter:
         
         # 1. Models (Must come before Scene Graph)
         chunks += self._make_chunk(b'PACK', struct.pack('<I', len(self.models)))
-        for size, voxels in self.models:
+        for size, voxels, _ in self.models:
             chunks += self._make_chunk(b'SIZE', struct.pack('<III', *size))
             xyzi_payload = struct.pack('<I', len(voxels))
             for v in voxels: xyzi_payload += struct.pack('<BBBB', *v)
             chunks += self._make_chunk(b'XYZI', xyzi_payload)
 
         # 2. Scene Graph
-        # STRICT ORDER: Root TRN (0), then Group (1), then others.
         graph_chunks = []
         instance_trn_ids = []
         next_id = 2
@@ -55,15 +54,15 @@ class VoxWriter:
         # PRE-GENERATE Instances to know their IDs
         instance_chunks = b''
         for model_idx, pos, rot, name in scene_instances:
-            m_size, _ = self.models[model_idx]
+            m_size, _, _ = self.models[model_idx]
             
             # Handle rotation-swapped dimensions for center calculation
-            # 0 and 180: dimensions stay the same. 90 and 270: swap X and Y.
             cur_w, cur_d = m_size[0], m_size[1]
             if rot == 90 or rot == 270:
                 cur_w, cur_d = m_size[1], m_size[0]
                 
-            tx, ty, tz = pos[0] + cur_w // 2, pos[1] + cur_d // 2, pos[2] + m_size[2] // 2
+            # Translation is to the center of the model
+            tx, ty, tz = int(pos[0] + cur_w // 2), int(pos[1] + cur_d // 2), int(pos[2] + m_size[2] // 2)
             
             shp_id = next_id; next_id += 1
             trn_id = next_id; next_id += 1

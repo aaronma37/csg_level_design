@@ -82,5 +82,6 @@ if __name__ == "__main__":
     gen.symbolic_paint("textures/character_spritesheet.png")
     
     rigger = VoxelRigger(gen)
-    os.makedirs("output", exist_ok=True)
-    rigger.export("output/hero_rigged.json")
+    output_dir = "sprite_to_3d/actor_assets/hero"
+    os.makedirs(output_dir, exist_ok=True)
+    rigger.export(os.path.join(output_dir, "rig.json"))

@@ -4,21 +4,22 @@ import numpy as np
 import os
 import sys
 
+# Add skeletons to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'skeletons'))
+from skeletons.mixamo import MixamoSkeleton
+
 def extract_animation_matrices(dae_path, out_path, scale):
     tree = ET.parse(dae_path)
     root = tree.getroot()
     ns = {'ns': 'http://www.collada.org/2005/11/COLLADASchema'}
 
-    animations = root.findall('.//ns:library_animations/ns:animation', ns)
-    
-    # We might have nested animations or flat list
-    # If flat list, find all animations that target a joint matrix
-    
     channels = root.findall('.//ns:library_animations//ns:channel', ns)
     
     bone_anims = {}
     max_frames = 0
     
+    bind_matrices = MixamoSkeleton.BIND_MATRICES
+
     for channel in channels:
         target = channel.get('target')
         if not target or not target.endswith('/matrix'):
@@ -41,24 +42,28 @@ def extract_animation_matrices(dae_path, out_path, scale):
         
         scaled_matrices = []
         for m in matrices:
-            # Scale translation (indices 3, 7, 11 for row-major 4x4)
             ms = list(m)
             
-            # Mixamo Hips usually have translation in the animation
-            # We want to keep the RELATIVE movement from the first frame or bind pose
-            # But Standard Walk might be in-place or moving forward.
-            # If it's moving forward, we might want to zero out the Z (forward in DAE)
-            
-            ms[3] *= scale
-            ms[7] *= scale
-            ms[11] *= scale
-            
-            # FOR IN-PLACE: Zero out the forward/sideways drift if it's the root
+            # Sanitize: All bones except Hips should use their bind translation
+            # This ensures modular parts don't drift or stretch
             if bone_id == "mixamorig_Hips":
-                # Only keep vertical bobbing (Y in DAE is Y-up)
-                # ms[3] = m_bind_pos_x * scale
-                # ms[11] = m_bind_pos_z * scale
-                pass
+                # Scale animated translation for the root (from DAE scale to target scale)
+                ms[3] *= scale
+                ms[7] *= scale
+                ms[11] *= scale
+            else:
+                # Overwrite with bind translation
+                # Note: MixamoSkeleton.BIND_MATRICES are already at scale 50
+                if bone_id in bind_matrices:
+                    bind_m = bind_matrices[bone_id]
+                    ms[3] = bind_m[3]
+                    ms[7] = bind_m[7]
+                    ms[11] = bind_m[11]
+                else:
+                    # Fallback: just scale what's there if not in bind_matrices
+                    ms[3] *= scale
+                    ms[7] *= scale
+                    ms[11] *= scale
                 
             scaled_matrices.append(ms)
             
@@ -80,39 +85,7 @@ def extract_animation_matrices(dae_path, out_path, scale):
     print(f"Extracted matrix animation with {max_frames} frames to {out_path}")
 
 if __name__ == "__main__":
-    # We need to calculate the scale first. 
-    # Usually we can get it from the skeleton we generated.
-    # For now, I'll hardcode it or calculate it on the fly if I can.
-    
     # Better: use the same logic as extract_mixamo_skeleton.py
-    def get_scale(dae_path):
-        tree = ET.parse(dae_path)
-        root = tree.getroot()
-        ns = {'ns': 'http://www.collada.org/2005/11/COLLADASchema'}
-        
-        # Simplified height calculation
-        # Find HeadTop_End in visual scenes
-        head_top_node = root.find(".//ns:node[@id='mixamorig_HeadTop_End']", ns)
-        if head_top_node is None:
-             head_top_node = root.find(".//ns:node[@id='mixamorig_Head']", ns)
-             
-        # This is non-trivial to get world Y without full traversal
-        # But we know from previous run total_height was ~180-200
-        # Let's just use 50.0 / total_height from extract_mixamo_skeleton
-        return None # We'll let the user provide it or we'll look at the generated skeleton
-        
-    # Actually, let's just use 0.278 (approx 50/180) or similar
-    # Wait, extract_mixamo_skeleton.py already ran and generated the skeleton.
-    # I can just import it!
-    sys.path.append(os.path.join(os.path.dirname(__file__), 'skeletons'))
-    from skeletons.mixamo import MixamoSkeleton
-    
-    # Calculate scale based on rest pose HeadTop_End Y
-    pose = MixamoSkeleton.get_t_pose(50)
-    # The skeleton.py has coordinates already scaled to 50 height.
-    # So we need to find the scale between the DAE and 50.
-    
-    # Let's just re-calculate total_height from DAE directly in this script
     def calculate_dae_height(dae_path):
         import xml.etree.ElementTree as ET
         import numpy as np
@@ -143,4 +116,6 @@ if __name__ == "__main__":
     scale = 50.0 / dae_height
     print(f"DAE Height: {dae_height}, Scale: {scale}")
     
-    extract_animation_matrices(dae_path, "sprite_to_3d/preview_v2/hero_anim.json", scale)
+    output_dir = "sprite_to_3d/actor_assets/hero"
+    os.makedirs(output_dir, exist_ok=True)
+    extract_animation_matrices(dae_path, os.path.join(output_dir, "walk.json"), scale)

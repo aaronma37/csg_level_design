@@ -274,6 +274,11 @@ class VoxToGltf:
 if __name__ == "__main__":
     if len(sys.argv) < 2: print("Usage: python vox_to_gltf.py <input.vox> [output.gltf]"); sys.exit(1)
     input_vox, output_gltf = sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].replace(".vox", ".gltf")
+    
+    # Determine output directory
+    output_dir = os.path.dirname(output_gltf)
+    palette_path = os.path.join(output_dir, "palette_texture.png") if output_dir else "palette_texture.png"
+    
     # Always generate to stay in sync with palette.py
-    generate_palette_png()
+    generate_palette_png(palette_path)
     VoxToGltf(input_vox).export(output_gltf)

@@ -173,12 +173,12 @@ class VoxelAnimator:
 if __name__ == "__main__":
     from animations import JsonAnimation
     
-    animator = VoxelAnimator("output/hero_rigged.json")
+    animator = VoxelAnimator("sprite_to_3d/actor_assets/hero/rig.json")
     # Load the matrix animation we extracted from DAE
-    anim = JsonAnimation("sprite_to_3d/preview_v2/hero_anim.json")
+    anim = JsonAnimation("sprite_to_3d/actor_assets/hero/walk.json")
     
     # Export Animation Data for Runtime Preview
-    animator.export_animation(anim, "output/hero_anim.json")
+    animator.export_animation(anim, "sprite_to_3d/actor_assets/hero/walk.json")
     
     # Bake for legacy/debug check (optional, but keeping it for now)
     # animator.bake_animation(anim, "output/walk_cycle", "hero_walk")

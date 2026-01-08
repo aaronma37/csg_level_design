@@ -278,5 +278,5 @@ if __name__ == "__main__":
     print("Painting Symbolically...")
     gen.symbolic_paint("textures/character_spritesheet.png")
     
-    os.makedirs("output", exist_ok=True)
-    gen.save_vox("output/hero_gen.vox")
+    os.makedirs("sprite_to_3d/vox_construction", exist_ok=True)
+    gen.save_vox("sprite_to_3d/vox_construction/hero_model.vox")

@@ -1,122 +1,134 @@
+io.stdout:setvbuf("no")
 local menori = require("menori")
 local json = require("json")
 local ml = menori.ml
 local vec3 = ml.vec3
 local quat = ml.quat
 
-local RIG_PATH = "hero_rigged.json"
-local ANIM_PATH = "hero_anim.json"
+local HEAD_PATH = "assets/hero/base_head.gltf" -- Removed? No, I need to keep this concept but generic.
+local RIG_PATH = "assets/hero/rig.json"
+local ANIM_PATH = "assets/hero/walk.json"
 
 local App = {
 	time = 0,
-	animation_speed = 12,
-
+	animation_speed = 24,
+	
 	-- Camera Params
-	cam_angle = math.pi / 4, -- 45 degrees for isometric feel
-	cam_dist = 150,
-	cam_height = 80,         -- Elevated for isometric look
-	cam_center = vec3(0, 25, 0),
+	cam_angle = math.pi / 4,
+	cam_dist = 60,
+	cam_height = 30,
+	cam_center = vec3(0, 30, 0),
 
 	-- Skin Tint
-	skin_tint = { 1.0, 0.7, 0.7 }, -- Default to slight red tint
-	skin_tint_strength = 1.0,      -- Default to full strength
+	skin_tint = { 1.0, 0.7, 0.7 },
+	skin_tint_strength = 1.0,
+
+	show_skeleton = true,
+	show_mesh = true,
 }
 
-local DEBUG_COLORS = {
-	{ 1, 0, 0 },
-	{ 0, 1, 0 },
-	{ 0, 0, 1 },
-	{ 1, 1, 0 },
-	{ 1, 0, 1 },
-	{ 0, 1, 1 },
-	{ 1, 0.5, 0 },
-	{ 0.5, 1, 0 },
-	{ 0, 0.5, 1 },
-}
+function App:get_model_path(bone_name)
+	local map = {
+		mixamorig_Hips = "base_pelvis",
+		mixamorig_Spine = "base_spine",
+		mixamorig_Spine1 = "base_spine1",
+		mixamorig_Spine2 = "base_spine2",
+		mixamorig_Head = "base_head",
+		mixamorig_LeftShoulder = "base_leftshoulder",
+		mixamorig_RightShoulder = "base_rightshoulder",
+		mixamorig_LeftArm = "base_arm_l",
+		mixamorig_RightArm = "base_arm_r",
+		mixamorig_LeftForeArm = "base_elbow_l",
+		mixamorig_RightForeArm = "base_elbow_r",
+		mixamorig_LeftHand = "base_hand_l",
+		mixamorig_RightHand = "base_hand_r",
+		mixamorig_LeftUpLeg = "base_thigh_l",
+		mixamorig_RightUpLeg = "base_thigh_r",
+		mixamorig_LeftLeg = "base_knee_l",
+		mixamorig_RightLeg = "base_knee_r",
+		mixamorig_LeftFoot = "base_foot_l",
+		mixamorig_RightFoot = "base_foot_r",
+	}
+	local name = map[bone_name]
+	if name then
+		return "assets/hero/" .. name .. ".gltf"
+	end
+	return nil
+end
+
+function App:load_bone_model(bone_name)
+	local path = self:get_model_path(bone_name)
+	if not path then return end
+
+	if love.filesystem.getInfo(path) then
+		print("Loading: " .. path)
+		local gltf_data = menori.glTFLoader.load(path)
+		local scene_nodes = menori.NodeTreeBuilder.create(gltf_data, function(scene, builder)
+			scene:traverse(function(n)
+				if n.is_model_node then
+					print("  Found model node: " .. (n.name or "unnamed"))
+					n.material.main_texture = self.palette
+					n.material:set_shader(self.shader)
+					n.material:set("unlit", false)
+					n.material:set("baseColor", { 1, 1, 1, 1 })
+					n.material.mesh_cull_mode = "none"
+				end
+			end)
+		end)
+
+		if scene_nodes[1] then
+			self.bones[bone_name]:attach(scene_nodes[1])
+			scene_nodes[1]:set_position(vec3(0,0,0))
+		end
+	end
+end
 
 function App:load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
-	-- 1. Load Custom Shader (Restored)
-	-- Wrap in pcall to catch compilation errors
+	-- 1. Load Custom Shader
 	local status, shader_or_err = pcall(love.graphics.newShader, "shaders/lighting.glsl")
 	if status then
 		self.shader = shader_or_err
-		self.shader_error = nil
 	else
-		self.shader_error = shader_or_err
-		print("Shader Error:", self.shader_error)
-		-- Fallback to a dummy shader to prevent crash, though it won't light up
+		print("Shader Error:", shader_or_err)
 		self.shader = love.graphics.newShader([[
 			vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
 				return Texel(tex, texture_coords) * color;
 			}
 		]])
 	end
-	
-	self.palette = love.graphics.newImage("assets/palette_texture.png")
 
-	local ok, res = pcall(love.graphics.newImage, "assets/t_pose_sprite.png")
-	if ok then
-		self.tpose_sprite_tex = res
-	end
+	self.palette = love.graphics.newImage("assets/hero/palette_texture.png")
 
-	-- 2. Load Data
-	local f = io.open(RIG_PATH, "r")
-	if f then
-		self.rig_data = json.decode(f:read("*all"))
-		f:close()
-	end
-	f_anim = io.open(ANIM_PATH, "r")
-	if f_anim then
-		self.anim_data = json.decode(f_anim:read("*all"))
-		f_anim:close()
-        print("Loaded Animation: " .. ANIM_PATH .. " | Frames: " .. tostring(self.anim_data.duration))
-    else
-        print("FAILED TO LOAD ANIMATION: " .. ANIM_PATH)
-	end
-
-	-- 3. Scene
+	-- 2. Scene Setup
 	self.scene = menori.Scene()
 	self.root = menori.Node("scene_root")
 	self.env = menori.Environment(nil)
 
-	-- Lighting Settings (High contrast for voxel edges)
+	-- Lighting
 	self.env:set("ambientColor", { 0.2, 0.2, 0.25 })
 	self.env:set("ambientIntensity", 1.0)
 	self.env:set("dirLightDirection", { -0.6, -0.8, 0.5 })
 	self.env:set("dirLightColor", { 1.5, 1.5, 1.4 })
 
-	-- Floor
-	local floor_mesh = menori.Plane(200, 200)
-	local floor_mat = menori.Material()
-	floor_mat:set("baseColor", { 0.3, 0.3, 0.3, 1 })
-	floor_mat:set_shader(self.shader)
-	self.floor_node = menori.ModelNode(floor_mesh, floor_mat)
-	self.floor_node:set_rotation(quat.from_angle_axis(-math.pi / 2, vec3.unit_x))
-	self.root:attach(self.floor_node)
-
-	-- Character
-	if self.rig_data then
-		self.char_root = menori.Node("char_root")
-		self.char_root:set_position(vec3(0, 1, 0))
-		self.root:attach(self.char_root)
-		self:build_skeleton(self.char_root)
+	-- 3. Load Rig
+	local rig_content, _ = love.filesystem.read(RIG_PATH)
+	if rig_content then
+		self.rig_data = json.decode(rig_content)
+		print("Loaded Rig: " .. RIG_PATH)
+		self:build_skeleton()
+	else
+		print("FAILED TO LOAD RIG: " .. RIG_PATH)
 	end
 
-	-- Reference Quad
-	if self.tpose_sprite_tex then
-		local w, h = 54, 64
-		local ref_mesh = menori.Plane(w, h)
-		local ref_mat = menori.Material()
-		ref_mat.main_texture = self.tpose_sprite_tex
-		ref_mat:set_shader(self.shader)
-		ref_mat.alpha_mode = "BLEND"
-		ref_mat:set("baseColor", { 1, 1, 1, 0.4 })
-		ref_mat:set("unlit", true)
-		self.ref_sprite_node = menori.ModelNode(ref_mesh, ref_mat)
-		self.ref_sprite_node:set_position(vec3(0, 27, -10))
-		self.root:attach(self.ref_sprite_node)
+	-- 3.5 Load Animation
+	local anim_content, _ = love.filesystem.read(ANIM_PATH)
+	if anim_content then
+		self.anim_data = json.decode(anim_content)
+		print("Loaded Animation: " .. ANIM_PATH .. " | Frames: " .. tostring(#self.anim_data.frames))
+	else
+		print("FAILED TO LOAD ANIMATION: " .. ANIM_PATH)
 	end
 
 	-- 4. View Setup
@@ -128,286 +140,173 @@ function App:load()
 		self.views[i] = {
 			canvas = love.graphics.newCanvas(self.view_w, self.view_h),
 			depth = love.graphics.newCanvas(self.view_w, self.view_h, { format = "depth24" }),
-			camera = menori.Camera3D((i <= 2) and "ortho" or "perspective", { fov = 40, ortho_size = 60 }),
+			camera = menori.Camera3D((i <= 2) and "ortho" or "perspective", { fov = 40, ortho_size = 5 }),
 		}
 	end
-
-	local white = love.image.newImageData(1, 1)
-	white:setPixel(0, 0, 1, 1, 1, 1)
-	self.white_tex = love.graphics.newImage(white)
-
-	-- Temp objects for matrix decomposition
+	
 	self.temp_pos = vec3()
 	self.temp_rot = quat()
 	self.temp_scale = vec3()
 end
 
-function App:build_voxel_mesh(voxels)
-	local vertices = {}
-	-- Match our restored shader and standard Menori format
-	local format = {
-		{ "VertexPosition", "float", 3 },
-		{ "VertexNormal", "float", 3 },
-		{ "VertexColor", "float", 4 },
-		{ "VertexTexCoord", "float", 2 },
-	}
-	for _, v in ipairs(voxels) do
-		local vx, vy, vz, c = v[1], v[2], v[3], v[4]
-		local u = (c + 0.5) / 256.0
-		local x, y, z = vx, vy, vz
-		local faces = {
-			{ n = { 0, 1, 0 }, v = { { 0, 1, 1 }, { 1, 1, 1 }, { 1, 1, 0 }, { 0, 1, 0 } } }, -- Top (Reordered to CCW)
-			{ n = { 0, -1, 0 }, v = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 1 }, { 0, 0, 1 } } }, -- Bottom (Reordered to CCW)
-			{ n = { 0, 0, 1 }, v = { { 0, 0, 1 }, { 1, 0, 1 }, { 1, 1, 1 }, { 0, 1, 1 } } }, -- Front
-			{ n = { 0, 0, -1 }, v = { { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 } } }, -- Back
-			{ n = { 1, 0, 0 }, v = { { 1, 0, 0 }, { 1, 0, 1 }, { 1, 1, 1 }, { 1, 1, 0 } } }, -- Right
-			{ n = { -1, 0, 0 }, v = { { 0, 0, 1 }, { 0, 0, 0 }, { 0, 1, 0 }, { 0, 1, 1 } } }, -- Left
-		}
-		for _, f in ipairs(faces) do
-			for _, i in ipairs({ 1, 3, 2, 1, 4, 3 }) do -- Reverse to CW
-				local vert = f.v[i]
-				table.insert(vertices, {
-					x + vert[1],
-					y + vert[2],
-					z + vert[3],
-					f.n[1],
-					f.n[2],
-					f.n[3],
-					1,
-					1,
-					1,
-					1,
-					u,
-					0.5,
-				})
-			end
+function App:apply_animation(dt)
+	if not self.anim_data or not self.bones then return end
+
+	local frame_count = #self.anim_data.frames
+	if frame_count == 0 then return end
+
+	local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
+	local frame = self.anim_data.frames[current_frame_idx + 1]
+
+	for bone_name, matrix_data in pairs(frame) do
+		local bone = self.bones[bone_name]
+		if bone then
+			local d = matrix_data
+			-- Convert Row-Major (JSON) to Column-Major (Menori)
+			-- JSON: m00 m01 m02 tx ...
+			-- Menori: m00 m10 m20 0 ...
+			
+			local m = ml.mat4({
+				d[1], d[5], d[9], d[13],
+				d[2], d[6], d[10], d[14],
+				d[3], d[7], d[11], d[15],
+				d[4], d[8], d[12], d[16]
+			})
+			
+			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
+			
+			bone:set_position(self.temp_pos)
+			bone:set_rotation(self.temp_rot)
+			bone:set_scale(self.temp_scale)
 		end
 	end
-	return menori.Mesh({ vertices = vertices, vertexformat = format })
+	
+	self.root:recursive_update_transform()
 end
 
-function App:build_skeleton(parent_node)
+function App:build_skeleton()
+	if not self.rig_data then return end
+
 	self.bones = {}
-	self.standard_mesh_nodes = {}
-	self.debug_mesh_nodes = {}
+	self.char_root = menori.Node("CharacterRoot")
+	self.root:attach(self.char_root)
+	
 	local rest_pose = self.rig_data.skeleton.rest_pose
 	local topology = self.rig_data.skeleton.topology
-	local parts = self.rig_data.parts
 
+	-- Create Nodes
 	for bone_name, _ in pairs(rest_pose) do
 		self.bones[bone_name] = menori.Node(bone_name)
+		self.bones[bone_name].name = bone_name
 	end
+
+	-- Link Nodes & Set Rest Pose & Load Models
 	for bone_name, parent_name in pairs(topology) do
 		local node = self.bones[bone_name]
-		local bp = rest_pose[bone_name]
+		local bp = rest_pose[bone_name] -- [x, y, z]
+
 		if parent_name and self.bones[parent_name] then
 			self.bones[parent_name]:attach(node)
-			node:set_position(vec3(unpack(bp)) - vec3(unpack(rest_pose[parent_name])))
+			local pp = rest_pose[parent_name]
+			-- Local position = Child World - Parent World
+			node:set_position(vec3(bp[1] - pp[1], bp[2] - pp[2], bp[3] - pp[3]))
 		else
-			parent_node:attach(node)
+			-- Root bone (e.g. Hips or 'root')
+			self.char_root:attach(node)
 			node:set_position(vec3(unpack(bp)))
 		end
+
+		self:load_bone_model(bone_name)
 	end
-
-	-- Deterministic sorting for bone colors
-	local sorted_bone_names = {}
-	for name, _ in pairs(self.bones) do table.insert(sorted_bone_names, name) end
-	table.sort(sorted_bone_names)
-
-	local color_idx = 1
-	for _, bone_name in ipairs(sorted_bone_names) do
-		local node = self.bones[bone_name]
-		if not node.parent then
-			parent_node:attach(node)
-		end
-
-		if parts[bone_name] and #parts[bone_name].voxels > 0 then
-			local mesh = self:build_voxel_mesh(parts[bone_name].voxels)
-			-- Standard
-			local mat = menori.Material()
-			mat.main_texture = self.palette
-			mat:set_shader(self.shader)
-			mat:set("unlit", false)
-			local mnode = menori.ModelNode(mesh, mat)
-			mnode.material:set_shader(self.shader) -- FORCE shader after ModelNode init
-			node:attach(mnode)
-			table.insert(self.standard_mesh_nodes, mnode)
-			-- Debug
-			local dmat = menori.Material()
-			dmat.main_texture = self.white_tex
-			local c = DEBUG_COLORS[((color_idx - 1) % #DEBUG_COLORS) + 1]
-			dmat:set("baseColor", { c[1], c[2], c[3], 1 })
-			dmat:set_shader(self.shader)
-			dmat:set("unlit", false)
-			local dnode = menori.ModelNode(mesh, dmat)
-			dnode.material:set_shader(self.shader) -- FORCE shader here too
-			node:attach(dnode)
-			table.insert(self.debug_mesh_nodes, dnode)
-			color_idx = color_idx + 1
-		end
-	end
+	
+	-- Force update transforms to ensure positions are correct
+	self.root:recursive_update_transform()
 end
 
 function App:update(dt)
 	self.time = self.time + dt
-	if love.keyboard.isDown("left") then
-		self.cam_angle = self.cam_angle - dt * 2
-	end
-	if love.keyboard.isDown("right") then
-		self.cam_angle = self.cam_angle + dt * 2
-	end
-	if love.keyboard.isDown("up") then
-		self.cam_dist = math.max(10, self.cam_dist - dt * 100)
-	end
-	if love.keyboard.isDown("down") then
-		self.cam_dist = self.cam_dist + dt * 100
-	end
-	if love.keyboard.isDown("w") then
-		self.cam_height = self.cam_height + dt * 100
-	end
-	if love.keyboard.isDown("s") then
-		self.cam_height = self.cam_height - dt * 100
-	end
-
-	-- Prepare Animation Frame for render_view
-	if self.anim_data then
-		local frame_count = self.anim_data.duration
-		local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
-		self.current_frame = self.anim_data.frames[current_frame_idx + 1]
-	end
-
-	-- TEST: Rotate the whole character to verify transform propagation
-	if self.char_root then
-		self.char_root:set_rotation(quat.from_euler_angles(0, self.time * 0.5, 0))
-	end
+	self:apply_animation(dt)
+	
+	-- Camera Controls
+	if love.keyboard.isDown("left") then self.cam_angle = self.cam_angle - dt * 2 end
+	if love.keyboard.isDown("right") then self.cam_angle = self.cam_angle + dt * 2 end
+	if love.keyboard.isDown("up") then self.cam_dist = math.max(2, self.cam_dist - dt * 10) end
+	if love.keyboard.isDown("down") then self.cam_dist = self.cam_dist + dt * 10 end
+	if love.keyboard.isDown("w") then self.cam_height = self.cam_height + dt * 5 end
+	if love.keyboard.isDown("s") then self.cam_height = self.cam_height - dt * 5 end
 
 	-- Skin Tint Controls
 	local tint_speed = dt * 0.5
 	if love.keyboard.isDown("r") then
-		if love.keyboard.isDown("lshift") then
-			self.skin_tint[1] = math.min(1, self.skin_tint[1] + tint_speed)
-		else
-			self.skin_tint[1] = math.max(0, self.skin_tint[1] - tint_speed)
-		end
+		self.skin_tint[1] = self.skin_tint[1] + (love.keyboard.isDown("lshift") and tint_speed or -tint_speed)
 	end
 	if love.keyboard.isDown("g") then
-		if love.keyboard.isDown("lshift") then
-			self.skin_tint[2] = math.min(1, self.skin_tint[2] + tint_speed)
-		else
-			self.skin_tint[2] = math.max(0, self.skin_tint[2] - tint_speed)
-		end
+		self.skin_tint[2] = self.skin_tint[2] + (love.keyboard.isDown("lshift") and tint_speed or -tint_speed)
 	end
 	if love.keyboard.isDown("b") then
-		if love.keyboard.isDown("lshift") then
-			self.skin_tint[3] = math.min(1, self.skin_tint[3] + tint_speed)
-		else
-			self.skin_tint[3] = math.max(0, self.skin_tint[3] - tint_speed)
-		end
-	end
-	if love.keyboard.isDown("t") then
-		if love.keyboard.isDown("lshift") then
-			self.skin_tint_strength = math.min(1, self.skin_tint_strength + tint_speed)
-		else
-			self.skin_tint_strength = math.max(0, self.skin_tint_strength - tint_speed)
-		end
+		self.skin_tint[3] = self.skin_tint[3] + (love.keyboard.isDown("lshift") and tint_speed or -tint_speed)
 	end
 
-	local aspect = self.view_w / self.view_h
-	local o_size = 60
-	for i = 1, 2 do
-		local cam = self.views[i].camera
-		cam.m_projection:ortho_RH_NO(-o_size * aspect, o_size * aspect, -o_size, o_size, -200, 200)
-		cam.eye = vec3(0, 25, 100)
-		cam.center = vec3(0, 25, 0)
-		cam:update_view_matrix()
+	-- Clamp tint
+	for i=1,3 do self.skin_tint[i] = math.max(0, math.min(1, self.skin_tint[i])) end
+
+	if love.keyboard.isDown("1") and not self.k_1_down then
+		self.show_skeleton = not self.show_skeleton
+		self.k_1_down = true
+	elseif not love.keyboard.isDown("1") then
+		self.k_1_down = false
 	end
+
+	if love.keyboard.isDown("2") and not self.k_2_down then
+		self.show_mesh = not self.show_mesh
+		self.k_2_down = true
+	elseif not love.keyboard.isDown("2") then
+		self.k_2_down = false
+	end
+
+	-- Update Cameras
+	local aspect = self.view_w / self.view_h
+	local o_size = 30 -- Ortho size covers whole body
+	
+	-- View 1: Front (Ortho)
+	self.views[1].camera.m_projection:ortho_RH_NO(-o_size * aspect, o_size * aspect, -o_size, o_size, -200, 200)
+	self.views[1].camera.eye = vec3(0, 25, 100)
+	self.views[1].camera.center = vec3(0, 25, 0)
+	self.views[1].camera:update_view_matrix()
+
+	-- View 2: Side (Ortho)
+	self.views[2].camera.m_projection:ortho_RH_NO(-o_size * aspect, o_size * aspect, -o_size, o_size, -200, 200)
+	self.views[2].camera.eye = vec3(100, 25, 0)
+	self.views[2].camera.center = vec3(0, 25, 0)
+	self.views[2].camera:update_view_matrix()
+
+	-- View 3 & 4: Perspective Orbit
 	for i = 3, 4 do
 		local cam = self.views[i].camera
 		cam.m_projection:perspective_RH_NO(40, aspect, 0.1, 1000)
-		cam.eye.x, cam.eye.z, cam.eye.y =
-			math.cos(self.cam_angle) * self.cam_dist, math.sin(self.cam_angle) * self.cam_dist, self.cam_height
-		cam.center = vec3(0, 25, 0)
+		cam.eye.x = math.cos(self.cam_angle) * self.cam_dist
+		cam.eye.z = math.sin(self.cam_angle) * self.cam_dist
+		cam.eye.y = self.cam_height
+		cam.center = self.cam_center
 		cam:update_view_matrix()
 	end
 end
 
-function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
+function App:render_view(idx, camera)
 	local v = self.views[idx]
 	love.graphics.setCanvas({ v.canvas, depthstencil = v.depth })
 	love.graphics.clear(0.1, 0.1, 0.12, 1, true, true)
 	love.graphics.setDepthMode("lequal", true)
+	love.graphics.setMeshCullMode("none")
 	love.graphics.setColor(1, 1, 1, 1)
 
-	local is_matrix = self.anim_data and self.anim_data.type == "matrix"
-	local bind_matrices = self.rig_data.skeleton.bind_matrices
-
-	for bone_name, n in pairs(self.bones) do
-		local d = nil
-		if is_tpose then
-			d = bind_matrices and bind_matrices[bone_name]
-		elseif self.current_frame then
-			d = self.current_frame[bone_name]
-		end
-
-		if d then
-			if is_matrix or is_tpose then
-				-- Map DAE (Row-Major) to Menori (Column-Major)
-				local m = ml.mat4({
-					d[1], d[5], d[9], d[13],
-					d[2], d[6], d[10], d[14],
-					d[3], d[7], d[11], d[15],
-					d[4], d[8], d[12], d[16]
-				})
-				m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
-				n:set_position(self.temp_pos)
-				n:set_rotation(self.temp_rot)
-				n:set_scale(self.temp_scale)
-			else
-				-- Euler path fallback
-				if d.rot then n:set_rotation(quat.from_euler_angles(unpack(d.rot))) end
-				if (bone_name == "pelvis" or bone_name == "mixamorig_Hips") and d.pos then
-					local rest_pos = self.rig_data.skeleton.rest_pose[bone_name]
-					n:set_position(vec3(rest_pos[1] + d.pos[1], rest_pos[2] + d.pos[2], rest_pos[3] + d.pos[3]))
-				end
-			end
-		end
-		n._transform_flag = true
-	end
-
-	for _, m in ipairs(self.standard_mesh_nodes) do
-		m.render_flag = (show_mesh and not asset_debug)
-		m.material:set("baseColor", { 1, 1, 1, (idx == 2 and 0.5 or 1) })
-		m.material.alpha_mode = (idx == 2 and "BLEND" or "OPAQUE")
-	end
-	for _, m in ipairs(self.debug_mesh_nodes) do
-		m.render_flag = (show_mesh and asset_debug)
-	end
-	self.floor_node.render_flag = (idx >= 3)
-	if self.ref_sprite_node then
-		self.ref_sprite_node.render_flag = (idx <= 2)
-	end
-
 	self.env.camera = camera
-	-- Dirty all transforms before update_nodes
-	self.root:traverse(function(n)
-		n._transform_flag = true
-	end)
+	
+	-- Update transforms
+	self.root:recursive_update_transform()
 	self.scene:update_nodes(self.root, self.env)
 
-	if idx == 3 and self.bones["mixamorig_Hips"] and (math.floor(self.time * 60) % 60 == 0) then
-		local wp = self.bones["mixamorig_Hips"]:get_world_position()
-		print(string.format("DEBUG View 3 | Hips World Pos: %.2f, %.2f, %.2f", wp.x, wp.y, wp.z))
-	end
-
-	-- Manual Shader Update
-	if self.shader:hasUniform("m_view") then
-		self.shader:send("m_view", "column", camera.m_view.data)
-	end
-	local proj = camera.m_projection:clone()
-	proj[6] = -proj[6]
-	if self.shader:hasUniform("m_projection") then
-		self.shader:send("m_projection", "column", proj.data)
-	end
+	-- Update Shader Uniforms
 	if self.shader:hasUniform("eyePosition") then
 		self.shader:send("eyePosition", { camera.eye:unpack() })
 	end
@@ -418,32 +317,47 @@ function App:render_view(idx, camera, is_tpose, show_mesh, asset_debug)
 		self.shader:send("skinTintStrength", self.skin_tint_strength)
 	end
 
+	-- Update Mesh Visibility
+	if self.char_root then
+		self.char_root:traverse(function(n)
+			if n.is_model_node then
+				n.render_flag = self.show_mesh
+			end
+		end)
+	end
+
+	-- Render
 	self.scene:render_nodes(self.root, self.env)
 
-	if idx == 1 or idx == 2 then
-		love.graphics.setColor(1, 1, 0)
-		for _, node in pairs(self.bones) do
-			local sp = camera:world_to_screen_point(node:get_world_position(), { 0, 0, self.view_w, self.view_h })
-			if sp.x > 0 then
-				love.graphics.circle("fill", sp.x, sp.y, 4)
-				if node.parent and self.bones[node.parent.name] then
-					local sp2 = camera:world_to_screen_point(
-						node.parent:get_world_position(),
-						{ 0, 0, self.view_w, self.view_h }
-					)
-					love.graphics.line(sp.x, sp.y, sp2.x, sp2.y)
+	-- Draw Skeleton Lines (View 1 & 2 only)
+	if idx <= 2 and self.bones and self.show_skeleton then
+		love.graphics.setShader()
+		love.graphics.setDepthMode("always", false) -- Draw on top?
+		love.graphics.setColor(1, 1, 0, 1)
+		
+		for _, bone in pairs(self.bones) do
+			local p1 = bone:get_world_position()
+			local s1 = camera:world_to_screen_point(p1, {0,0, self.view_w, self.view_h})
+			
+			if s1.x > -100 and s1.x < self.view_w + 100 then
+				love.graphics.circle("fill", s1.x, s1.y, 3)
+				
+				if bone.parent and self.bones[bone.parent.name] then
+					local p2 = bone.parent:get_world_position()
+					local s2 = camera:world_to_screen_point(p2, {0,0, self.view_w, self.view_h})
+					love.graphics.line(s1.x, s1.y, s2.x, s2.y)
 				end
 			end
 		end
 	end
+
 	love.graphics.setCanvas()
 end
 
 function App:draw()
-	self:render_view(1, self.views[1].camera, true, false, false)
-	self:render_view(2, self.views[2].camera, true, true, false)
-	self:render_view(3, self.views[3].camera, false, true, false)
-	self:render_view(4, self.views[4].camera, false, true, true)
+	for i=1,4 do
+		self:render_view(i, self.views[i].camera)
+	end
 
 	love.graphics.setShader()
 	love.graphics.setColor(1, 1, 1)
@@ -452,59 +366,29 @@ function App:draw()
 	love.graphics.draw(self.views[3].canvas, 0, self.view_h)
 	love.graphics.draw(self.views[4].canvas, self.view_w, self.view_h)
 
+	-- Dividers
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.setLineWidth(2)
 	love.graphics.line(self.view_w, 0, self.view_w, self.view_h * 2)
 	love.graphics.line(0, self.view_h, self.view_w * 2, self.view_h)
-	love.graphics.print("1: Skeleton Reference", 10, 10)
-	love.graphics.print("2: Mesh Alignment", self.view_w + 10, 10)
-	love.graphics.print("3: Animation Preview", 10, self.view_h + 10)
-	love.graphics.print("4: Bone Asset Debug", self.view_w + 10, self.view_h + 10)
-	
-	-- Legend for View 4
-	local lx, ly = self.view_w + 10, self.view_h + 30
-	local color_idx = 1
-	-- Sort bones so legend is consistent
-	local sorted_bones = {}
-	for name, _ in pairs(self.bones) do table.insert(sorted_bones, name) end
-	table.sort(sorted_bones)
+	love.graphics.setLineWidth(1)
 
-	for _, name in ipairs(sorted_bones) do
-		local parts = self.rig_data.parts
-		if parts[name] and #parts[name].voxels > 0 then
-			local c = DEBUG_COLORS[((color_idx - 1) % #DEBUG_COLORS) + 1]
-			love.graphics.setColor(c[1], c[2], c[3])
-			love.graphics.rectangle("fill", lx, ly, 10, 10)
-			love.graphics.setColor(1, 1, 1)
-			love.graphics.print(name, lx + 15, ly - 2)
-			ly = ly + 15
-			color_idx = color_idx + 1
-		end
-	end
+	-- Text
+	love.graphics.setColor(1, 1, 1)
+	love.graphics.print("1: Front (Ortho) - Skeleton", 10, 10)
+	love.graphics.print("2: Side (Ortho) - Skeleton", self.view_w + 10, 10)
+	love.graphics.print("3: Perspective", 10, self.view_h + 10)
+	love.graphics.print("4: Perspective (Aux)", self.view_w + 10, self.view_h + 10)
 
 	love.graphics.print(
 		string.format(
-			"Skin Tint (R/G/B/T): %.2f, %.2f, %.2f | %.2f",
-			self.skin_tint[1],
-			self.skin_tint[2],
-			self.skin_tint[3],
-			self.skin_tint_strength
+			"Skin Tint: %.2f, %.2f, %.2f",
+			self.skin_tint[1], self.skin_tint[2], self.skin_tint[3]
 		),
-		10,
-		self.view_h * 2 - 20
+		10, self.view_h * 2 - 20
 	)
-
-	if self.shader_error then
-		love.graphics.setColor(1, 0, 0)
-		love.graphics.print("SHADER ERROR: " .. tostring(self.shader_error), 10, self.view_h * 2 - 40)
-		love.graphics.setColor(1, 1, 1)
-	end
 end
 
-function love.load()
-	App:load()
-end
-function love.update(dt)
-	App:update(dt)
-end
-function love.draw()
-	App:draw()
-end
+function love.load() App:load() end
+function love.update(dt) App:update(dt) end
+function love.draw() App:draw() end

@@ -57,6 +57,10 @@ This pipeline describes a high-fidelity workflow for creating rich, animated 3D 
     *   The game engine treats each part as a separate entity attached to the skeleton.
     *   **Simplification:** This removes the need for vertex skinning or Inverse Bind Matrices. The engine simply rotates the bone nodes, and the attached voxel parts move with them rigidly.
     *   **Step Interpolation:** Animation frames update the node transforms.
+3.  **Deployment:**
+    *   **Staging Directory:** Generated actor assets are staged in `sprite_to_3d/actor_assets/`.
+    *   **Target Directory:** Assets are deployed to `~/love_exp/assets/actor_assets/`.
+    *   **Script:** Run `sprite_to_3d/deploy.sh` to move staged assets to the target directory.
 
 
 ### Phase 6: Custom Format Optimization (Stretch Goal)
