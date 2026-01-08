@@ -80,17 +80,21 @@ function App:load_bone_model(bone_name)
 
 		if scene_nodes[1] then
 			-- Attach to CharRoot (Flat Hierarchy for Rendering)
-            self.char_root:attach(scene_nodes[1])
-			scene_nodes[1]:set_position(vec3(0,0,0))
-            
-            -- Store reference for transform update
-            self.bone_models[bone_name] = scene_nodes[1]
+			self.char_root:attach(scene_nodes[1])
+			scene_nodes[1]:set_position(vec3(0, 0, 0))
+
+			-- Store reference for transform update
+			self.bone_models[bone_name] = scene_nodes[1]
 		end
 	end
 end
 
 function App:load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
+
+	self.temp_pos = vec3()
+	self.temp_rot = quat()
+	self.temp_scale = vec3()
 
 	-- 1. Load Custom Shader
 	local status, shader_or_err = pcall(love.graphics.newShader, "shaders/lighting.glsl")
@@ -157,10 +161,6 @@ function App:load()
 		}
 	end
 
-	self.temp_pos = vec3()
-	self.temp_rot = quat()
-	self.temp_scale = vec3()
-
 	self.bone_colors = {
 		mixamorig_Hips = { 1, 0, 0, 1 },
 		mixamorig_Spine = { 0, 1, 0, 1 },
@@ -205,7 +205,6 @@ function App:apply_animation(dt)
 		if bone then
 			local d = matrix_data
 			-- Convert Row-Major (JSON) to Column-Major (Menori)
-			
 			local m = ml.mat4({
 				d[1],
 				d[5],
@@ -225,6 +224,19 @@ function App:apply_animation(dt)
 				d[16],
 			})
 
+			--       local m = ml.mat4({
+			--     -- Column 1 (Should be the whole X Basis Vector)
+			--     d[1], d[2], d[3], 0,    -- Keep 1, 2, 3 together!
+			--
+			--     -- Column 2 (Should be the whole Y Basis Vector)
+			--     d[5], d[6], d[7], 0,    -- Keep 5, 6, 7 together!
+			--
+			--     -- Column 3 (Should be the whole Z Basis Vector)
+			--     d[9], d[10], d[11], 0,  -- Keep 9, 10, 11 together!
+			--
+			--     -- Column 4 (Translation)
+			--     d[4], d[8], d[12], 1    -- Keep translation components
+			-- })
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
 			if debug_frame and (bone_name == "mixamorig_Hips" or bone_name == "mixamorig_Head") then
@@ -243,15 +255,19 @@ function App:apply_animation(dt)
 end
 
 function App:build_skeleton()
-	if not self.rig_data then return end
+	if not self.rig_data then
+		return
+	end
 
 	self.bones = {}
-    self.bone_models = {}
+	self.bind_rotations = {}
+	self.bone_models = {}
 	self.char_root = menori.Node("CharacterRoot")
 	self.root:attach(self.char_root)
-	
+
 	local rest_pose = self.rig_data.skeleton.rest_pose
 	local topology = self.rig_data.skeleton.topology
+	local bind_matrices = self.rig_data.skeleton.bind_matrices
 
 	-- Create Nodes
 	for bone_name, _ in pairs(rest_pose) do
@@ -270,15 +286,51 @@ function App:build_skeleton()
 		local node = self.bones[bone_name]
 		local bp = rest_pose[bone_name] -- [x, y, z]
 
-		if parent_name and self.bones[parent_name] then
-			self.bones[parent_name]:attach(node)
-			local pp = rest_pose[parent_name]
-			-- Local position = Child World - Parent World
-			node:set_position(vec3(bp[1] - pp[1], bp[2] - pp[2], bp[3] - pp[3]))
+		if bind_matrices and bind_matrices[bone_name] then
+			-- Use full matrix for rest pose
+			local d = bind_matrices[bone_name]
+			local m = ml.mat4({
+				d[1],
+				d[5],
+				d[9],
+				d[13],
+				d[2],
+				d[6],
+				d[10],
+				d[14],
+				d[3],
+				d[7],
+				d[11],
+				d[15],
+				d[4],
+				d[8],
+				d[12],
+				d[16],
+			})
+			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
+
+			if parent_name and self.bones[parent_name] then
+				self.bones[parent_name]:attach(node)
+			else
+				self.char_root:attach(node)
+			end
+
+			local q = quat(self.temp_rot.x, self.temp_rot.y, self.temp_rot.z, self.temp_rot.w)
+			node:set_position(vec3(self.temp_pos.x, self.temp_pos.y, self.temp_pos.z))
+			node:set_rotation(q)
+			node:set_scale(vec3(self.temp_scale.x, self.temp_scale.y, self.temp_scale.z))
+
+			self.bind_rotations[bone_name] = q
 		else
-			-- Root bone (e.g. Hips or 'root')
-			self.char_root:attach(node)
-			node:set_position(vec3(unpack(bp)))
+			-- Fallback: Use world position difference (Old Skeleton)
+			if parent_name and self.bones[parent_name] then
+				self.bones[parent_name]:attach(node)
+				local pp = rest_pose[parent_name]
+				node:set_position(vec3(bp[1] - pp[1], bp[2] - pp[2], bp[3] - pp[3]))
+			else
+				self.char_root:attach(node)
+				node:set_position(vec3(unpack(bp)))
+			end
 		end
 
 		self:load_bone_model(bone_name)
@@ -291,22 +343,26 @@ end
 function App:update(dt)
 	self.time = self.time + dt
 	self:apply_animation(dt)
-    
-    -- Sync Models to Bones (Constraint)
-    if self.bones and self.bone_models then
-        for name, model in pairs(self.bone_models) do
-            local bone = self.bones[name]
-            if bone then
-                -- Copy World Transform
-                model:set_position(bone:get_world_position())
-                model:set_rotation(bone:get_world_rotation())
-                model:set_scale(bone:get_world_scale())
-            end
-        end
-        -- Update scene graph again to apply these new world transforms to the flat models
-        self.root:recursive_update_transform()
-    end
-	
+
+	-- Sync Models to Bones (Constraint)
+	if self.bones and self.bone_models then
+		for name, model in pairs(self.bone_models) do
+			local bone = self.bones[name]
+			if bone then
+				-- Copy World Transform
+				model:set_position(bone:get_world_position())
+
+				-- Apply bind rotation offset if available
+				local bind_rot = self.bind_rotations[name] or quat()
+				model:set_rotation(bone:get_world_rotation() * bind_rot)
+
+				model:set_scale(bone:get_world_scale())
+			end
+		end
+		-- Update scene graph again to apply these new world transforms to the flat models
+		self.root:recursive_update_transform()
+	end
+
 	-- Camera Controls
 	if love.keyboard.isDown("left") then
 		self.cam_angle = self.cam_angle - dt * 2
@@ -427,7 +483,9 @@ function App:render_view(idx, camera)
 						end
 						p = p.parent
 					end
-					if owner_bone then break end
+					if owner_bone then
+						break
+					end
 				end
 				color = self.bone_colors[owner_bone] or { 1, 1, 1, 1 }
 			end
@@ -498,7 +556,9 @@ function App:draw()
 		local i = 0
 		-- Sort keys for stable legend
 		local keys = {}
-		for k in pairs(self.bone_colors) do table.insert(keys, k) end
+		for k in pairs(self.bone_colors) do
+			table.insert(keys, k)
+		end
 		table.sort(keys)
 
 		for _, name in ipairs(keys) do

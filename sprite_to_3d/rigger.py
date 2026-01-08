@@ -2,6 +2,7 @@ import json
 import math
 import os
 import sys
+import numpy as np
 
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -14,19 +15,63 @@ class VoxelRigger:
         self.pose = generator.pose
         self.topology = generator.blueprint['topology']
         
+        # Pre-calculate world matrices for the rest pose
+        self.world_matrices = self._calculate_world_matrices()
+        
+    def _calculate_world_matrices(self):
+        matrices = {}
+        bones = list(self.topology.keys())
+        
+        # Parent-first ordering
+        ordered_bones = []
+        visited = set()
+        while len(ordered_bones) < len(bones):
+            for b in bones:
+                if b in visited: continue
+                parent = self.topology[b]
+                if parent is None or parent == "root" or parent in visited:
+                    ordered_bones.append(b)
+                    visited.add(b)
+
+        has_bind = hasattr(self.generator.skeleton_class, "BIND_MATRICES")
+        
+        for bone in ordered_bones:
+            parent = self.topology[bone]
+            if parent == "root": parent = None
+            
+            if has_bind:
+                bind_m = self.generator.skeleton_class.BIND_MATRICES.get(bone)
+                if bind_m:
+                    local_m = np.array(bind_m).reshape(4, 4)
+                else:
+                    local_m = np.identity(4)
+                    # Use pose translation if matrix missing
+                    bx, by, bz = self.pose.get(bone, (0, 0, 0))
+                    local_m[0:3, 3] = [bx, by, bz]
+                
+                if parent is None:
+                    matrices[bone] = local_m
+                else:
+                    matrices[bone] = matrices[parent] @ local_m
+            else:
+                # Identity rotation, just translation
+                bx, by, bz = self.pose.get(bone, (0, 0, 0))
+                m = np.identity(4)
+                m[0:3, 3] = [bx, by, bz]
+                matrices[bone] = m
+                
+        return matrices
+
     def decompose_parts(self):
         """
         Splits the voxel cloud into separate lists per bone.
         Converts positions to be relative to the bone's rest pose (Local Space).
-        Returns:
-            {
-                "bone_name": {
-                    "voxels": [[lx, ly, lz, color_idx], ...]
-                },
-                ...
-            }
+        Uses Inverse World Matrix to ensure correct orientation.
         """
         parts = {}
+        
+        # Pre-calculate inverse matrices for speed
+        inv_matrices = {name: np.linalg.inv(m) for name, m in self.world_matrices.items()}
         
         for (vx, vy, vz), color in self.voxels.items():
             primary_bone = self.owners.get((vx, vy, vz), "root")
@@ -35,14 +80,17 @@ class VoxelRigger:
             if primary_bone not in parts:
                 parts[primary_bone] = {"voxels": []}
             
-            # Get Bone Rest Position (Pivot)
-            # Default to (0,0,0) if bone not found in pose (fallback)
-            bx, by, bz = self.pose.get(primary_bone, (0, 0, 0))
-            
-            # Calculate Local Position
-            lx = vx - bx
-            ly = vy - by
-            lz = vz - bz
+            if primary_bone in inv_matrices:
+                # Transform World -> Local: V_local = Inverse(World_M) @ V_world
+                v_world = np.array([vx, vy, vz, 1.0])
+                v_local = inv_matrices[primary_bone] @ v_world
+                lx, ly, lz = v_local[0], v_local[1], v_local[2]
+            else:
+                # Fallback to simple subtraction if no matrix available
+                bx, by, bz = self.pose.get(primary_bone, (0, 0, 0))
+                lx = vx - bx
+                ly = vy - by
+                lz = vz - bz
             
             parts[primary_bone]["voxels"].append([lx, ly, lz, color])
             
