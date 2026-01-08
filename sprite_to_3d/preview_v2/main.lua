@@ -338,6 +338,11 @@ function App:build_skeleton()
 
 	-- Force update transforms to ensure positions are correct
 	self.root:recursive_update_transform()
+
+	-- Store WORLD bind rotations for skinning-like offset calculation
+	for bone_name, node in pairs(self.bones) do
+		self.bind_rotations[bone_name] = node:get_world_rotation()
+	end
 end
 
 function App:update(dt)
