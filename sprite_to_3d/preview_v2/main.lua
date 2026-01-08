@@ -210,9 +210,9 @@ function App:apply_animation(dt)
 				)
 			end
 
-			bone:set_position(self.temp_pos)
-			bone:set_rotation(self.temp_rot)
-			bone:set_scale(self.temp_scale)
+			bone:set_position(vec3(self.temp_pos.x, self.temp_pos.y, self.temp_pos.z))
+			bone:set_rotation(quat(self.temp_rot.x, self.temp_rot.y, self.temp_rot.z, self.temp_rot.w))
+			bone:set_scale(vec3(self.temp_scale.x, self.temp_scale.y, self.temp_scale.z))
 		end
 	end
 
@@ -388,28 +388,29 @@ function App:render_view(idx, camera)
 		self.shader:send("skinTintStrength", self.skin_tint_strength)
 	end
 
-	-- Render
-	self.scene:render_nodes(self.root, self.env)
-
-	-- Draw Skeleton Lines (View 1 & 2 only)
-	if idx <= 2 and self.bones and self.show_skeleton then
-		love.graphics.setShader()
-		love.graphics.setDepthMode("always", false) -- Draw on top?
-		love.graphics.setColor(1, 1, 0, 1)
-
+			-- Render
+			self.scene:render_nodes(self.root, self.env)
+		
+			-- Draw Skeleton Lines (View 1 & 2 only)
+			if idx <= 2 and self.bones and self.show_skeleton then			love.graphics.setShader()
+			love.graphics.setDepthMode("always", false) -- Draw on top?
+			love.graphics.setColor(1, 1, 0, 1)
+			
 		for _, bone in pairs(self.bones) do
 			local p1 = bone:get_world_position()
-			local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
+            if type(p1) == "table" and type(p1.x) == "number" and type(p1.y) == "number" then
+                local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
 
-			if s1.x > -100 and s1.x < self.view_w + 100 then
-				love.graphics.circle("fill", s1.x, s1.y, 3)
+                if s1.x > -100 and s1.x < self.view_w + 100 then
+                    love.graphics.circle("fill", s1.x, s1.y, 3)
 
-				if bone.parent and self.bones[bone.parent.name] then
-					local p2 = bone.parent:get_world_position()
-					local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
-					love.graphics.line(s1.x, s1.y, s2.x, s2.y)
-				end
-			end
+                    if bone.parent and self.bones[bone.parent.name] then
+                        local p2 = bone.parent:get_world_position()
+                        local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
+                        love.graphics.line(s1.x, s1.y, s2.x, s2.y)
+                    end
+                end
+            end
 		end
 	end
 
