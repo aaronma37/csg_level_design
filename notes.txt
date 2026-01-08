@@ -1,1 +1,3 @@
 menori needs flattened meshes, do math before  hand and set
+
+We MUST STORE BIND MATRICES AND APPLY THEM IN loop. menori tosses them

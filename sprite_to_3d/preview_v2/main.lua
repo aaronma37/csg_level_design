@@ -357,9 +357,13 @@ function App:update(dt)
 				-- Copy World Transform
 				model:set_position(bone:get_world_position())
 
-				-- Apply bind rotation offset if available
-				local bind_rot = self.bind_rotations[name] or quat()
-				model:set_rotation(bone:get_world_rotation() * bind_rot)
+				-- Apply bind rotation offset: Animated_World * Inverse(Bind_World)
+				local bind_world_rot = self.bind_rotations[name]
+				if bind_world_rot then
+					model:set_rotation(bone:get_world_rotation() * bind_world_rot:inverse())
+				else
+					model:set_rotation(bone:get_world_rotation())
+				end
 
 				model:set_scale(bone:get_world_scale())
 			end
