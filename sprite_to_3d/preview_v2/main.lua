@@ -5,7 +5,7 @@ local ml = menori.ml
 local vec3 = ml.vec3
 local quat = ml.quat
 
-local HEAD_PATH = "assets/hero/base_head.gltf" -- Removed? No, I need to keep this concept but generic.
+local HEAD_PATH = "assets/hero/base_head.gltf"
 local RIG_PATH = "assets/hero/rig.json"
 local ANIM_PATH = "assets/hero/walk.json"
 
@@ -79,13 +79,12 @@ function App:load_bone_model(bone_name)
 		end)
 
 		if scene_nodes[1] then
-			self.bones[bone_name]:attach(scene_nodes[1])
-			scene_nodes[1]:set_position(vec3(0, 0, 0))
-
-			-- Debug Cube Attachment
-			local debug_node = menori.ModelNode(self.debug_mesh, self.debug_mat)
-			debug_node:set_scale(vec3(4, 4, 4)) -- 4x4x4 cube
-			self.bones[bone_name]:attach(debug_node)
+			-- Attach to CharRoot (Flat Hierarchy for Rendering)
+            self.char_root:attach(scene_nodes[1])
+			scene_nodes[1]:set_position(vec3(0,0,0))
+            
+            -- Store reference for transform update
+            self.bone_models[bone_name] = scene_nodes[1]
 		end
 	end
 end
@@ -119,12 +118,6 @@ function App:load()
 	self.scene = menori.Scene()
 	self.root = menori.Node("scene_root")
 	self.env = menori.Environment(nil)
-
-	-- Root Debug Cube (Landmark)
-	-- local root_cube = menori.ModelNode(self.debug_mesh, self.debug_mat)
-	-- root_cube:set_position(vec3(0, 30, 0))
-	-- root_cube:set_scale(vec3(5, 5, 5))
-	-- self.root:attach(root_cube)
 
 	-- Lighting
 	self.env:set("ambientColor", { 0.2, 0.2, 0.25 })
@@ -189,9 +182,7 @@ function App:apply_animation(dt)
 		if bone then
 			local d = matrix_data
 			-- Convert Row-Major (JSON) to Column-Major (Menori)
-			-- JSON: m00 m01 m02 tx ...
-			-- Menori: m00 m10 m20 0 ...
-
+			
 			local m = ml.mat4({
 				d[1],
 				d[5],
@@ -229,19 +220,13 @@ function App:apply_animation(dt)
 end
 
 function App:build_skeleton()
-	if not self.rig_data then
-		return
-	end
+	if not self.rig_data then return end
 
 	self.bones = {}
+    self.bone_models = {}
 	self.char_root = menori.Node("CharacterRoot")
 	self.root:attach(self.char_root)
-
-	-- Debug Cube on Char Root
-	-- local char_debug = menori.ModelNode(self.debug_mesh, self.debug_mat)
-	-- char_debug:set_scale(vec3(3, 3, 3))
-	-- self.char_root:attach(char_debug)
-
+	
 	local rest_pose = self.rig_data.skeleton.rest_pose
 	local topology = self.rig_data.skeleton.topology
 
@@ -262,7 +247,6 @@ function App:build_skeleton()
 		local node = self.bones[bone_name]
 		local bp = rest_pose[bone_name] -- [x, y, z]
 
-		-- USER: THIS SPECIFIC OPERATION MAKES THE ANIMATION AND BONES LOOK CORRECT, BUT THE MESHES DISAPEAR
 		if parent_name and self.bones[parent_name] then
 			self.bones[parent_name]:attach(node)
 			local pp = rest_pose[parent_name]
@@ -273,11 +257,6 @@ function App:build_skeleton()
 			self.char_root:attach(node)
 			node:set_position(vec3(unpack(bp)))
 		end
-		-- END
-		-- USER: UNCOMMENTING THIS AND COMMENTING THE OTHER ONE SHOWS MESHES BUT BONES ARE MESSED UP
-		-- self.char_root:attach(node)
-		-- node:set_position(vec3(unpack(bp)))
-		-- END
 
 		self:load_bone_model(bone_name)
 	end
@@ -289,7 +268,22 @@ end
 function App:update(dt)
 	self.time = self.time + dt
 	self:apply_animation(dt)
-
+    
+    -- Sync Models to Bones (Constraint)
+    if self.bones and self.bone_models then
+        for name, model in pairs(self.bone_models) do
+            local bone = self.bones[name]
+            if bone then
+                -- Copy World Transform
+                model:set_position(bone:get_world_position())
+                model:set_rotation(bone:get_world_rotation())
+                model:set_scale(bone:get_world_scale())
+            end
+        end
+        -- Update scene graph again to apply these new world transforms to the flat models
+        self.root:recursive_update_transform()
+    end
+	
 	-- Camera Controls
 	if love.keyboard.isDown("left") then
 		self.cam_angle = self.cam_angle - dt * 2
@@ -393,15 +387,6 @@ function App:render_view(idx, camera)
 	if self.shader:hasUniform("skinTintStrength") then
 		self.shader:send("skinTintStrength", self.skin_tint_strength)
 	end
-
-	-- Update Mesh Visibility
-	-- if self.char_root then
-	-- 	self.char_root:traverse(function(n)
-	-- 		if n.is_model_node then
-	-- 			n.render_flag = self.show_mesh
-	-- 		end
-	-- 	end)
-	-- end
 
 	-- Render
 	self.scene:render_nodes(self.root, self.env)
