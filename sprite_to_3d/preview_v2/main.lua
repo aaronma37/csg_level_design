@@ -110,6 +110,7 @@ function App:load()
 	end
 
 	self.palette = love.graphics.newImage("assets/hero/palette_texture.png")
+	self.ref_sprite_img = love.graphics.newImage("assets/t_pose_sprite.png")
 
 	-- Debug Cube
 	self.debug_mesh = menori.Box(1, 1, 1)
@@ -501,6 +502,37 @@ function App:render_view(idx, camera)
 			node.material:set("baseColor", color)
 		end
 	end)
+
+	-- Render Reference Sprite (View 1 only)
+	if idx == 1 and self.ref_sprite_img then
+		love.graphics.setShader()
+		love.graphics.setDepthMode("always", false)
+
+		local iw, ih = self.ref_sprite_img:getDimensions()
+		local world_h = 50 -- Match rig height
+		local o_size = 30
+		local scale = (world_h * (self.view_h / (o_size * 2))) / ih
+
+		-- Screen center corresponds to world (0, 25, 0)
+		-- Sprite base should be at world y=0
+		-- In ortho view, world y=0 is (25 units below center)
+		-- 25 units in pixels = 25 * (view_h / 60)
+		local screen_y_base = (self.view_h / 2) + (25 * (self.view_h / 60))
+
+		love.graphics.setColor(1, 1, 1, 0.4) -- Faded
+		love.graphics.draw(
+			self.ref_sprite_img,
+			self.view_w / 2,
+			screen_y_base,
+			0,
+			scale,
+			scale,
+			iw / 2,
+			ih
+		)
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.setDepthMode("lequal", true)
+	end
 
 	-- Render using standard engine path
 	self.scene:render_nodes(self.root, self.env)
