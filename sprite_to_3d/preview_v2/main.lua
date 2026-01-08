@@ -12,12 +12,12 @@ local ANIM_PATH = "assets/hero/walk.json"
 local App = {
 	time = 0,
 	animation_speed = 24,
-	
+
 	-- Camera Params
 	cam_angle = math.pi / 4,
-	cam_dist = 60,
-	cam_height = 30,
-	cam_center = vec3(0, 30, 0),
+	cam_dist = 100,
+	cam_height = 20,
+	cam_center = vec3(0, 25, 0),
 
 	-- Skin Tint
 	skin_tint = { 1.0, 0.7, 0.7 },
@@ -58,7 +58,9 @@ end
 
 function App:load_bone_model(bone_name)
 	local path = self:get_model_path(bone_name)
-	if not path then return end
+	if not path then
+		return
+	end
 
 	if love.filesystem.getInfo(path) then
 		print("Loading: " .. path)
@@ -69,7 +71,7 @@ function App:load_bone_model(bone_name)
 					print("  Found model node: " .. (n.name or "unnamed"))
 					n.material.main_texture = self.palette
 					n.material:set_shader(self.shader)
-					n.material:set("unlit", false)
+					n.material:set("unlit", true)
 					n.material:set("baseColor", { 1, 1, 1, 1 })
 					n.material.mesh_cull_mode = "none"
 				end
@@ -78,7 +80,12 @@ function App:load_bone_model(bone_name)
 
 		if scene_nodes[1] then
 			self.bones[bone_name]:attach(scene_nodes[1])
-			scene_nodes[1]:set_position(vec3(0,0,0))
+			scene_nodes[1]:set_position(vec3(0, 0, 0))
+
+			-- Debug Cube Attachment
+			local debug_node = menori.ModelNode(self.debug_mesh, self.debug_mat)
+			debug_node:set_scale(vec3(4, 4, 4)) -- 4x4x4 cube
+			self.bones[bone_name]:attach(debug_node)
 		end
 	end
 end
@@ -101,10 +108,23 @@ function App:load()
 
 	self.palette = love.graphics.newImage("assets/hero/palette_texture.png")
 
+	-- Debug Cube
+	self.debug_mesh = menori.Box(1, 1, 1)
+	self.debug_mat = menori.Material()
+	self.debug_mat:set("baseColor", { 1, 0, 0, 1 })
+	self.debug_mat:set("unlit", true)
+	self.debug_mat:set_shader(self.shader)
+
 	-- 2. Scene Setup
 	self.scene = menori.Scene()
 	self.root = menori.Node("scene_root")
 	self.env = menori.Environment(nil)
+
+	-- Root Debug Cube (Landmark)
+	-- local root_cube = menori.ModelNode(self.debug_mesh, self.debug_mat)
+	-- root_cube:set_position(vec3(0, 30, 0))
+	-- root_cube:set_scale(vec3(5, 5, 5))
+	-- self.root:attach(root_cube)
 
 	-- Lighting
 	self.env:set("ambientColor", { 0.2, 0.2, 0.25 })
@@ -143,20 +163,26 @@ function App:load()
 			camera = menori.Camera3D((i <= 2) and "ortho" or "perspective", { fov = 40, ortho_size = 5 }),
 		}
 	end
-	
+
 	self.temp_pos = vec3()
 	self.temp_rot = quat()
 	self.temp_scale = vec3()
 end
 
 function App:apply_animation(dt)
-	if not self.anim_data or not self.bones then return end
+	if not self.anim_data or not self.bones then
+		return
+	end
 
 	local frame_count = #self.anim_data.frames
-	if frame_count == 0 then return end
+	if frame_count == 0 then
+		return
+	end
 
 	local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
 	local frame = self.anim_data.frames[current_frame_idx + 1]
+
+	local debug_frame = (math.floor(self.time * 60) % 60 == 0)
 
 	for bone_name, matrix_data in pairs(frame) do
 		local bone = self.bones[bone_name]
@@ -165,32 +191,57 @@ function App:apply_animation(dt)
 			-- Convert Row-Major (JSON) to Column-Major (Menori)
 			-- JSON: m00 m01 m02 tx ...
 			-- Menori: m00 m10 m20 0 ...
-			
+
 			local m = ml.mat4({
-				d[1], d[5], d[9], d[13],
-				d[2], d[6], d[10], d[14],
-				d[3], d[7], d[11], d[15],
-				d[4], d[8], d[12], d[16]
+				d[1],
+				d[5],
+				d[9],
+				d[13],
+				d[2],
+				d[6],
+				d[10],
+				d[14],
+				d[3],
+				d[7],
+				d[11],
+				d[15],
+				d[4],
+				d[8],
+				d[12],
+				d[16],
 			})
-			
+
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
-			
+
+			if debug_frame and (bone_name == "mixamorig_Hips" or bone_name == "mixamorig_Head") then
+				print(
+					string.format("  Scale: %.2f, %.2f, %.2f", self.temp_scale.x, self.temp_scale.y, self.temp_scale.z)
+				)
+			end
+
 			bone:set_position(self.temp_pos)
 			bone:set_rotation(self.temp_rot)
 			bone:set_scale(self.temp_scale)
 		end
 	end
-	
+
 	self.root:recursive_update_transform()
 end
 
 function App:build_skeleton()
-	if not self.rig_data then return end
+	if not self.rig_data then
+		return
+	end
 
 	self.bones = {}
 	self.char_root = menori.Node("CharacterRoot")
 	self.root:attach(self.char_root)
-	
+
+	-- Debug Cube on Char Root
+	-- local char_debug = menori.ModelNode(self.debug_mesh, self.debug_mat)
+	-- char_debug:set_scale(vec3(3, 3, 3))
+	-- self.char_root:attach(char_debug)
+
 	local rest_pose = self.rig_data.skeleton.rest_pose
 	local topology = self.rig_data.skeleton.topology
 
@@ -198,6 +249,12 @@ function App:build_skeleton()
 	for bone_name, _ in pairs(rest_pose) do
 		self.bones[bone_name] = menori.Node(bone_name)
 		self.bones[bone_name].name = bone_name
+
+		if bone_name == "mixamorig_Hips" then
+			local hip_debug = menori.ModelNode(self.debug_mesh, self.debug_mat)
+			hip_debug:set_scale(vec3(4, 4, 4))
+			self.bones[bone_name]:attach(hip_debug)
+		end
 	end
 
 	-- Link Nodes & Set Rest Pose & Load Models
@@ -205,6 +262,7 @@ function App:build_skeleton()
 		local node = self.bones[bone_name]
 		local bp = rest_pose[bone_name] -- [x, y, z]
 
+		-- USER: THIS SPECIFIC OPERATION MAKES THE ANIMATION AND BONES LOOK CORRECT, BUT THE MESHES DISAPEAR
 		if parent_name and self.bones[parent_name] then
 			self.bones[parent_name]:attach(node)
 			local pp = rest_pose[parent_name]
@@ -215,10 +273,15 @@ function App:build_skeleton()
 			self.char_root:attach(node)
 			node:set_position(vec3(unpack(bp)))
 		end
+		-- END
+		-- USER: UNCOMMENTING THIS AND COMMENTING THE OTHER ONE SHOWS MESHES BUT BONES ARE MESSED UP
+		-- self.char_root:attach(node)
+		-- node:set_position(vec3(unpack(bp)))
+		-- END
 
 		self:load_bone_model(bone_name)
 	end
-	
+
 	-- Force update transforms to ensure positions are correct
 	self.root:recursive_update_transform()
 end
@@ -226,14 +289,26 @@ end
 function App:update(dt)
 	self.time = self.time + dt
 	self:apply_animation(dt)
-	
+
 	-- Camera Controls
-	if love.keyboard.isDown("left") then self.cam_angle = self.cam_angle - dt * 2 end
-	if love.keyboard.isDown("right") then self.cam_angle = self.cam_angle + dt * 2 end
-	if love.keyboard.isDown("up") then self.cam_dist = math.max(2, self.cam_dist - dt * 10) end
-	if love.keyboard.isDown("down") then self.cam_dist = self.cam_dist + dt * 10 end
-	if love.keyboard.isDown("w") then self.cam_height = self.cam_height + dt * 5 end
-	if love.keyboard.isDown("s") then self.cam_height = self.cam_height - dt * 5 end
+	if love.keyboard.isDown("left") then
+		self.cam_angle = self.cam_angle - dt * 2
+	end
+	if love.keyboard.isDown("right") then
+		self.cam_angle = self.cam_angle + dt * 2
+	end
+	if love.keyboard.isDown("up") then
+		self.cam_dist = math.max(2, self.cam_dist - dt * 10)
+	end
+	if love.keyboard.isDown("down") then
+		self.cam_dist = self.cam_dist + dt * 10
+	end
+	if love.keyboard.isDown("w") then
+		self.cam_height = self.cam_height + dt * 5
+	end
+	if love.keyboard.isDown("s") then
+		self.cam_height = self.cam_height - dt * 5
+	end
 
 	-- Skin Tint Controls
 	local tint_speed = dt * 0.5
@@ -248,7 +323,9 @@ function App:update(dt)
 	end
 
 	-- Clamp tint
-	for i=1,3 do self.skin_tint[i] = math.max(0, math.min(1, self.skin_tint[i])) end
+	for i = 1, 3 do
+		self.skin_tint[i] = math.max(0, math.min(1, self.skin_tint[i]))
+	end
 
 	if love.keyboard.isDown("1") and not self.k_1_down then
 		self.show_skeleton = not self.show_skeleton
@@ -267,7 +344,7 @@ function App:update(dt)
 	-- Update Cameras
 	local aspect = self.view_w / self.view_h
 	local o_size = 30 -- Ortho size covers whole body
-	
+
 	-- View 1: Front (Ortho)
 	self.views[1].camera.m_projection:ortho_RH_NO(-o_size * aspect, o_size * aspect, -o_size, o_size, -200, 200)
 	self.views[1].camera.eye = vec3(0, 25, 100)
@@ -296,12 +373,12 @@ function App:render_view(idx, camera)
 	local v = self.views[idx]
 	love.graphics.setCanvas({ v.canvas, depthstencil = v.depth })
 	love.graphics.clear(0.1, 0.1, 0.12, 1, true, true)
-	love.graphics.setDepthMode("lequal", true)
+	love.graphics.setDepthMode("always", false) -- Disable depth test for debug
 	love.graphics.setMeshCullMode("none")
 	love.graphics.setColor(1, 1, 1, 1)
 
 	self.env.camera = camera
-	
+
 	-- Update transforms
 	self.root:recursive_update_transform()
 	self.scene:update_nodes(self.root, self.env)
@@ -318,13 +395,13 @@ function App:render_view(idx, camera)
 	end
 
 	-- Update Mesh Visibility
-	if self.char_root then
-		self.char_root:traverse(function(n)
-			if n.is_model_node then
-				n.render_flag = self.show_mesh
-			end
-		end)
-	end
+	-- if self.char_root then
+	-- 	self.char_root:traverse(function(n)
+	-- 		if n.is_model_node then
+	-- 			n.render_flag = self.show_mesh
+	-- 		end
+	-- 	end)
+	-- end
 
 	-- Render
 	self.scene:render_nodes(self.root, self.env)
@@ -334,17 +411,17 @@ function App:render_view(idx, camera)
 		love.graphics.setShader()
 		love.graphics.setDepthMode("always", false) -- Draw on top?
 		love.graphics.setColor(1, 1, 0, 1)
-		
+
 		for _, bone in pairs(self.bones) do
 			local p1 = bone:get_world_position()
-			local s1 = camera:world_to_screen_point(p1, {0,0, self.view_w, self.view_h})
-			
+			local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
+
 			if s1.x > -100 and s1.x < self.view_w + 100 then
 				love.graphics.circle("fill", s1.x, s1.y, 3)
-				
+
 				if bone.parent and self.bones[bone.parent.name] then
 					local p2 = bone.parent:get_world_position()
-					local s2 = camera:world_to_screen_point(p2, {0,0, self.view_w, self.view_h})
+					local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
 					love.graphics.line(s1.x, s1.y, s2.x, s2.y)
 				end
 			end
@@ -355,7 +432,7 @@ function App:render_view(idx, camera)
 end
 
 function App:draw()
-	for i=1,4 do
+	for i = 1, 4 do
 		self:render_view(i, self.views[i].camera)
 	end
 
@@ -381,14 +458,18 @@ function App:draw()
 	love.graphics.print("4: Perspective (Aux)", self.view_w + 10, self.view_h + 10)
 
 	love.graphics.print(
-		string.format(
-			"Skin Tint: %.2f, %.2f, %.2f",
-			self.skin_tint[1], self.skin_tint[2], self.skin_tint[3]
-		),
-		10, self.view_h * 2 - 20
+		string.format("Skin Tint: %.2f, %.2f, %.2f", self.skin_tint[1], self.skin_tint[2], self.skin_tint[3]),
+		10,
+		self.view_h * 2 - 20
 	)
 end
 
-function love.load() App:load() end
-function love.update(dt) App:update(dt) end
-function love.draw() App:draw() end
+function love.load()
+	App:load()
+end
+function love.update(dt)
+	App:update(dt)
+end
+function love.draw()
+	App:draw()
+end

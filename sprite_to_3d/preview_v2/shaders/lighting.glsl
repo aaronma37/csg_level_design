@@ -51,7 +51,7 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
         texColor.rgb = mix(texColor.rgb, tinted, skinTintStrength);
     }
 
-    vec4 tint = v_color * baseColor * color;
+    vec4 tint = baseColor * color;
 
     if (unlit) {
         return vec4(texColor.rgb * tint.rgb, texColor.a * tint.a);
