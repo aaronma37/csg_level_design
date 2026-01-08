@@ -118,4 +118,19 @@ if __name__ == "__main__":
     
     output_dir = "sprite_to_3d/actor_assets/hero"
     os.makedirs(output_dir, exist_ok=True)
+    
+    # Extract Walk
     extract_animation_matrices(dae_path, os.path.join(output_dir, "walk.json"), scale)
+    
+    # Extract Run
+    run_dae = "sprite_to_3d/imports/Running.dae"
+    if os.path.exists(run_dae):
+        extract_animation_matrices(run_dae, os.path.join(output_dir, "run.json"), scale)
+
+    # Sync to preview_v2
+    preview_assets = "sprite_to_3d/preview_v2/assets/hero"
+    if os.path.exists(preview_assets):
+        import shutil
+        shutil.copy(os.path.join(output_dir, "walk.json"), os.path.join(preview_assets, "walk.json"))
+        if os.path.exists(os.path.join(output_dir, "run.json")):
+            shutil.copy(os.path.join(output_dir, "run.json"), os.path.join(preview_assets, "run.json"))

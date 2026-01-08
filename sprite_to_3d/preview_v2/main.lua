@@ -7,7 +7,6 @@ local quat = ml.quat
 
 local HEAD_PATH = "assets/hero/base_head.gltf"
 local RIG_PATH = "assets/hero/rig.json"
-local ANIM_PATH = "assets/hero/walk.json"
 
 local App = {
 	time = 0,
@@ -25,6 +24,9 @@ local App = {
 
 	show_skeleton = true,
 	show_mesh = true,
+
+	animations = {},
+	active_anim_idx = 1,
 }
 
 function App:get_model_path(bone_name)
@@ -140,14 +142,27 @@ function App:load()
 		print("FAILED TO LOAD RIG: " .. RIG_PATH)
 	end
 
-	-- 3.5 Load Animation
-	local anim_content, _ = love.filesystem.read(ANIM_PATH)
-	if anim_content then
-		self.anim_data = json.decode(anim_content)
-		print("Loaded Animation: " .. ANIM_PATH .. " | Frames: " .. tostring(#self.anim_data.frames))
-	else
-		print("FAILED TO LOAD ANIMATION: " .. ANIM_PATH)
+	-- 3.5 Load Animations
+	local anim_files = {
+		{ name = "Walk", path = "assets/hero/walk.json" },
+		{ name = "Run", path = "assets/hero/run.json" },
+	}
+
+	for _, info in ipairs(anim_files) do
+		local content, _ = love.filesystem.read(info.path)
+		if content then
+			local data = json.decode(content)
+			table.insert(self.animations, {
+				name = info.name,
+				data = data,
+			})
+			print("Loaded Animation: " .. info.name .. " | Frames: " .. tostring(#data.frames))
+		else
+			print("FAILED TO LOAD ANIMATION: " .. info.path)
+		end
 	end
+
+	self.anim_data = self.animations[self.active_anim_idx] and self.animations[self.active_anim_idx].data
 
 	-- 4. View Setup
 	local win_w, win_h = love.graphics.getDimensions()
@@ -187,17 +202,19 @@ function App:load()
 end
 
 function App:apply_animation(dt)
-	if not self.anim_data or not self.bones then
+	local active_anim = self.animations[self.active_anim_idx]
+	if not active_anim or not self.bones then
 		return
 	end
 
-	local frame_count = #self.anim_data.frames
+	local anim_data = active_anim.data
+	local frame_count = #anim_data.frames
 	if frame_count == 0 then
 		return
 	end
 
 	local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
-	local frame = self.anim_data.frames[current_frame_idx + 1]
+	local frame = anim_data.frames[current_frame_idx + 1]
 
 	local debug_frame = (math.floor(self.time * 60) % 60 == 0)
 
@@ -424,6 +441,14 @@ function App:update(dt)
 		self.k_2_down = false
 	end
 
+	if love.keyboard.isDown("tab") and not self.k_tab_down then
+		self.active_anim_idx = (self.active_anim_idx % #self.animations) + 1
+		self.time = 0 -- Reset time for clean start
+		self.k_tab_down = true
+	elseif not love.keyboard.isDown("tab") then
+		self.k_tab_down = false
+	end
+
 	-- Update Cameras
 	local aspect = self.view_w / self.view_h
 	local o_size = 30 -- Ortho size covers whole body
@@ -618,6 +643,10 @@ function App:draw()
 	end
 
 	love.graphics.setColor(1, 1, 1)
+	local active_anim = self.animations[self.active_anim_idx]
+	local anim_name = active_anim and active_anim.name or "None"
+	love.graphics.print("Animation: " .. anim_name .. " (Tab to switch)", 10, self.view_h * 2 - 40)
+
 	love.graphics.print(
 		string.format("Skin Tint: %.2f, %.2f, %.2f", self.skin_tint[1], self.skin_tint[2], self.skin_tint[3]),
 		10,
