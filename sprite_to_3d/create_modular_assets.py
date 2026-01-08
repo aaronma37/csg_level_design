@@ -64,25 +64,20 @@ def create_modular_assets(rig_json_path, output_dir, prefix="base"):
         # we should pass them as (lx, lz, ly) to VOX, 
         # so that VOX-Z (up) gets the Y-up value.
         
-        # VoxelRigger.decompose_parts saved as [vx, vy, vz, color] 
-        # where vy is character-height (Y-up).
-        # To make it local to the bone, we subtract the bone rest position.
-        bone_rest_pos = rig_data["skeleton"]["rest_pose"][bone_name]
+        # VoxelRigger.decompose_parts already saved voxels as [lx, ly, lz, color] 
+        # relative to the bone pivot (Y-up character space).
         
         local_voxels = []
-        for vx, vy, vz, color in voxels:
-            # 1. Localize to bone pivot (Still in Y-up character space)
-            lx = vx - bone_rest_pos[0]
-            ly = vy - bone_rest_pos[1]
-            lz = vz - bone_rest_pos[2]
-            
-            # 2. Convert to MagicaVoxel space (Z-up)
+        for lx, ly, lz, color in voxels:
+            # 1. Convert to MagicaVoxel space (Z-up)
             # Character Y (height) -> VOX Z (height)
             # Character Z (forward) -> VOX Y (depth)
             # Character X (right) -> VOX X (width)
             local_voxels.append((int(lx), int(lz), int(ly), color))
             
         writer = scene_composer.VoxWriter()
+        # IMPORTANT: Use translate_to_origin=False if/when we add it to VoxWriter,
+        # but for now we rely on the no_center logic in save/VoxToGltf.
         model_idx = writer.add_model(local_voxels)
         # Place at (0,0,0) in the temporary VOX world
         instances = [(model_idx, (0, 0, 0), 0, "part")]
@@ -91,11 +86,19 @@ def create_modular_assets(rig_json_path, output_dir, prefix="base"):
             tmp_vox_path = tmp.name
         
         try:
-            writer.save(tmp_vox_path, instances)
+            writer.save(tmp_vox_path, instances, no_center=True)
             
             # Convert to GLTF
-            converter = VoxToGltf(tmp_vox_path)
+            converter = VoxToGltf(tmp_vox_path, no_center=True)
             converter.export(gltf_path)
+            
+            # Also copy to preview_v2 assets if they exist
+            preview_hero_dir = os.path.join(os.path.dirname(__file__), "preview_v2", "assets", "hero")
+            if os.path.exists(preview_hero_dir):
+                import shutil
+                shutil.copy(gltf_path, os.path.join(preview_hero_dir, gltf_filename))
+                bin_filename = gltf_filename.replace(".gltf", ".bin")
+                shutil.copy(gltf_path.replace(".gltf", ".bin"), os.path.join(preview_hero_dir, bin_filename))
         finally:
             if os.path.exists(tmp_vox_path):
                 os.remove(tmp_vox_path)

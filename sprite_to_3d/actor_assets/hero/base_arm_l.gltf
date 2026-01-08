@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 3216,
+      "byteLength": 2160,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 3216,
-      "byteLength": 3216,
+      "byteOffset": 2160,
+      "byteLength": 2160,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 6432,
-      "byteLength": 2144,
+      "byteOffset": 4320,
+      "byteLength": 1440,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 8576,
-      "byteLength": 1608,
+      "byteOffset": 5760,
+      "byteLength": 1080,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 268,
+      "count": 180,
       "type": "VEC3",
       "max": [
-        6.0,
-        10.0,
-        3.0
+        3.0,
+        2.0,
+        2.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -2.0,
+        -7.0,
+        -1.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 268,
+      "count": 180,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 268,
+      "count": 180,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 402,
+      "count": 270,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 10184,
+      "byteLength": 6840,
       "uri": "base_arm_l.bin"
     }
   ]

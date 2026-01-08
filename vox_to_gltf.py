@@ -24,8 +24,9 @@ def generate_palette_png(filename="palette_texture.png"):
     print(f"Generated {filename}")
 
 class VoxToGltf:
-    def __init__(self, vox_path):
+    def __init__(self, vox_path, no_center=False):
         self.vox_path = vox_path
+        self.no_center = no_center
         self.models = [] 
         self.nodes = {}
         self.world_voxels = {}
@@ -118,17 +119,16 @@ class VoxToGltf:
         print(f"Recomposing {len(self.models)} models into world space...")
         
         # MagicaVoxel rotation lookup (24 possible orientations)
-        def apply_rot(lx, ly, lz, mx, my, mz, r_byte):
-            # 1. Center coordinates
-            cx, cy, cz = lx - mx//2, ly - my//2, lz - mz//2
+        def apply_rot(lx, ly, lz, mx, my, mz, r_byte, no_center=False):
+            # 1. Center coordinates (unless no_center is True)
+            if no_center:
+                cx, cy, cz = lx, ly, lz
+            else:
+                cx, cy, cz = lx - mx//2, ly - my//2, lz - mz//2
             
             # 2. Extract rotation components from byte
-            # Bits 0-1: Index of row 0
-            # Bits 2-3: Index of row 1
-            # Bits 4, 5, 6: Signs of row 0, 1, 2
             r0_idx = r_byte & 3
             r1_idx = (r_byte >> 2) & 3
-            # Third row index is implied
             r2_idx = 3 - r0_idx - r1_idx
             
             s0 = -1 if (r_byte >> 4) & 1 else 1
@@ -147,9 +147,6 @@ class VoxToGltf:
             if not node: return
             if node["type"] == "TRN":
                 t_parts = [int(x) for x in node["t"].split()]
-                # MagicaVoxel rotations don't stack simple additions, 
-                # but for our simple tavern layout they are top-level.
-                # However, we'll just track the latest rotation for the child SHP.
                 r_byte = int(node.get("r", "4"))
                 new_t = (current_t[0]+t_parts[0], current_t[1]+t_parts[1], current_t[2]+t_parts[2])
                 traverse(node["child"], new_t, r_byte)
@@ -159,10 +156,10 @@ class VoxToGltf:
                 model = self.models[node["model"]]
                 mx, my, mz = model["dims"]
                 for (lx, ly, lz), c in model["voxels"].items():
-                    # Apply rotation around local center
-                    nx, ny, nz = apply_rot(lx, ly, lz, mx, my, mz, current_r)
+                    # Apply rotation around local center (or origin if no_center)
+                    nx, ny, nz = apply_rot(lx, ly, lz, mx, my, mz, current_r, self.no_center)
                     
-                    # Apply world translation (current_t is already the center pos in MV)
+                    # Apply world translation
                     wx, wy, wz = int(nx + current_t[0]), int(ny + current_t[1]), int(nz + current_t[2])
                     
                     self.world_voxels[(wx, wy, wz)] = c
@@ -272,13 +269,37 @@ class VoxToGltf:
         print(f"Exported {out_path} and {bin_name}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2: print("Usage: python vox_to_gltf.py <input.vox> [output.gltf]"); sys.exit(1)
-    input_vox, output_gltf = sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].replace(".vox", ".gltf")
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Convert VOX to GLTF.")
+
+    parser.add_argument("input", help="Input VOX file.")
+
+    parser.add_argument("output", nargs="?", help="Output GLTF file.")
+
+    parser.add_argument("--no-center", action="store_true", help="Skip automatic centering of voxels.")
+
     
+
+    args = parser.parse_args()
+
+    input_vox = args.input
+
+    output_gltf = args.output if args.output else input_vox.replace(".vox", ".gltf")
+
+    
+
     # Determine output directory
+
     output_dir = os.path.dirname(output_gltf)
+
     palette_path = os.path.join(output_dir, "palette_texture.png") if output_dir else "palette_texture.png"
+
     
+
     # Always generate to stay in sync with palette.py
+
     generate_palette_png(palette_path)
-    VoxToGltf(input_vox).export(output_gltf)
+
+    VoxToGltf(input_vox, no_center=args.no_center).export(output_gltf)

@@ -34,7 +34,7 @@ class VoxWriter:
     def _make_chunk(self, tag, content):
         return tag + struct.pack('<II', len(content), 0) + content
 
-    def save(self, filename, scene_instances):
+    def save(self, filename, scene_instances, no_center=False):
         """scene_instances: list of (model_index, pos, rot, name)"""
         chunks = b''
         
@@ -54,15 +54,19 @@ class VoxWriter:
         # PRE-GENERATE Instances to know their IDs
         instance_chunks = b''
         for model_idx, pos, rot, name in scene_instances:
-            m_size, _, _ = self.models[model_idx]
+            m_size, _, m_min = self.models[model_idx]
             
-            # Handle rotation-swapped dimensions for center calculation
-            cur_w, cur_d = m_size[0], m_size[1]
-            if rot == 90 or rot == 270:
-                cur_w, cur_d = m_size[1], m_size[0]
-                
-            # Translation is to the center of the model
-            tx, ty, tz = int(pos[0] + cur_w // 2), int(pos[1] + cur_d // 2), int(pos[2] + m_size[2] // 2)
+            if no_center:
+                # Use minimum position + instance position
+                tx, ty, tz = int(pos[0] + m_min[0]), int(pos[1] + m_min[1]), int(pos[2] + m_min[2])
+            else:
+                # Handle rotation-swapped dimensions for center calculation
+                cur_w, cur_d = m_size[0], m_size[1]
+                if rot == 90 or rot == 270:
+                    cur_w, cur_d = m_size[1], m_size[0]
+                    
+                # Translation is to the center of the model
+                tx, ty, tz = int(pos[0] + cur_w // 2), int(pos[1] + cur_d // 2), int(pos[2] + m_size[2] // 2)
             
             shp_id = next_id; next_id += 1
             trn_id = next_id; next_id += 1

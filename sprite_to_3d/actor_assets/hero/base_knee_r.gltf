@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 3408,
+      "byteLength": 2304,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 3408,
-      "byteLength": 3408,
+      "byteOffset": 2304,
+      "byteLength": 2304,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 6816,
-      "byteLength": 2272,
+      "byteOffset": 4608,
+      "byteLength": 1536,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 9088,
-      "byteLength": 1704,
+      "byteOffset": 6144,
+      "byteLength": 1152,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 284,
+      "count": 192,
       "type": "VEC3",
       "max": [
-        4.0,
-        14.0,
-        5.0
+        2.0,
+        2.0,
+        2.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -1.0,
+        -11.0,
+        -2.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 284,
+      "count": 192,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 284,
+      "count": 192,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 426,
+      "count": 288,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 10792,
+      "byteLength": 7296,
       "uri": "base_knee_r.bin"
     }
   ]

@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 2352,
+      "byteLength": 1968,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 2352,
-      "byteLength": 2352,
+      "byteOffset": 1968,
+      "byteLength": 1968,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 4704,
-      "byteLength": 1568,
+      "byteOffset": 3936,
+      "byteLength": 1312,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 6272,
-      "byteLength": 1176,
+      "byteOffset": 5248,
+      "byteLength": 984,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 196,
+      "count": 164,
       "type": "VEC3",
       "max": [
-        4.0,
-        9.0,
-        4.0
+        2.0,
+        2.0,
+        3.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -1.0,
+        -6.0,
+        -1.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 196,
+      "count": 164,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 196,
+      "count": 164,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 294,
+      "count": 246,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 7448,
+      "byteLength": 6232,
       "uri": "base_arm_r.bin"
     }
   ]

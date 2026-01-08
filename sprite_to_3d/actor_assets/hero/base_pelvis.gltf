@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 8352,
+      "byteLength": 6672,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 8352,
-      "byteLength": 8352,
+      "byteOffset": 6672,
+      "byteLength": 6672,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 16704,
-      "byteLength": 5568,
+      "byteOffset": 13344,
+      "byteLength": 4448,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 22272,
-      "byteLength": 4176,
+      "byteOffset": 17792,
+      "byteLength": 3336,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 696,
+      "count": 556,
       "type": "VEC3",
       "max": [
-        10.0,
-        9.0,
-        6.0
+        5.0,
+        3.0,
+        3.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -5.0,
+        -5.0,
+        -3.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 696,
+      "count": 556,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 696,
+      "count": 556,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 1044,
+      "count": 834,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 26448,
+      "byteLength": 21128,
       "uri": "base_pelvis.bin"
     }
   ]

@@ -160,6 +160,29 @@ function App:load()
 	self.temp_pos = vec3()
 	self.temp_rot = quat()
 	self.temp_scale = vec3()
+
+	self.bone_colors = {
+		mixamorig_Hips = { 1, 0, 0, 1 },
+		mixamorig_Spine = { 0, 1, 0, 1 },
+		mixamorig_Spine1 = { 0, 0, 1, 1 },
+		mixamorig_Spine2 = { 1, 1, 0, 1 },
+		mixamorig_Neck = { 1, 0, 1, 1 },
+		mixamorig_Head = { 0, 1, 1, 1 },
+		mixamorig_LeftShoulder = { 0.5, 0, 0, 1 },
+		mixamorig_LeftArm = { 0, 0.5, 0, 1 },
+		mixamorig_LeftForeArm = { 0, 0, 0.5, 1 },
+		mixamorig_LeftHand = { 0.5, 0.5, 0, 1 },
+		mixamorig_RightShoulder = { 0.5, 0, 0.5, 1 },
+		mixamorig_RightArm = { 0, 0.5, 0.5, 1 },
+		mixamorig_RightForeArm = { 0.8, 0.2, 0.2, 1 },
+		mixamorig_RightHand = { 0.2, 0.8, 0.2, 1 },
+		mixamorig_LeftUpLeg = { 0.2, 0.2, 0.8, 1 },
+		mixamorig_LeftLeg = { 0.8, 0.8, 0.2, 1 },
+		mixamorig_LeftFoot = { 0.8, 0.2, 0.8, 1 },
+		mixamorig_RightUpLeg = { 0.2, 0.8, 0.8, 1 },
+		mixamorig_RightLeg = { 0.5, 0.5, 0.5, 1 },
+		mixamorig_RightFoot = { 1, 0.5, 0, 1 },
+	}
 end
 
 function App:apply_animation(dt)
@@ -367,7 +390,7 @@ function App:render_view(idx, camera)
 	local v = self.views[idx]
 	love.graphics.setCanvas({ v.canvas, depthstencil = v.depth })
 	love.graphics.clear(0.1, 0.1, 0.12, 1, true, true)
-	love.graphics.setDepthMode("always", false) -- Disable depth test for debug
+	love.graphics.setDepthMode("lequal", true)
 	love.graphics.setMeshCullMode("none")
 	love.graphics.setColor(1, 1, 1, 1)
 
@@ -388,29 +411,54 @@ function App:render_view(idx, camera)
 		self.shader:send("skinTintStrength", self.skin_tint_strength)
 	end
 
-			-- Render
-			self.scene:render_nodes(self.root, self.env)
-		
-			-- Draw Skeleton Lines (View 1 & 2 only)
-			if idx <= 2 and self.bones and self.show_skeleton then			love.graphics.setShader()
-			love.graphics.setDepthMode("always", false) -- Draw on top?
-			love.graphics.setColor(1, 1, 0, 1)
-			
+	-- Apply Colors before rendering
+	self.root:traverse(function(node)
+		if node.is_model_node then
+			local color = { 1, 1, 1, 1 }
+			if idx == 4 and self.bone_colors then
+				-- Find which bone this node belongs to
+				local owner_bone = nil
+				for bone_name, model_root in pairs(self.bone_models) do
+					local p = node
+					while p do
+						if p == model_root then
+							owner_bone = bone_name
+							break
+						end
+						p = p.parent
+					end
+					if owner_bone then break end
+				end
+				color = self.bone_colors[owner_bone] or { 1, 1, 1, 1 }
+			end
+			node.material:set("baseColor", color)
+		end
+	end)
+
+	-- Render using standard engine path
+	self.scene:render_nodes(self.root, self.env)
+
+	-- Draw Skeleton Lines (View 1 & 2 only)
+	if idx <= 2 and self.bones and self.show_skeleton then
+		love.graphics.setShader()
+		love.graphics.setDepthMode("always", false)
+		love.graphics.setColor(1, 1, 0, 1)
+
 		for _, bone in pairs(self.bones) do
 			local p1 = bone:get_world_position()
-            if type(p1) == "table" and type(p1.x) == "number" and type(p1.y) == "number" then
-                local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
+			if type(p1) == "table" and type(p1.x) == "number" and type(p1.y) == "number" then
+				local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
 
-                if s1.x > -100 and s1.x < self.view_w + 100 then
-                    love.graphics.circle("fill", s1.x, s1.y, 3)
+				if s1.x > -100 and s1.x < self.view_w + 100 then
+					love.graphics.circle("fill", s1.x, s1.y, 3)
 
-                    if bone.parent and self.bones[bone.parent.name] then
-                        local p2 = bone.parent:get_world_position()
-                        local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
-                        love.graphics.line(s1.x, s1.y, s2.x, s2.y)
-                    end
-                end
-            end
+					if bone.parent and self.bones[bone.parent.name] then
+						local p2 = bone.parent:get_world_position()
+						local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
+						love.graphics.line(s1.x, s1.y, s2.x, s2.y)
+					end
+				end
+			end
 		end
 	end
 
@@ -441,8 +489,34 @@ function App:draw()
 	love.graphics.print("1: Front (Ortho) - Skeleton", 10, 10)
 	love.graphics.print("2: Side (Ortho) - Skeleton", self.view_w + 10, 10)
 	love.graphics.print("3: Perspective", 10, self.view_h + 10)
-	love.graphics.print("4: Perspective (Aux)", self.view_w + 10, self.view_h + 10)
+	love.graphics.print("4: Bone Visualization", self.view_w + 10, self.view_h + 10)
 
+	-- Legend for View 4
+	if self.bone_colors then
+		local ly = self.view_h + 30
+		local lx = self.view_w + 10
+		local i = 0
+		-- Sort keys for stable legend
+		local keys = {}
+		for k in pairs(self.bone_colors) do table.insert(keys, k) end
+		table.sort(keys)
+
+		for _, name in ipairs(keys) do
+			local color = self.bone_colors[name]
+			love.graphics.setColor(color)
+			love.graphics.rectangle("fill", lx, ly, 10, 10)
+			love.graphics.setColor(1, 1, 1)
+			love.graphics.print(name:gsub("mixamorig_", ""), lx + 15, ly - 2)
+			ly = ly + 14
+			i = i + 1
+			if i % 15 == 0 then
+				lx = lx + 100
+				ly = self.view_h + 30
+			end
+		end
+	end
+
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.print(
 		string.format("Skin Tint: %.2f, %.2f, %.2f", self.skin_tint[1], self.skin_tint[2], self.skin_tint[3]),
 		10,

@@ -1,0 +1,1 @@
+menori needs flattened meshes, do math before  hand and set

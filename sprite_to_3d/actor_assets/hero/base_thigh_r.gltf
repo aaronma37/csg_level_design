@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 3120,
+      "byteLength": 2640,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 3120,
-      "byteLength": 3120,
+      "byteOffset": 2640,
+      "byteLength": 2640,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 6240,
-      "byteLength": 2080,
+      "byteOffset": 5280,
+      "byteLength": 1760,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 8320,
-      "byteLength": 1560,
+      "byteOffset": 7040,
+      "byteLength": 1320,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 260,
+      "count": 220,
       "type": "VEC3",
       "max": [
-        5.0,
-        15.0,
-        4.0
+        3.0,
+        2.0,
+        3.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -1.0,
+        -12.0,
+        -1.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 260,
+      "count": 220,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 260,
+      "count": 220,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 390,
+      "count": 330,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 9880,
+      "byteLength": 8360,
       "uri": "base_thigh_r.bin"
     }
   ]

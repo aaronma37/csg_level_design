@@ -79,25 +79,25 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 4704,
+      "byteLength": 2784,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 4704,
-      "byteLength": 4704,
+      "byteOffset": 2784,
+      "byteLength": 2784,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 9408,
-      "byteLength": 3136,
+      "byteOffset": 5568,
+      "byteLength": 1856,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 12544,
-      "byteLength": 2352,
+      "byteOffset": 7424,
+      "byteLength": 1392,
       "target": 34963
     }
   ],
@@ -105,41 +105,41 @@
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 392,
+      "count": 232,
       "type": "VEC3",
       "max": [
-        5.0,
-        11.0,
-        4.0
+        3.0,
+        2.0,
+        3.0
       ],
       "min": [
-        0.0,
-        0.0,
-        0.0
+        -1.0,
+        -8.0,
+        -1.0
       ]
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 392,
+      "count": 232,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 392,
+      "count": 232,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5125,
-      "count": 588,
+      "count": 348,
       "type": "SCALAR"
     }
   ],
   "buffers": [
     {
-      "byteLength": 14896,
+      "byteLength": 8816,
       "uri": "base_elbow_r.bin"
     }
   ]
