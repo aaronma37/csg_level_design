@@ -10,9 +10,13 @@ local json = require("json")
 
 local Actor = {}
 Actor.__index = Actor
+Actor.stored_frames = {}
+Actor.bone_nodes = {}
 
 local function ensure_16(d)
-	if not d then return nil end
+	if not d then
+		return nil
+	end
 	local out = {}
 	for i = 1, 16 do
 		out[i] = d[i] or (i == 16 and 1 or 0)
@@ -36,9 +40,9 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	self.root:attach(self.mesh_root)
 
 	-- State
-	self.bones = {} 
-	self.bone_models = {} 
-	self.bind_world_rotations = {} 
+	self.bones = {}
+	self.bone_models = {}
+	self.bind_world_rotations = {}
 	self.animations = {}
 	self.active_anim_idx = 0
 	self.time = 0
@@ -47,7 +51,7 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	self.temp_pos = vec3()
 	self.temp_rot = quat()
 	self.temp_scale = vec3()
-	
+
 	self.interp_p1 = vec3()
 	self.interp_r1 = quat()
 	self.interp_p2 = vec3()
@@ -91,19 +95,33 @@ function Actor:_build_skeleton()
 		if bind_matrices and bind_matrices[bone_name] then
 			local d = bind_matrices[bone_name]
 			local m = ml.mat4(ensure_16({
-				d[1], d[5], d[9], d[13],
-				d[2], d[6], d[10], d[14],
-				d[3], d[7], d[11], d[15],
-				d[4], d[8], d[12], d[16],
+				d[1],
+				d[5],
+				d[9],
+				d[13],
+				d[2],
+				d[6],
+				d[10],
+				d[14],
+				d[3],
+				d[7],
+				d[11],
+				d[15],
+				d[4],
+				d[8],
+				d[12],
+				d[16],
 			}))
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
 			-- SCALE STABILITY FIX:
-			-- We scale the local position to match proportions, but we keep the bone 
-			-- node's own scale at 1,1,1. This prevents Menori from encountering 
+			-- We scale the local position to match proportions, but we keep the bone
+			-- node's own scale at 1,1,1. This prevents Menori from encountering
 			-- singularities during world-matrix decomposition.
-			local ps = bone_scales[parent_name] or {1, 1, 1}
-			node:set_position(vec3(self.temp_pos.x * ps[1] * gs, self.temp_pos.y * ps[2] * gs, self.temp_pos.z * ps[3] * gs))
+			local ps = bone_scales[parent_name] or { 1, 1, 1 }
+			node:set_position(
+				vec3(self.temp_pos.x * ps[1] * gs, self.temp_pos.y * ps[2] * gs, self.temp_pos.z * ps[3] * gs)
+			)
 			node:set_rotation(self.temp_rot:clone())
 			node:set_scale(vec3(1, 1, 1)) -- Keep internal scale uniform
 		end
@@ -142,12 +160,16 @@ function Actor:_load_bone_model(bone_name)
 		mixamorig_LeftFoot = "base_foot_l",
 		mixamorig_RightFoot = "base_foot_r",
 	}
-	
+
 	local filename = map[bone_name]
-	if not filename then return end
+	if not filename then
+		return
+	end
 
 	local path = self.assets_path .. "/" .. filename .. ".gltf"
-	if not love.filesystem.getInfo(path) then return end
+	if not love.filesystem.getInfo(path) then
+		return
+	end
 
 	local gltf_data = menori.glTFLoader.load(path)
 	local scene_nodes = menori.NodeTreeBuilder.create(gltf_data, function(scene, builder)
@@ -162,7 +184,7 @@ function Actor:_load_bone_model(bone_name)
 	end)
 
 	if scene_nodes[1] then
-		self.mesh_root:attach(scene_nodes[1])
+		-- self.mesh_root:attach(scene_nodes[1])
 		self.bone_models[bone_name] = scene_nodes[1]
 	end
 end
@@ -180,8 +202,12 @@ function Actor:load_animations(dir_path)
 			end
 		end
 	end
-	table.sort(self.animations, function(a, b) return a.name < b.name end)
-	if #self.animations > 0 then self.active_anim_idx = 1 end
+	table.sort(self.animations, function(a, b)
+		return a.name < b.name
+	end)
+	if #self.animations > 0 then
+		self.active_anim_idx = 1
+	end
 end
 
 --- Updates the actor state, animation, and syncs models
@@ -198,7 +224,7 @@ function Actor:update(dt, anim_speed)
 	if self.time >= duration then
 		self.time = self.time % duration
 	end
-	
+
 	local topology = self.rig_data.skeleton.topology
 	local bone_scales = self.rig_data.skeleton.bone_scales or {}
 	local gs = self.global_scale or 1.0
@@ -219,15 +245,43 @@ function Actor:update(dt, anim_speed)
 			if bone and d2 then
 				-- Frame 1 Decomp
 				local m1 = ml.mat4(ensure_16({
-					d1[1], d1[5], d1[9], d1[13], d1[2], d1[6], d1[10], d1[14],
-					d1[3], d1[7], d1[11], d1[15], d1[4], d1[8], d1[12], d1[16],
+					d1[1],
+					d1[5],
+					d1[9],
+					d1[13],
+					d1[2],
+					d1[6],
+					d1[10],
+					d1[14],
+					d1[3],
+					d1[7],
+					d1[11],
+					d1[15],
+					d1[4],
+					d1[8],
+					d1[12],
+					d1[16],
 				}))
 				m1:decompose(self.interp_p1, self.interp_r1)
 
 				-- Frame 2 Decomp
 				local m2 = ml.mat4(ensure_16({
-					d2[1], d2[5], d2[9], d2[13], d2[2], d2[6], d2[10], d2[14],
-					d2[3], d2[7], d2[11], d2[15], d2[4], d2[8], d2[12], d2[16],
+					d2[1],
+					d2[5],
+					d2[9],
+					d2[13],
+					d2[2],
+					d2[6],
+					d2[10],
+					d2[14],
+					d2[3],
+					d2[7],
+					d2[11],
+					d2[15],
+					d2[4],
+					d2[8],
+					d2[12],
+					d2[16],
 				}))
 				m2:decompose(self.interp_p2, self.interp_r2)
 
@@ -237,7 +291,7 @@ function Actor:update(dt, anim_speed)
 				r_interp:normalize()
 
 				-- Apply proporational translation
-				local ps = bone_scales[topology[bone_name]] or {1, 1, 1}
+				local ps = bone_scales[topology[bone_name]] or { 1, 1, 1 }
 				bone:set_position(vec3(p_interp.x * ps[1] * gs, p_interp.y * ps[2] * gs, p_interp.z * ps[3] * gs))
 				bone:set_rotation(r_interp)
 			end
@@ -253,7 +307,7 @@ function Actor:update(dt, anim_speed)
 		if bone then
 			-- Sync World Position
 			model:set_position(bone:get_world_position():clone())
-			
+
 			-- Sync Stable World Rotation
 			local bind_world_rot = self.bind_world_rotations[name]
 			if bind_world_rot then
@@ -279,11 +333,28 @@ function Actor:update(dt, anim_speed)
 	self.mesh_root:recursive_update_transform(true)
 end
 
+local function getTf(p1, p2)
+	local diff = p2 - p1
+	local length = diff:length()
+	local direction = diff / length
+	-- 1. Get rotation (points local Z towards the direction)
+	local q_base = ml.quat.from_direction(direction, ml.vec3(0, 1, 0))
+	local q_fix = ml.quat.from_angle_axis(-math.pi / 2, ml.vec3(0, 1, 0))
+	local rotation = q_base * q_fix
+
+	-- local rotation = ml.quat.from_direction(direction, ml.vec3(0, 1, 0))
+	return ml.mat4():compose(p1 + diff * 0.5, rotation, ml.vec3(1, 1, 1))
+end
+
 --- Draws the skeleton for debugging
 function Actor:draw_skeleton(camera, view_rect)
 	love.graphics.setShader()
 	love.graphics.setDepthMode("always", false)
 	love.graphics.setColor(1, 1, 0, 1)
+	local active_animation_name = self:get_active_animation_name()
+	if self.stored_frames[active_animation_name] == nil then
+		self.stored_frames[active_animation_name] = {}
+	end
 
 	for _, bone in pairs(self.bones) do
 		local p1 = bone:get_world_position()
@@ -296,6 +367,13 @@ function Actor:draw_skeleton(camera, view_rect)
 				local p2 = bone.parent:get_world_position()
 				local s2 = camera:world_to_screen_point(p2, view_rect)
 				love.graphics.line(s1.x, s1.y, s2.x, s2.y)
+				self.stored_frames[active_animation_name][bone.name] = { tf = getTf(p1, p2) }
+				if self.bone_nodes[bone.name] == nil then
+					local box_mesh = menori.Box(3, 1, 1)
+					self.bone_nodes[bone.name] = menori.ModelNode(box_mesh)
+					self.bone_nodes[bone.name].material:set("unlit", true) -- Use unlit if you don't have lights set up
+					self.root:attach(self.bone_nodes[bone.name])
+				end
 			end
 		end
 	end

@@ -217,7 +217,7 @@ function App:render_view(idx, camera)
 
 	-- Apply Colors before rendering
 	local current_bone_colors = (idx == 4) and self.bone_colors or nil
-	self.actor:set_model_colors({1, 1, 1, 1}, current_bone_colors)
+	self.actor:set_model_colors({ 1, 1, 1, 1 }, current_bone_colors)
 
 	-- Render Reference Sprite (View 1 only)
 	if idx == 1 and self.ref_sprite_img then
@@ -236,16 +236,7 @@ function App:render_view(idx, camera)
 		local screen_y_base = (self.view_h / 2) + (25 * (self.view_h / 60))
 
 		love.graphics.setColor(1, 1, 1, 0.4) -- Faded
-		love.graphics.draw(
-			self.ref_sprite_img,
-			self.view_w / 2,
-			screen_y_base,
-			0,
-			scale,
-			scale,
-			iw / 2,
-			ih
-		)
+		love.graphics.draw(self.ref_sprite_img, self.view_w / 2, screen_y_base, 0, scale, scale, iw / 2, ih)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.setDepthMode("lequal", true)
 	end
@@ -257,6 +248,16 @@ function App:render_view(idx, camera)
 	-- Draw Skeleton Lines (View 1 & 2 only)
 	if idx <= 2 and self.show_skeleton then
 		self.actor:draw_skeleton(camera, { 0, 0, self.view_w, self.view_h })
+	end
+
+	for i, v in pairs(self.actor.stored_frames[self.actor:get_active_animation_name()]) do
+		local pos = menori.ml.vec3()
+		local rot = menori.ml.quat()
+		local scale = menori.ml.vec3()
+		v.tf:decompose(pos, rot, scale)
+		self.actor.bone_nodes[i]:set_position(pos)
+		self.actor.bone_nodes[i]:set_rotation(rot)
+		self.actor.bone_nodes[i]:set_scale(scale)
 	end
 
 	love.graphics.setCanvas()
