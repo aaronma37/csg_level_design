@@ -1,0 +1,32 @@
+{
+  "name": "base_upper_arm",
+  "instructions": [
+    {
+      "op": "add",
+      "shape": "point_cloud",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "points": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ]
+      ],
+      "color": 100
+    }
+  ]
+}

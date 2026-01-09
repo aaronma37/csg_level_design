@@ -141,24 +141,24 @@ end
 function Actor:_load_bone_model(bone_name)
 	local map = {
 		mixamorig_Hips = "base_pelvis",
-		mixamorig_Spine = "base_spine",
-		mixamorig_Spine1 = "base_spine1",
-		mixamorig_Spine2 = "base_spine2",
+		mixamorig_Spine = "base_torso",
+		mixamorig_Spine1 = "base_torso",
+		mixamorig_Spine2 = "base_torso",
 		mixamorig_Head = "base_head",
-		mixamorig_LeftShoulder = "base_leftshoulder",
-		mixamorig_RightShoulder = "base_rightshoulder",
-		mixamorig_LeftArm = "base_arm_l",
-		mixamorig_RightArm = "base_arm_r",
-		mixamorig_LeftForeArm = "base_elbow_l",
-		mixamorig_RightForeArm = "base_elbow_r",
-		mixamorig_LeftHand = "base_hand_l",
-		mixamorig_RightHand = "base_hand_r",
-		mixamorig_LeftUpLeg = "base_thigh_l",
-		mixamorig_RightUpLeg = "base_thigh_r",
-		mixamorig_LeftLeg = "base_knee_l",
-		mixamorig_RightLeg = "base_knee_r",
-		mixamorig_LeftFoot = "base_foot_l",
-		mixamorig_RightFoot = "base_foot_r",
+		mixamorig_LeftShoulder = "base_upper_arm", -- Shoulders often mapped to upper arm or specific shoulder geo
+		mixamorig_RightShoulder = "base_upper_arm",
+		mixamorig_LeftArm = "base_upper_arm",
+		mixamorig_RightArm = "base_upper_arm",
+		mixamorig_LeftForeArm = "base_forearm",
+		mixamorig_RightForeArm = "base_forearm",
+		mixamorig_LeftHand = "base_hand",
+		mixamorig_RightHand = "base_hand",
+		mixamorig_LeftUpLeg = "base_thigh",
+		mixamorig_RightUpLeg = "base_thigh",
+		mixamorig_LeftLeg = "base_shinfoot",
+		mixamorig_RightLeg = "base_shinfoot",
+		-- mixamorig_LeftFoot = "base_foot_l", -- Covered by shinfoot
+		-- mixamorig_RightFoot = "base_foot_r",
 	}
 
 	local filename = map[bone_name]
@@ -172,21 +172,24 @@ function Actor:_load_bone_model(bone_name)
 	end
 
 	local gltf_data = menori.glTFLoader.load(path)
-	local scene_nodes = menori.NodeTreeBuilder.create(gltf_data, function(scene, builder)
-		scene:traverse(function(n)
+	local scenes = menori.NodeTreeBuilder.create(gltf_data)
+	local mesh
+	if scenes[1] then
+		scenes[1]:traverse(function(n)
 			if n.is_model_node then
-				n.material.main_texture = self.palette
-				n.material:set_shader(self.shader)
-				n.material:set("unlit", true)
-				n.material.mesh_cull_mode = "none"
+				mesh = n.mesh
+				return true
 			end
 		end)
-	end)
-
-	if scene_nodes[1] then
-		-- self.mesh_root:attach(scene_nodes[1])
-		self.bone_models[bone_name] = scene_nodes[1]
 	end
+
+	if not mesh then return end
+
+	self.bone_models[bone_name] = menori.ModelNode(mesh)
+	self.bone_models[bone_name].material.main_texture = self.palette
+	self.bone_models[bone_name].material:set_shader(self.shader)
+	self.bone_models[bone_name].material:set("unlit", true)
+	self.bone_models[bone_name].material.mesh_cull_mode = "none"
 end
 
 --- Loads all animations from a directory
@@ -366,9 +369,17 @@ function Actor:draw_skeleton(camera, view_rect)
 				love.graphics.line(s1.x, s1.y, s2.x, s2.y)
 				self.stored_frames[active_animation_name][bone.name] = { tf = getTf(p1, p2) }
 				if self.bone_nodes[bone.name] == nil then
-					local box_mesh = menori.Box(3, 1, 1)
-					self.bone_nodes[bone.name] = menori.ModelNode(box_mesh)
-					self.bone_nodes[bone.name].material:set("unlit", true) -- Use unlit if you don't have lights set up
+					local real_model = self.bone_models[bone.name]
+					if real_model then
+						self.bone_nodes[bone.name] = real_model:clone()
+						-- local box_mesh = menori.Box(3, 1, 1)
+						-- self.bone_nodes[bone.name] = menori.ModelNode(box_mesh)
+						-- self.bone_nodes[bone.name].material:set("unlit", true) -- Use unlit if you don't have lights set up
+					else
+						local box_mesh = menori.Box(3, 1, 1)
+						self.bone_nodes[bone.name] = menori.ModelNode(box_mesh)
+						self.bone_nodes[bone.name].material:set("unlit", true) -- Use unlit if you don't have lights set up
+					end
 					self.root:attach(self.bone_nodes[bone.name])
 				end
 			end
