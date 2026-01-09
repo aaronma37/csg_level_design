@@ -17,20 +17,22 @@
     - **Fix:** Use the Linter (once built) to "unit test" layouts and regenerate seeds until a collision-free layout is found.
 
 ## Sprite to Animated 3D Model Pipeline
-- [x] **Phase 0: Planning & Documentation**
-    - Created `concepts/sprite_to_3d_pipeline.md` and updated `WORKFLOWS.md`.
-- [x] **Phase 1: Schema Definition (Blueprints)**
-    - Implement Skeleton Library and Primitive definitions.
-- [x] **Phase 2: Volumetric Generation & Painting**
-    - Implement mass generation and surface projection logic.
-- [x] **Phase 3: Validation & Iteration**
-    - Build automated linter and previewer integration.
-- [x] **Phase 4: Rigging & Data Preparation**
-    - Implement voxel data structures with bone weights and physics props.
-- [/] **Phase 5: Animation & Baking (IN PROGRESS)**
-    - Implement skeletal animation engine and grid snapping (Done).
-    - Bake 8-frame Walk Cycle (Done in `output/walk_cycle`).
-    - **Current Stop Point:** Working on `previewer/main.lua` to view sequences. Note: Previewer currently has some camera control bugs that need reverting/fixing.
+
+### Refactoring: Agnostic Asset Attachment System
+- [ ] **1. Implement Online Transform Calculation**
+    - Modify the animation loop to calculate bone transforms (Position + Rotation) *online*, immediately after the skeleton is drawn/updated.
+    - Store these transforms in a table for the current frame.
+    - **Constraint:** Derive transforms directly from the active joint positions (World Space), not bind poses.
+    - **Orientation:** Ensure the calculated transform aligns such that an asset centered at (0,0,0) with +X forward points along the bone vector (Parent -> Child).
+- [ ] **2. Visualize Transforms**
+    - Implement a visualizer using simple elongated cubes (or debug lines) to verify the calculated transforms in real-time.
+- [ ] **3. Create Agnostic Asset Generators**
+    - Remove current modular asset generators.
+    - Create new generators that are agnostic to the rig/skeleton.
+    - Tag assets with the bone they associate with.
+    - Define assets in their own local frame (pointing +X).
+- [ ] **4. Integrate New Assets**
+    - Swap the test visualization with these new agnostic assets.
+
 - [ ] **Phase 6: Optimization (Stretch)**
     - Implement `.vxb` format and LZ4 compression.
-
