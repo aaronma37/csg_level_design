@@ -57,6 +57,7 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	local rig_content = love.filesystem.read(rig_path)
 	if rig_content then
 		self.rig_data = json.decode(rig_content)
+		self.global_scale = (self.rig_data.height or 50) / 50.0
 		self:_build_skeleton()
 	else
 		error("Failed to load rig: " .. rig_path)
@@ -71,6 +72,7 @@ function Actor:_build_skeleton()
 	local topology = self.rig_data.skeleton.topology
 	local bind_matrices = self.rig_data.skeleton.bind_matrices
 	local bone_scales = self.rig_data.skeleton.bone_scales or {}
+	local gs = self.global_scale or 1.0
 
 	-- 1. Create all Bone Nodes (Unscaled for rotation stability)
 	for bone_name, _ in pairs(rest_pose) do
@@ -101,7 +103,7 @@ function Actor:_build_skeleton()
 			-- node's own scale at 1,1,1. This prevents Menori from encountering 
 			-- singularities during world-matrix decomposition.
 			local ps = bone_scales[parent_name] or {1, 1, 1}
-			node:set_position(vec3(self.temp_pos.x * ps[1], self.temp_pos.y * ps[2], self.temp_pos.z * ps[3]))
+			node:set_position(vec3(self.temp_pos.x * ps[1] * gs, self.temp_pos.y * ps[2] * gs, self.temp_pos.z * ps[3] * gs))
 			node:set_rotation(self.temp_rot:clone())
 			node:set_scale(vec3(1, 1, 1)) -- Keep internal scale uniform
 		end
@@ -199,6 +201,7 @@ function Actor:update(dt, anim_speed)
 	
 	local topology = self.rig_data.skeleton.topology
 	local bone_scales = self.rig_data.skeleton.bone_scales or {}
+	local gs = self.global_scale or 1.0
 
 	-- 1. Apply Animation to Bones with Interpolation
 	if anim and frame_count > 1 then
@@ -235,7 +238,7 @@ function Actor:update(dt, anim_speed)
 
 				-- Apply proporational translation
 				local ps = bone_scales[topology[bone_name]] or {1, 1, 1}
-				bone:set_position(vec3(p_interp.x * ps[1], p_interp.y * ps[2], p_interp.z * ps[3]))
+				bone:set_position(vec3(p_interp.x * ps[1] * gs, p_interp.y * ps[2] * gs, p_interp.z * ps[3] * gs))
 				bone:set_rotation(r_interp)
 			end
 		end

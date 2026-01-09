@@ -26,7 +26,7 @@ This document outlines the steps required to support custom scaling for individu
 ## 6. Engine / Previewer (`sprite_to_3d/preview_v2/actor.lua`)
 - [x] **Apply Bone Scales**: `Actor:_build_skeleton` applies `bone_scales` to bone nodes.
 - [x] **Fix Matrix Crash**: Added `ensure_16` helper to handle inconsistent matrix data.
-- [ ] **Scale Animation Translations**: In `Actor:update`, scale the local position of animated bones by their parent's custom scale to keep the rig connected.
+- [x] **Scale Animation Translations**: In `Actor:update`, scale the local position of animated bones by their parent's custom scale to keep the rig connected.
 
 ## Implementation Order (Remaining)
-1. **Animation Scaling**: Fix the "joint detachment" during playback in `actor.lua`.
+1. **All tasks complete.** All core components of the custom limb scaling system have been implemented and integrated into the voxel generation, rigging, and previewing pipelines.
