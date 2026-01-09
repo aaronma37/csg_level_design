@@ -101,7 +101,9 @@ function Actor:_build_skeleton()
 			}))
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
-			node:set_position(self.temp_pos:clone())
+			-- If parent is scaled, we must scale the local offset to keep the joint attached
+			local ps = bone_scales[parent_name] or {1, 1, 1}
+			node:set_position(vec3(self.temp_pos.x * ps[1], self.temp_pos.y * ps[2], self.temp_pos.z * ps[3]))
 			node:set_rotation(self.temp_rot:clone())
 			
 			-- Use custom scale if provided, otherwise use decomposed bind scale
@@ -202,6 +204,9 @@ end
 function Actor:update(dt, anim_speed)
 	self.time = self.time + dt
 	
+	local topology = self.rig_data.skeleton.topology
+	local bone_scales = self.rig_data.skeleton.bone_scales or {}
+
 	-- 1. Apply Animation to Bones
 	local anim = self.animations[self.active_anim_idx]
 	if anim and anim.data.frames then
@@ -221,9 +226,14 @@ function Actor:update(dt, anim_speed)
 				}))
 				m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
-				bone:set_position(self.temp_pos:clone())
+				-- Scale translation by PARENT scale to keep joints attached during animation
+				local parent_name = topology[bone_name]
+				local ps = bone_scales[parent_name] or {1, 1, 1}
+				
+				bone:set_position(vec3(self.temp_pos.x * ps[1], self.temp_pos.y * ps[2], self.temp_pos.z * ps[3]))
 				bone:set_rotation(self.temp_rot:clone())
-				bone:set_scale(self.temp_scale:clone())
+				
+				-- Note: We DON'T set scale from animation, we keep the custom scale from _build_skeleton
 			end
 		end
 	end
