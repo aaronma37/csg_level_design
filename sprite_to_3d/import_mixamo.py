@@ -85,6 +85,8 @@ def extract_animation_matrices(dae_path, out_path, scale):
     print(f"Extracted matrix animation with {max_frames} frames to {out_path}")
 
 if __name__ == "__main__":
+    import glob
+
     # Better: use the same logic as extract_mixamo_skeleton.py
     def calculate_dae_height(dae_path):
         import xml.etree.ElementTree as ET
@@ -111,26 +113,40 @@ if __name__ == "__main__":
         hips_node = visual_scene.find(".//*[@id='mixamorig_Hips']", ns)
         return get_world_y(hips_node)
 
-    dae_path = "sprite_to_3d/imports/Standard Walk.dae"
-    dae_height = calculate_dae_height(dae_path)
+    # Use Walk as reference for height/scale
+    ref_dae = "sprite_to_3d/imports/Standard Walk.dae"
+    dae_height = calculate_dae_height(ref_dae)
     scale = 50.0 / dae_height
-    print(f"DAE Height: {dae_height}, Scale: {scale}")
+    print(f"Reference DAE Height: {dae_height}, Scale: {scale}")
     
     output_dir = "sprite_to_3d/actor_assets/hero"
     os.makedirs(output_dir, exist_ok=True)
     
-    # Extract Walk
-    extract_animation_matrices(dae_path, os.path.join(output_dir, "walk.json"), scale)
-    
-    # Extract Run
-    run_dae = "sprite_to_3d/imports/Running.dae"
-    if os.path.exists(run_dae):
-        extract_animation_matrices(run_dae, os.path.join(output_dir, "run.json"), scale)
-
-    # Sync to preview_v2
     preview_assets = "sprite_to_3d/preview_v2/assets/hero"
-    if os.path.exists(preview_assets):
-        import shutil
-        shutil.copy(os.path.join(output_dir, "walk.json"), os.path.join(preview_assets, "walk.json"))
-        if os.path.exists(os.path.join(output_dir, "run.json")):
-            shutil.copy(os.path.join(output_dir, "run.json"), os.path.join(preview_assets, "run.json"))
+    os.makedirs(preview_assets, exist_ok=True)
+
+    # Map file names to clean animation names
+    name_map = {
+        "Standard Walk": "walk",
+        "Running": "run",
+        "Idle": "idle",
+        "Standing Death Forward 01": "death",
+        "Great Sword Slash": "slash",
+        "Standing 1H Magic Attack 01": "magic_1h",
+        "Standing 2H Magic Area Attack 01": "magic_area",
+        "Standing Melee Attack 360 High": "spin_attack",
+        "Standing Melee Attack Downward": "slam_attack"
+    }
+
+    dae_files = glob.glob("sprite_to_3d/imports/*.dae")
+    for dae_path in dae_files:
+        base_name = os.path.splitext(os.path.basename(dae_path))[0]
+        anim_name = name_map.get(base_name, base_name.lower().replace(" ", "_"))
+        
+        out_json = os.path.join(output_dir, f"{anim_name}.json")
+        extract_animation_matrices(dae_path, out_json, scale)
+        
+        # Sync to preview
+        if os.path.exists(preview_assets):
+            import shutil
+            shutil.copy(out_json, os.path.join(preview_assets, f"{anim_name}.json"))

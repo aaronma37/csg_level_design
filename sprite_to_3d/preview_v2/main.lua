@@ -143,10 +143,23 @@ function App:load()
 	end
 
 	-- 3.5 Load Animations
-	local anim_files = {
-		{ name = "Walk", path = "assets/hero/walk.json" },
-		{ name = "Run", path = "assets/hero/run.json" },
-	}
+	local anim_dir = "assets/hero"
+	local files = love.filesystem.getDirectoryItems(anim_dir)
+	local anim_files = {}
+
+	for _, file in ipairs(files) do
+		if file:match("%.json$") and file ~= "rig.json" then
+			local name = file:gsub("%.json$", "")
+			-- Capitalize for display
+			name = name:gsub("^%l", string.upper):gsub("_%l", string.upper):gsub("_", " ")
+			table.insert(anim_files, { name = name, path = anim_dir .. "/" .. file })
+		end
+	end
+
+	-- Sort alphabetically
+	table.sort(anim_files, function(a, b)
+		return a.name < b.name
+	end)
 
 	for _, info in ipairs(anim_files) do
 		local content, _ = love.filesystem.read(info.path)
