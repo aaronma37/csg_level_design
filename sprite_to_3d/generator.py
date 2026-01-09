@@ -7,7 +7,6 @@ from PIL import Image
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from skeletons.humanoid import HumanoidSkeleton
 from skeletons.mixamo import MixamoSkeleton
 from tools.builder import VoxelBuilder
 import palette
@@ -21,13 +20,12 @@ class VoxelGenerator:
         self.builder = VoxelBuilder()
         self.voxel_owners = {} # (x,y,z) -> bone_name
         
-        skeleton_type = self.blueprint.get('skeleton', 'HumanoidSkeleton')
-        if skeleton_type == "MixamoSkeleton":
-            self.skeleton_class = MixamoSkeleton
-        else:
-            self.skeleton_class = HumanoidSkeleton
+        self.bone_scales = self.blueprint.get('bone_scales', {})
+        
+        # Default to MixamoSkeleton as Humanoid is missing
+        self.skeleton_class = MixamoSkeleton
             
-        self.pose = self.skeleton_class.get_t_pose(self.height)
+        self.pose = self.skeleton_class.get_t_pose(self.height, self.bone_scales)
         self.palette_map = self._load_palette()
         
     def _load_palette(self):
@@ -123,6 +121,14 @@ class VoxelGenerator:
                     r1, r2 = radii
                     break
             
+            # Apply bone scale to radius (Average of X and Z scale)
+            # We use the scale of the owner (parent) for this segment
+            if owner in self.bone_scales:
+                s = self.bone_scales[owner]
+                avg_thickness_scale = (s[0] + s[2]) / 2.0
+                r1 *= avg_thickness_scale
+                r2 *= avg_thickness_scale
+
             # Special Handling for Mixamo vs Humanoid
             is_mixamo = "mixamorig" in bone
             
@@ -135,17 +141,39 @@ class VoxelGenerator:
                 self.draw_tapered_capsule(p1, p2, 3.0, 2.8, base_color, parent)
                 # Draw Head Volume
                 hx, hy, hz = p2
-                self.draw_tapered_capsule((hx, hy, hz), (hx, hy+7, hz), 4.5, 4.0, base_color, bone)
+                hr = 4.5
+                if bone in self.bone_scales:
+                    s = self.bone_scales[bone]
+                    hr *= (s[0] + s[2]) / 2.0
+                    head_h = 7 * s[1]
+                else:
+                    head_h = 7
+                
+                self.draw_tapered_capsule((hx, hy, hz), (hx, hy + head_h, hz), hr, hr * 0.9, base_color, bone)
             elif hand_suffix in bone and "Thumb" not in bone and "Index" not in bone and "Middle" not in bone and "Ring" not in bone and "Pinky" not in bone:
                 # Draw Forearm
                 self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
                 # Draw Hand Volume
-                self.draw_tapered_capsule(p2, (p2[0], p2[1]-2, p2[2]), 1.5, 1.2, base_color, bone)
+                hr = 1.5
+                if bone in self.bone_scales:
+                    s = self.bone_scales[bone]
+                    hr *= (s[0] + s[2]) / 2.0
+                    hand_h = 2 * s[1]
+                else:
+                    hand_h = 2
+                self.draw_tapered_capsule(p2, (p2[0], p2[1] - hand_h, p2[2]), hr, hr * 0.8, base_color, bone)
             elif foot_suffix in bone and "Toe" not in bone:
                 # Draw Shin
                 self.draw_tapered_capsule(p1, p2, r1, r2, base_color, parent)
                 # Draw Foot Volume
-                self.draw_tapered_capsule(p2, (p2[0], p2[1], p2[2]+3), 1.5, 2.0, base_color, bone)
+                fr = 1.5
+                if bone in self.bone_scales:
+                    s = self.bone_scales[bone]
+                    fr *= (s[0] + s[2]) / 2.0
+                    foot_l = 3 * s[2] # Foot length is Z
+                else:
+                    foot_l = 3
+                self.draw_tapered_capsule(p2, (p2[0], p2[1], p2[2] + foot_l), fr, fr * 1.3, base_color, bone)
             elif any(x in bone for x in ["Thumb", "Index", "Middle", "Ring", "Pinky", "Toe", "HeadTop"]):
                 # Skip finger/toe/end bones for now to keep it simple, or draw tiny capsules
                 continue

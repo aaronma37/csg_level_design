@@ -21,6 +21,7 @@ class VoxelRigger:
     def _calculate_world_matrices(self):
         matrices = {}
         bones = list(self.topology.keys())
+        bone_scales = self.generator.bone_scales
         
         # Parent-first ordering
         ordered_bones = []
@@ -35,30 +36,61 @@ class VoxelRigger:
 
         has_bind = hasattr(self.generator.skeleton_class, "BIND_MATRICES")
         
+        # Identity for root
+        matrices['root'] = np.identity(4)
+
         for bone in ordered_bones:
+            if bone == 'root': continue
             parent = self.topology[bone]
-            if parent == "root": parent = None
+            if parent == "root": parent = 'root'
+            
+            # 1. Get Local Scale
+            s = bone_scales.get(bone, [1.0, 1.0, 1.0])
+            scale_m = np.diag([s[0], s[1], s[2], 1.0])
             
             if has_bind:
                 bind_m = self.generator.skeleton_class.BIND_MATRICES.get(bone)
                 if bind_m:
-                    local_m = np.array(bind_m).reshape(4, 4)
+                    m_data = list(bind_m[:16])
+                    while len(m_data) < 16:
+                        if len(m_data) == 15:
+                            m_data.append(1.0)
+                        else:
+                            m_data.append(0.0)
+                    local_m = np.array(m_data).reshape(4, 4)
+                    
+                    # Parent info
+                    p_mat = matrices.get(parent, np.identity(4))
+                    ps = bone_scales.get(parent, [1.0, 1.0, 1.0]) if parent != 'root' else [1.0, 1.0, 1.0]
+                    
+                    # Scaled local offset
+                    local_t = local_m[0:3, 3].copy()
+                    local_t[0] *= ps[0]
+                    local_t[1] *= ps[1]
+                    local_t[2] *= ps[2]
+                    
+                    # Construct world matrix
+                    m = p_mat.copy()
+                    # World Position: Parent_Pos + Parent_Rot * Scaled_Offset
+                    # We use p_mat basis (which is just rotation, no scale)
+                    m[0:3, 3] = p_mat[0:3, 3] + p_mat[0:3, 0:3] @ local_t
+                    # World Rotation: Parent_Rot * Local_Rot
+                    m[0:3, 0:3] = p_mat[0:3, 0:3] @ local_m[0:3, 0:3]
+                    
+                    # Final bone matrix includes its OWN scale for voxel decomposition
+                    # But we don't pass this scale down to children's basis
+                    matrices[bone] = m @ scale_m
                 else:
-                    local_m = np.identity(4)
-                    # Use pose translation if matrix missing
+                    # Fallback
                     bx, by, bz = self.pose.get(bone, (0, 0, 0))
-                    local_m[0:3, 3] = [bx, by, bz]
-                
-                if parent is None:
-                    matrices[bone] = local_m
-                else:
-                    matrices[bone] = matrices[parent] @ local_m
+                    m = np.identity(4)
+                    m[0:3, 3] = [bx, by, bz]
+                    matrices[bone] = m @ scale_m
             else:
-                # Identity rotation, just translation
                 bx, by, bz = self.pose.get(bone, (0, 0, 0))
                 m = np.identity(4)
                 m[0:3, 3] = [bx, by, bz]
-                matrices[bone] = m
+                matrices[bone] = m @ scale_m
                 
         return matrices
 
@@ -100,7 +132,8 @@ class VoxelRigger:
         skeleton_info = {
             "name": self.generator.blueprint['skeleton'],
             "topology": self.topology,
-            "rest_pose": self.pose
+            "rest_pose": self.pose,
+            "bone_scales": self.generator.bone_scales
         }
         
         # Check if skeleton class has bind matrices

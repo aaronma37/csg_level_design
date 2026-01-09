@@ -1,3 +1,5 @@
+import numpy as np
+
 class MixamoSkeleton:
     TOPOLOGY = {
         'root': None,
@@ -95,7 +97,7 @@ class MixamoSkeleton:
         'mixamorig_RightHandRing1': [0.987477, -0.150982, 0.045760, -0.516326, 0.143439, 0.738441, -0.658886, 2.520199, 0.065689, 0.657198, 0.750850, 0.011932, 0.000000, 0.000000, 0.000000, 1.000000],
         'mixamorig_RightHandRing2': [0.998879, -0.045285, 0.013755, 0.000000, 0.045285, 0.830043, -0.555858, 0.935510, 0.013755, 0.555858, 0.831163, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000],
         'mixamorig_RightHandRing3': [0.999706, -0.023978, 0.003609, 0.000000, 0.023978, 0.955406, -0.294320, 0.799971, 0.003609, 0.294320, 0.955700, -0.000000, 0.000000, 0.000000, 0.000000, 1.000000],
-        'mixamorig_RightHandRing4': [0.999999, 0.001599, 0.000291, 0.000000, -0.001599, 0.999999, -0.000000, 0.730513, -0.000291, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000],
+        'mixamorig_RightHandRing4': [0.999999, 0.001599, 0.000291, 0.000000, -0.001599, 0.999999, -0.000000, 0.730513, -0.000291, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000],
         'mixamorig_RightHandPinky1': [0.995432, -0.080860, 0.050763, -1.053719, 0.093210, 0.707964, -0.700070, 2.235917, 0.020669, 0.701604, 0.712267, 0.134736, 0.000000, 0.000000, 0.000000, 1.000000],
         'mixamorig_RightHandPinky2': [0.998568, -0.050520, 0.017572, 0.000000, 0.050520, 0.782880, -0.620118, 0.996608, 0.017572, 0.620118, 0.784312, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000],
         'mixamorig_RightHandPinky3': [0.999325, -0.035778, 0.008279, 0.000000, 0.035778, 0.897697, -0.439159, 0.581354, 0.008280, 0.439159, 0.898371, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000],
@@ -145,77 +147,62 @@ class MixamoSkeleton:
         return list(cls.TOPOLOGY.keys())
 
     @classmethod
-    def get_t_pose(cls, height):
+    def get_t_pose(cls, height, bone_scales=None):
+        """
+        Calculates world positions for all bones in T-pose.
+        Accounts for hierarchical bone scaling using proper matrix math.
+        """
         scale = height / 50.0
-        ref_pose = {
-            'root': (0, 0, 0),
-            'mixamorig_Hips': (0.0365, 28.4712, 0.3773),
-            'mixamorig_Spine': (0.0437, 31.2871, 0.2477),
-            'mixamorig_Spine1': (-0.0246, 34.0407, -0.0367),
-            'mixamorig_Spine2': (-0.0974, 36.6096, -0.2720),
-            'mixamorig_Neck': (-0.2383, 41.2696, -0.5240),
-            'mixamorig_Head': (-0.2768, 43.9052, 0.0751),
-            'mixamorig_HeadTop_End': (-0.2204, 50.0000, 2.1683),
-            'mixamorig_RightShoulder': (-1.4671, 39.6569, -0.5801),
-            'mixamorig_RightArm': (-4.2276, 38.5962, -1.0867),
-            'mixamorig_RightForeArm': (-5.4165, 30.9838, -0.8775),
-            'mixamorig_RightHand': (-6.1759, 23.5113, 1.3781),
-            'mixamorig_RightHandThumb1': (-5.6827, 23.0553, 2.2473),
-            'mixamorig_RightHandThumb2': (-5.3951, 22.3850, 3.1489),
-            'mixamorig_RightHandThumb3': (-5.2716, 21.5065, 3.4768),
-            'mixamorig_RightHandThumb4': (-5.2650, 20.9674, 3.9431),
-            'mixamorig_RightHandIndex1': (-6.2541, 21.4045, 2.9031),
-            'mixamorig_RightHandIndex2': (-6.0202, 20.4453, 3.1755),
-            'mixamorig_RightHandIndex3': (-5.4032, 19.9541, 3.1512),
-            'mixamorig_RightHandIndex4': (-4.7002, 19.6751, 3.0211),
-            'mixamorig_RightHandMiddle1': (-6.5534, 21.1094, 2.4040),
-            'mixamorig_RightHandMiddle2': (-6.1259, 20.1892, 2.5442),
-            'mixamorig_RightHandMiddle3': (-5.4267, 19.7822, 2.4323),
-            'mixamorig_RightHandMiddle4': (-4.6658, 19.5579, 2.2425),
-            'mixamorig_RightHandRing1': (-6.6442, 21.0335, 1.8875),
-            'mixamorig_RightHandRing2': (-6.1840, 20.2201, 1.9295),
-            'mixamorig_RightHandRing3': (-5.4992, 19.8360, 1.7764),
-            'mixamorig_RightHandRing4': (-4.8172, 19.6829, 1.5640),
-            'mixamorig_RightHandPinky1': (-6.6095, 21.0765, 1.2697),
-            'mixamorig_RightHandPinky2': (-6.0561, 20.2525, 1.3590),
-            'mixamorig_RightHandPinky3': (-5.5229, 20.0483, 1.2497),
-            'mixamorig_RightHandPinky4': (-4.9731, 20.0925, 1.0526),
-            'mixamorig_LeftShoulder': (1.0571, 39.7243, -0.7435),
-            'mixamorig_LeftArm': (3.8169, 38.7672, -1.4285),
-            'mixamorig_LeftForeArm': (5.1883, 31.1876, -1.7036),
-            'mixamorig_LeftHand': (6.3753, 23.4805, -0.8700),
-            'mixamorig_LeftHandThumb1': (5.8450, 22.7943, -0.1951),
-            'mixamorig_LeftHandThumb2': (5.5996, 21.8464, 0.4253),
-            'mixamorig_LeftHandThumb3': (5.4634, 20.9146, 0.5186),
-            'mixamorig_LeftHandThumb4': (5.4616, 20.3337, 0.9345),
-            'mixamorig_LeftHandIndex1': (6.5297, 21.0948, 0.1575),
-            'mixamorig_LeftHandIndex2': (6.2732, 20.1032, 0.1452),
-            'mixamorig_LeftHandIndex3': (5.7673, 19.5257, -0.0368),
-            'mixamorig_LeftHandIndex4': (5.1565, 19.1359, -0.2919),
-            'mixamorig_LeftHandMiddle1': (6.9149, 20.9502, -0.3490),
-            'mixamorig_LeftHandMiddle2': (6.5478, 20.0051, -0.4948),
-            'mixamorig_LeftHandMiddle3': (5.9517, 19.5241, -0.7780),
-            'mixamorig_LeftHandMiddle4': (5.2461, 19.3061, -1.1286),
-            'mixamorig_LeftHandRing1': (7.0707, 21.0035, -0.8527),
-            'mixamorig_LeftHandRing2': (6.7673, 20.2078, -1.0403),
-            'mixamorig_LeftHandRing3': (6.1194, 19.8686, -1.4038),
-            'mixamorig_LeftHandRing4': (5.4858, 19.7580, -1.7533),
-            'mixamorig_LeftHandPinky1': (7.0998, 21.1841, -1.4453),
-            'mixamorig_LeftHandPinky2': (6.7779, 20.2525, -1.5922),
-            'mixamorig_LeftHandPinky3': (6.3828, 19.8738, -1.7885),
-            'mixamorig_LeftHandPinky4': (5.8924, 19.6649, -2.0377),
-            'mixamorig_RightUpLeg': (-2.2605, 26.5911, 0.1744),
-            'mixamorig_RightLeg': (-1.9643, 14.4011, 1.6591),
-            'mixamorig_RightFoot': (-0.7460, 2.4167, -0.9562),
-            'mixamorig_RightToeBase': (-1.2012, 0.0003, 1.9737),
-            'mixamorig_RightToe_End': (-1.5949, 0.1407, 4.5080),
-            'mixamorig_LeftUpLeg': (2.2766, 26.5677, -0.0823),
-            'mixamorig_LeftLeg': (2.8265, 15.7142, 5.6435),
-            'mixamorig_LeftFoot': (1.9961, 5.0910, -0.5540),
-            'mixamorig_LeftToeBase': (2.1881, 1.6134, 1.0273),
-            'mixamorig_LeftToe_End': (2.5888, 0.4910, 3.3026),
-        }
-        scaled_pose = {}
-        for bone, (x, y, z) in ref_pose.items():
-            scaled_pose[bone] = (x * scale, y * scale, z * scale)
-        return scaled_pose
+        world_matrices = {}
+        world_pose = {}
+        
+        # Identity for root
+        world_matrices['root'] = np.identity(4)
+        world_pose['root'] = (0, 0, 0)
+        
+        for bone, parent in cls.TOPOLOGY.items():
+            if bone == 'root': continue
+            
+            # 1. Get local bind matrix (T * R)
+            bind_m = cls.BIND_MATRICES.get(bone)
+            if bind_m:
+                # Ensure exactly 16 elements
+                m_data = list(bind_m[:16])
+                while len(m_data) < 16:
+                    if len(m_data) == 15: # Common case: missing last element of identity row
+                        m_data.append(1.0)
+                    else:
+                        m_data.append(0.0)
+                local_m = np.array(m_data).reshape(4, 4)
+            else:
+                local_m = np.identity(4)
+            
+            # 2. Construct world matrix (NO SCALE for basis inheritance to avoid shear)
+            # Child_World = Parent_World_No_Scale * Local_Bind_T_R
+            p_mat = world_matrices.get(parent, np.identity(4))
+            
+            # Calculate parent world scale to apply to this joint's translation
+            ps = [1.0, 1.0, 1.0]
+            if bone_scales and parent in bone_scales:
+                ps = bone_scales[parent]
+            
+            # Shift translation by parent scale
+            local_t = local_m[0:3, 3].copy()
+            local_t[0] *= ps[0]
+            local_t[1] *= ps[1]
+            local_t[2] *= ps[2]
+            
+            # New world matrix for this bone
+            m = p_mat.copy()
+            # Position: Parent_Pos + Parent_Rot * (Scaled_Local_Offset)
+            m[0:3, 3] = p_mat[0:3, 3] + p_mat[0:3, 0:3] @ local_t
+            # Rotation: Parent_Rot * Local_Rot
+            m[0:3, 0:3] = p_mat[0:3, 0:3] @ local_m[0:3, 0:3]
+            
+            world_matrices[bone] = m
+            
+            # 3. Final T-Pose world position (with global height scale)
+            pos = m[0:3, 3]
+            world_pose[bone] = (pos[0] * scale, pos[1] * scale, pos[2] * scale)
+            
+        return world_pose

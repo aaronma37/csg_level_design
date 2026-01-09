@@ -55,11 +55,21 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	return self
 end
 
+local function ensure_16(d)
+	if not d then return nil end
+	local out = {}
+	for i = 1, 16 do
+		out[i] = d[i] or (i == 16 and 1 or 0)
+	end
+	return out
+end
+
 --- Internal: Builds the bone hierarchy and loads associated models
 function Actor:_build_skeleton()
 	local rest_pose = self.rig_data.skeleton.rest_pose
 	local topology = self.rig_data.skeleton.topology
 	local bind_matrices = self.rig_data.skeleton.bind_matrices
+	local bone_scales = self.rig_data.skeleton.bone_scales or {}
 
 	-- 1. Create all Bone Nodes
 	-- Bones are kept in a separate hierarchy (self.skeleton_root)
@@ -82,26 +92,25 @@ function Actor:_build_skeleton()
 
 		if bind_matrices and bind_matrices[bone_name] then
 			local d = bind_matrices[bone_name]
-			-- JSON (Row-Major): 
-			-- [ 1,  2,  3,  4 ]  <- Row 1 (X_axis.x, X_axis.y, X_axis.z, Trans.x)
-			-- [ 5,  6,  7,  8 ]  <- Row 2 (Y_axis.x, ...)
-			-- [ 9, 10, 11, 12 ]
-			-- [13, 14, 15, 16 ]
-			
-			-- Menori (Column-Major):
-			-- [ 1, 5, 9, 13,   2, 6, 10, 14,   3, 7, 11, 15,   4, 8, 12, 16 ]
-			-- This mapping converts Row-Major to Column-Major
-			local m = ml.mat4({
+			-- Transpose Row-Major to Column-Major
+			local m = ml.mat4(ensure_16({
 				d[1], d[5], d[9], d[13],
 				d[2], d[6], d[10], d[14],
 				d[3], d[7], d[11], d[15],
 				d[4], d[8], d[12], d[16],
-			})
+			}))
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
 			node:set_position(self.temp_pos:clone())
 			node:set_rotation(self.temp_rot:clone())
-			node:set_scale(self.temp_scale:clone())
+			
+			-- Use custom scale if provided, otherwise use decomposed bind scale
+			local s = bone_scales[bone_name]
+			if s then
+				node:set_scale(vec3(s[1], s[2], s[3]))
+			else
+				node:set_scale(self.temp_scale:clone())
+			end
 		end
 
 		-- Load the 3D model part for this bone if it exists
@@ -204,12 +213,12 @@ function Actor:update(dt, anim_speed)
 			local bone = self.bones[bone_name]
 			if bone then
 				-- Convert Row-Major to Column-Major
-				local m = ml.mat4({
+				local m = ml.mat4(ensure_16({
 					d[1], d[5], d[9], d[13],
 					d[2], d[6], d[10], d[14],
 					d[3], d[7], d[11], d[15],
 					d[4], d[8], d[12], d[16],
-				})
+				}))
 				m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
 				bone:set_position(self.temp_pos:clone())
