@@ -1,6 +1,6 @@
 -- Actor Class for 3D Previewer
 -- Handles Skeleton construction, Animation playback, and Model-to-Bone syncing.
--- Rigorously annotated for coordinate systems and Menori integration.
+-- Optimized for stability with non-uniform scaling and fluid interpolation.
 
 local menori = require("menori")
 local ml = menori.ml
@@ -11,11 +11,16 @@ local json = require("json")
 local Actor = {}
 Actor.__index = Actor
 
+local function ensure_16(d)
+	if not d then return nil end
+	local out = {}
+	for i = 1, 16 do
+		out[i] = d[i] or (i == 16 and 1 or 0)
+	end
+	return out
+end
+
 --- Constructor for the Actor
--- @param rig_path Path to the rig.json file
--- @param assets_base_path Directory containing the GLTF parts
--- @param shader The shader to use for rendering models
--- @param palette The palette texture to use for models
 function Actor.new(rig_path, assets_base_path, shader, palette)
 	local self = setmetatable({}, Actor)
 
@@ -31,17 +36,22 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	self.root:attach(self.mesh_root)
 
 	-- State
-	self.bones = {} -- Bone nodes (hierarchical)
-	self.bone_models = {} -- Model nodes (flat, synced to bones)
-	self.bind_world_rotations = {} -- Used for relative rotation calculation
+	self.bones = {} 
+	self.bone_models = {} 
+	self.bind_world_rotations = {} 
 	self.animations = {}
 	self.active_anim_idx = 0
 	self.time = 0
 
-	-- Pre-allocate temp objects to avoid GC pressure
+	-- Pre-allocate temp objects for high-performance updates
 	self.temp_pos = vec3()
 	self.temp_rot = quat()
 	self.temp_scale = vec3()
+	
+	self.interp_p1 = vec3()
+	self.interp_r1 = quat()
+	self.interp_p2 = vec3()
+	self.interp_r2 = quat()
 
 	-- Load Rig
 	local rig_content = love.filesystem.read(rig_path)
@@ -55,15 +65,6 @@ function Actor.new(rig_path, assets_base_path, shader, palette)
 	return self
 end
 
-local function ensure_16(d)
-	if not d then return nil end
-	local out = {}
-	for i = 1, 16 do
-		out[i] = d[i] or (i == 16 and 1 or 0)
-	end
-	return out
-end
-
 --- Internal: Builds the bone hierarchy and loads associated models
 function Actor:_build_skeleton()
 	local rest_pose = self.rig_data.skeleton.rest_pose
@@ -71,19 +72,14 @@ function Actor:_build_skeleton()
 	local bind_matrices = self.rig_data.skeleton.bind_matrices
 	local bone_scales = self.rig_data.skeleton.bone_scales or {}
 
-	-- 1. Create all Bone Nodes
-	-- Bones are kept in a separate hierarchy (self.skeleton_root)
+	-- 1. Create all Bone Nodes (Unscaled for rotation stability)
 	for bone_name, _ in pairs(rest_pose) do
 		self.bones[bone_name] = menori.Node(bone_name)
 	end
 
 	-- 2. Link Nodes & Set Bind Pose
-	-- COORDINATE NOTE: The matrices in JSON are Row-Major. 
-	-- Menori matrices are Column-Major. We must transpose/re-order when loading.
 	for bone_name, parent_name in pairs(topology) do
 		local node = self.bones[bone_name]
-		
-		-- Parent-Child linkage
 		if parent_name and self.bones[parent_name] then
 			self.bones[parent_name]:attach(node)
 		else
@@ -92,7 +88,6 @@ function Actor:_build_skeleton()
 
 		if bind_matrices and bind_matrices[bone_name] then
 			local d = bind_matrices[bone_name]
-			-- Transpose Row-Major to Column-Major
 			local m = ml.mat4(ensure_16({
 				d[1], d[5], d[9], d[13],
 				d[2], d[6], d[10], d[14],
@@ -101,31 +96,24 @@ function Actor:_build_skeleton()
 			}))
 			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
 
-			-- If parent is scaled, we must scale the local offset to keep the joint attached
+			-- SCALE STABILITY FIX:
+			-- We scale the local position to match proportions, but we keep the bone 
+			-- node's own scale at 1,1,1. This prevents Menori from encountering 
+			-- singularities during world-matrix decomposition.
 			local ps = bone_scales[parent_name] or {1, 1, 1}
 			node:set_position(vec3(self.temp_pos.x * ps[1], self.temp_pos.y * ps[2], self.temp_pos.z * ps[3]))
 			node:set_rotation(self.temp_rot:clone())
-			
-			-- Use custom scale if provided, otherwise use decomposed bind scale
-			local s = bone_scales[bone_name]
-			if s then
-				node:set_scale(vec3(s[1], s[2], s[3]))
-			else
-				node:set_scale(self.temp_scale:clone())
-			end
+			node:set_scale(vec3(1, 1, 1)) -- Keep internal scale uniform
 		end
 
-		-- Load the 3D model part for this bone if it exists
 		self:_load_bone_model(bone_name)
 	end
 
-	-- 3. Capture World Bind Rotations
-	-- We need these because our modular models (limbs/head) are exported in their own local T-pose.
-	-- When syncing, we don't just copy the bone rotation; we apply the rotation *relative* to the bind pose.
-	-- Model_Rotation = Bone_Current_World_Rotation * Inverse(Bone_Bind_World_Rotation)
-	self.root:recursive_update_transform()
+	-- 3. Capture WORLD bind rotations (MUST CLONE)
+	-- Since bones are now unscaled (1,1,1), these rotations are perfectly stable.
+	self.root:recursive_update_transform(true)
 	for bone_name, node in pairs(self.bones) do
-		self.bind_world_rotations[bone_name] = node:get_world_rotation()
+		self.bind_world_rotations[bone_name] = node:get_world_rotation():clone()
 	end
 end
 
@@ -172,16 +160,12 @@ function Actor:_load_bone_model(bone_name)
 	end)
 
 	if scene_nodes[1] then
-		-- IMPORTANT: Models are attached to a FLAT mesh_root. 
-		-- We do NOT parent models to bones because we want to avoid 
-		-- non-uniform scale inheritance issues and simplify the hierarchy.
 		self.mesh_root:attach(scene_nodes[1])
 		self.bone_models[bone_name] = scene_nodes[1]
 	end
 end
 
 --- Loads all animations from a directory
--- @param dir_path Directory containing .json animation files
 function Actor:load_animations(dir_path)
 	local files = love.filesystem.getDirectoryItems(dir_path)
 	for _, file in ipairs(files) do
@@ -199,79 +183,100 @@ function Actor:load_animations(dir_path)
 end
 
 --- Updates the actor state, animation, and syncs models
--- @param dt Delta time
--- @param anim_speed Playback speed in frames per second
 function Actor:update(dt, anim_speed)
+	local anim = self.animations[self.active_anim_idx]
+	local duration = 1.0
+	local frame_count = 0
+	if anim and anim.data.frames then
+		frame_count = #anim.data.frames
+		duration = frame_count / anim_speed
+	end
+
 	self.time = self.time + dt
+	if self.time >= duration then
+		self.time = self.time % duration
+	end
 	
 	local topology = self.rig_data.skeleton.topology
 	local bone_scales = self.rig_data.skeleton.bone_scales or {}
 
-	-- 1. Apply Animation to Bones
-	local anim = self.animations[self.active_anim_idx]
-	if anim and anim.data.frames then
-		local frames = anim.data.frames
-		local frame_idx = math.floor(self.time * anim_speed) % #frames
-		local frame = frames[frame_idx + 1]
+	-- 1. Apply Animation to Bones with Interpolation
+	if anim and frame_count > 1 then
+		local float_frame = (self.time * anim_speed)
+		local idx1 = math.floor(float_frame) % frame_count
+		local idx2 = (idx1 + 1) % frame_count
+		local alpha = float_frame - math.floor(float_frame)
 
-		for bone_name, d in pairs(frame) do
+		local frame1 = anim.data.frames[idx1 + 1]
+		local frame2 = anim.data.frames[idx2 + 1]
+
+		for bone_name, d1 in pairs(frame1) do
 			local bone = self.bones[bone_name]
-			if bone then
-				-- Convert Row-Major to Column-Major
-				local m = ml.mat4(ensure_16({
-					d[1], d[5], d[9], d[13],
-					d[2], d[6], d[10], d[14],
-					d[3], d[7], d[11], d[15],
-					d[4], d[8], d[12], d[16],
+			local d2 = frame2[bone_name]
+			if bone and d2 then
+				-- Frame 1 Decomp
+				local m1 = ml.mat4(ensure_16({
+					d1[1], d1[5], d1[9], d1[13], d1[2], d1[6], d1[10], d1[14],
+					d1[3], d1[7], d1[11], d1[15], d1[4], d1[8], d1[12], d1[16],
 				}))
-				m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
+				m1:decompose(self.interp_p1, self.interp_r1)
 
-				-- Scale translation by PARENT scale to keep joints attached during animation
-				local parent_name = topology[bone_name]
-				local ps = bone_scales[parent_name] or {1, 1, 1}
-				
-				bone:set_position(vec3(self.temp_pos.x * ps[1], self.temp_pos.y * ps[2], self.temp_pos.z * ps[3]))
-				bone:set_rotation(self.temp_rot:clone())
-				
-				-- Note: We DON'T set scale from animation, we keep the custom scale from _build_skeleton
+				-- Frame 2 Decomp
+				local m2 = ml.mat4(ensure_16({
+					d2[1], d2[5], d2[9], d2[13], d2[2], d2[6], d2[10], d2[14],
+					d2[3], d2[7], d2[11], d2[15], d2[4], d2[8], d2[12], d2[16],
+				}))
+				m2:decompose(self.interp_p2, self.interp_r2)
+
+				-- Interpolate
+				local p_interp = vec3.lerp(self.interp_p1, self.interp_p2, alpha)
+				local r_interp = quat.slerp(self.interp_r1, self.interp_r2, alpha)
+				r_interp:normalize()
+
+				-- Apply proporational translation
+				local ps = bone_scales[topology[bone_name]] or {1, 1, 1}
+				bone:set_position(vec3(p_interp.x * ps[1], p_interp.y * ps[2], p_interp.z * ps[3]))
+				bone:set_rotation(r_interp)
 			end
 		end
 	end
 
-	-- 2. Propagate bone transforms down the hierarchy
-	self.skeleton_root:recursive_update_transform()
+	-- 2. Propagate bone transforms
+	self.skeleton_root:recursive_update_transform(true)
 
 	-- 3. Sync Flat Models to Bones
-	-- This is the "Skinning" replacement. Instead of GPU skinning, we manually
-	-- position/rotate each modular part to match its corresponding bone.
 	for name, model in pairs(self.bone_models) do
 		local bone = self.bones[name]
 		if bone then
-			-- Copy World Position directly
-			model:set_position(bone:get_world_position())
+			-- Sync World Position
+			model:set_position(bone:get_world_position():clone())
 			
-			-- Apply Relative Rotation:
-			-- The model's local 'up' should match the bone's current 'up' relative to bind.
+			-- Sync Stable World Rotation
 			local bind_world_rot = self.bind_world_rotations[name]
 			if bind_world_rot then
-				-- New_World = Animated_Bone_World * Inverse(Bind_Bone_World)
-				model:set_rotation(bone:get_world_rotation() * bind_world_rot:inverse())
+				local current_world_rot = bone:get_world_rotation():clone()
+				local rot = current_world_rot * bind_world_rot:inverse()
+				rot:normalize()
+				model:set_rotation(rot)
 			else
-				model:set_rotation(bone:get_world_rotation())
+				model:set_rotation(bone:get_world_rotation():clone())
 			end
 
-			-- Copy World Scale
-			model:set_scale(bone:get_world_scale())
+			-- Apply Model-Specific Scale directly to the mesh node
+			local s = bone_scales[name]
+			if s then
+				model:set_scale(vec3(s[1], s[2], s[3]))
+			else
+				model:set_scale(vec3(1, 1, 1))
+			end
 		end
 	end
 
 	-- 4. Propagate model transforms
-	self.mesh_root:recursive_update_transform()
+	self.mesh_root:recursive_update_transform(true)
 end
 
 --- Draws the skeleton for debugging
--- @param camera The menori Camera3D used for screen-space projection
--- @param view_rect The {x, y, w, h} viewport rectangle
 function Actor:draw_skeleton(camera, view_rect)
 	love.graphics.setShader()
 	love.graphics.setDepthMode("always", false)
@@ -295,8 +300,6 @@ function Actor:draw_skeleton(camera, view_rect)
 end
 
 --- Sets a uniform color for all model parts
--- @param color {r, g, b, a} table
--- @param bone_colors Optional table mapping bone_name -> color
 function Actor:set_model_colors(color, bone_colors)
 	for name, model in pairs(self.bone_models) do
 		local final_color = (bone_colors and bone_colors[name]) or color
