@@ -250,14 +250,14 @@ function App:render_view(idx, camera)
 		self.actor:draw_skeleton(camera, { 0, 0, self.view_w, self.view_h })
 	end
 
-	for i, v in pairs(self.actor.stored_frames[self.actor:get_active_animation_name()]) do
-		local pos = menori.ml.vec3()
-		local rot = menori.ml.quat()
-		local scale = menori.ml.vec3()
-		v.tf:decompose(pos, rot, scale)
-		self.actor.bone_nodes[i]:set_position(pos)
-		self.actor.bone_nodes[i]:set_rotation(rot)
-		self.actor.bone_nodes[i]:set_scale(scale)
+	for i, g in pairs(self.actor.stored_frames[self.actor:get_active_animation_name()]) do
+		-- local pos = menori.ml.vec3()
+		-- local rot = menori.ml.quat()
+		-- local scale = menori.ml.vec3()
+		-- v.tf:decompose(pos, rot, scale)
+		self.actor.bone_nodes[i].world_matrix:copy(g.tf)
+		-- self.actor.bone_nodes[i]:set_rotation(rot)
+		-- self.actor.bone_nodes[i]:set_scale(scale)
 	end
 
 	love.graphics.setCanvas()

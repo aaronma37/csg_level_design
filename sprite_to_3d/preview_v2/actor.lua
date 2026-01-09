@@ -338,9 +338,11 @@ local function getTf(p1, p2)
 	local length = diff:length()
 	local direction = diff / length
 	-- 1. Get rotation (points local Z towards the direction)
-	local q_base = ml.quat.from_direction(direction, ml.vec3(0, 1, 0))
-	local q_fix = ml.quat.from_angle_axis(-math.pi / 2, ml.vec3(0, 1, 0))
+	local q_base = ml.quat.from_direction(direction, ml.vec3(0, 0, 1))
+	local q_fix = ml.quat.from_angle_axis(math.pi / 2, ml.vec3(0, 1, 0))
 	local rotation = q_base * q_fix
+
+	-- ml.quat.from_direction(direction, ml.vec3(0, 0, 1)) * ml.quat.from_direction(0, ml.vec3(0, 0, 1)),
 
 	-- local rotation = ml.quat.from_direction(direction, ml.vec3(0, 1, 0))
 	return ml.mat4():compose(p1 + diff * 0.5, rotation, ml.vec3(1, 1, 1))
