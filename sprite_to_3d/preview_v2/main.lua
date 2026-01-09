@@ -5,6 +5,8 @@ local ml = menori.ml
 local vec3 = ml.vec3
 local quat = ml.quat
 
+local Actor = require("actor")
+
 local HEAD_PATH = "assets/hero/base_head.gltf"
 local RIG_PATH = "assets/hero/rig.json"
 
@@ -24,79 +26,10 @@ local App = {
 
 	show_skeleton = true,
 	show_mesh = true,
-
-	animations = {},
-	active_anim_idx = 1,
 }
-
-function App:get_model_path(bone_name)
-	local map = {
-		mixamorig_Hips = "base_pelvis",
-		mixamorig_Spine = "base_spine",
-		mixamorig_Spine1 = "base_spine1",
-		mixamorig_Spine2 = "base_spine2",
-		mixamorig_Head = "base_head",
-		mixamorig_LeftShoulder = "base_leftshoulder",
-		mixamorig_RightShoulder = "base_rightshoulder",
-		mixamorig_LeftArm = "base_arm_l",
-		mixamorig_RightArm = "base_arm_r",
-		mixamorig_LeftForeArm = "base_elbow_l",
-		mixamorig_RightForeArm = "base_elbow_r",
-		mixamorig_LeftHand = "base_hand_l",
-		mixamorig_RightHand = "base_hand_r",
-		mixamorig_LeftUpLeg = "base_thigh_l",
-		mixamorig_RightUpLeg = "base_thigh_r",
-		mixamorig_LeftLeg = "base_knee_l",
-		mixamorig_RightLeg = "base_knee_r",
-		mixamorig_LeftFoot = "base_foot_l",
-		mixamorig_RightFoot = "base_foot_r",
-	}
-	local name = map[bone_name]
-	if name then
-		return "assets/hero/" .. name .. ".gltf"
-	end
-	return nil
-end
-
-function App:load_bone_model(bone_name)
-	local path = self:get_model_path(bone_name)
-	if not path then
-		return
-	end
-
-	if love.filesystem.getInfo(path) then
-		print("Loading: " .. path)
-		local gltf_data = menori.glTFLoader.load(path)
-		local scene_nodes = menori.NodeTreeBuilder.create(gltf_data, function(scene, builder)
-			scene:traverse(function(n)
-				if n.is_model_node then
-					print("  Found model node: " .. (n.name or "unnamed"))
-					n.material.main_texture = self.palette
-					n.material:set_shader(self.shader)
-					n.material:set("unlit", true)
-					n.material:set("baseColor", { 1, 1, 1, 1 })
-					n.material.mesh_cull_mode = "none"
-				end
-			end)
-		end)
-
-		if scene_nodes[1] then
-			-- Attach to CharRoot (Flat Hierarchy for Rendering)
-			self.char_root:attach(scene_nodes[1])
-			scene_nodes[1]:set_position(vec3(0, 0, 0))
-
-			-- Store reference for transform update
-			self.bone_models[bone_name] = scene_nodes[1]
-		end
-	end
-end
 
 function App:load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
-
-	self.temp_pos = vec3()
-	self.temp_rot = quat()
-	self.temp_scale = vec3()
 
 	-- 1. Load Custom Shader
 	local status, shader_or_err = pcall(love.graphics.newShader, "shaders/lighting.glsl")
@@ -114,13 +47,6 @@ function App:load()
 	self.palette = love.graphics.newImage("assets/hero/palette_texture.png")
 	self.ref_sprite_img = love.graphics.newImage("assets/t_pose_sprite.png")
 
-	-- Debug Cube
-	self.debug_mesh = menori.Box(1, 1, 1)
-	self.debug_mat = menori.Material()
-	self.debug_mat:set("baseColor", { 1, 0, 0, 1 })
-	self.debug_mat:set("unlit", true)
-	self.debug_mat:set_shader(self.shader)
-
 	-- 2. Scene Setup
 	self.scene = menori.Scene()
 	self.root = menori.Node("scene_root")
@@ -132,50 +58,10 @@ function App:load()
 	self.env:set("dirLightDirection", { -0.6, -0.8, 0.5 })
 	self.env:set("dirLightColor", { 1.5, 1.5, 1.4 })
 
-	-- 3. Load Rig
-	local rig_content, _ = love.filesystem.read(RIG_PATH)
-	if rig_content then
-		self.rig_data = json.decode(rig_content)
-		print("Loaded Rig: " .. RIG_PATH)
-		self:build_skeleton()
-	else
-		print("FAILED TO LOAD RIG: " .. RIG_PATH)
-	end
-
-	-- 3.5 Load Animations
-	local anim_dir = "assets/hero"
-	local files = love.filesystem.getDirectoryItems(anim_dir)
-	local anim_files = {}
-
-	for _, file in ipairs(files) do
-		if file:match("%.json$") and file ~= "rig.json" then
-			local name = file:gsub("%.json$", "")
-			-- Capitalize for display
-			name = name:gsub("^%l", string.upper):gsub("_%l", string.upper):gsub("_", " ")
-			table.insert(anim_files, { name = name, path = anim_dir .. "/" .. file })
-		end
-	end
-
-	-- Sort alphabetically
-	table.sort(anim_files, function(a, b)
-		return a.name < b.name
-	end)
-
-	for _, info in ipairs(anim_files) do
-		local content, _ = love.filesystem.read(info.path)
-		if content then
-			local data = json.decode(content)
-			table.insert(self.animations, {
-				name = info.name,
-				data = data,
-			})
-			print("Loaded Animation: " .. info.name .. " | Frames: " .. tostring(#data.frames))
-		else
-			print("FAILED TO LOAD ANIMATION: " .. info.path)
-		end
-	end
-
-	self.anim_data = self.animations[self.active_anim_idx] and self.animations[self.active_anim_idx].data
+	-- 3. Initialize Actor
+	self.actor = Actor.new(RIG_PATH, "assets/hero", self.shader, self.palette)
+	self.actor:load_animations("assets/hero")
+	self.root:attach(self.actor.root)
 
 	-- 4. View Setup
 	local win_w, win_h = love.graphics.getDimensions()
@@ -214,194 +100,9 @@ function App:load()
 	}
 end
 
-function App:apply_animation(dt)
-	local active_anim = self.animations[self.active_anim_idx]
-	if not active_anim or not self.bones then
-		return
-	end
-
-	local anim_data = active_anim.data
-	local frame_count = #anim_data.frames
-	if frame_count == 0 then
-		return
-	end
-
-	local current_frame_idx = math.floor(self.time * self.animation_speed) % frame_count
-	local frame = anim_data.frames[current_frame_idx + 1]
-
-	local debug_frame = (math.floor(self.time * 60) % 60 == 0)
-
-	for bone_name, matrix_data in pairs(frame) do
-		local bone = self.bones[bone_name]
-		if bone then
-			local d = matrix_data
-			-- Convert Row-Major (JSON) to Column-Major (Menori)
-			local m = ml.mat4({
-				d[1],
-				d[5],
-				d[9],
-				d[13],
-				d[2],
-				d[6],
-				d[10],
-				d[14],
-				d[3],
-				d[7],
-				d[11],
-				d[15],
-				d[4],
-				d[8],
-				d[12],
-				d[16],
-			})
-
-			--       local m = ml.mat4({
-			--     -- Column 1 (Should be the whole X Basis Vector)
-			--     d[1], d[2], d[3], 0,    -- Keep 1, 2, 3 together!
-			--
-			--     -- Column 2 (Should be the whole Y Basis Vector)
-			--     d[5], d[6], d[7], 0,    -- Keep 5, 6, 7 together!
-			--
-			--     -- Column 3 (Should be the whole Z Basis Vector)
-			--     d[9], d[10], d[11], 0,  -- Keep 9, 10, 11 together!
-			--
-			--     -- Column 4 (Translation)
-			--     d[4], d[8], d[12], 1    -- Keep translation components
-			-- })
-			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
-
-			if debug_frame and (bone_name == "mixamorig_Hips" or bone_name == "mixamorig_Head") then
-				print(
-					string.format("  Scale: %.2f, %.2f, %.2f", self.temp_scale.x, self.temp_scale.y, self.temp_scale.z)
-				)
-			end
-
-			bone:set_position(vec3(self.temp_pos.x, self.temp_pos.y, self.temp_pos.z))
-			bone:set_rotation(quat(self.temp_rot.x, self.temp_rot.y, self.temp_rot.z, self.temp_rot.w))
-			bone:set_scale(vec3(self.temp_scale.x, self.temp_scale.y, self.temp_scale.z))
-		end
-	end
-
-	self.root:recursive_update_transform()
-end
-
-function App:build_skeleton()
-	if not self.rig_data then
-		return
-	end
-
-	self.bones = {}
-	self.bind_rotations = {}
-	self.bone_models = {}
-	self.char_root = menori.Node("CharacterRoot")
-	self.root:attach(self.char_root)
-
-	local rest_pose = self.rig_data.skeleton.rest_pose
-	local topology = self.rig_data.skeleton.topology
-	local bind_matrices = self.rig_data.skeleton.bind_matrices
-
-	-- Create Nodes
-	for bone_name, _ in pairs(rest_pose) do
-		self.bones[bone_name] = menori.Node(bone_name)
-		self.bones[bone_name].name = bone_name
-
-		if bone_name == "mixamorig_Hips" then
-			local hip_debug = menori.ModelNode(self.debug_mesh, self.debug_mat)
-			hip_debug:set_scale(vec3(4, 4, 4))
-			self.bones[bone_name]:attach(hip_debug)
-		end
-	end
-
-	-- Link Nodes & Set Rest Pose & Load Models
-	for bone_name, parent_name in pairs(topology) do
-		local node = self.bones[bone_name]
-		local bp = rest_pose[bone_name] -- [x, y, z]
-
-		if bind_matrices and bind_matrices[bone_name] then
-			-- Use full matrix for rest pose
-			local d = bind_matrices[bone_name]
-			local m = ml.mat4({
-				d[1],
-				d[5],
-				d[9],
-				d[13],
-				d[2],
-				d[6],
-				d[10],
-				d[14],
-				d[3],
-				d[7],
-				d[11],
-				d[15],
-				d[4],
-				d[8],
-				d[12],
-				d[16],
-			})
-			m:decompose(self.temp_pos, self.temp_rot, self.temp_scale)
-
-			if parent_name and self.bones[parent_name] then
-				self.bones[parent_name]:attach(node)
-			else
-				self.char_root:attach(node)
-			end
-
-			local q = quat(self.temp_rot.x, self.temp_rot.y, self.temp_rot.z, self.temp_rot.w)
-			node:set_position(vec3(self.temp_pos.x, self.temp_pos.y, self.temp_pos.z))
-			node:set_rotation(q)
-			node:set_scale(vec3(self.temp_scale.x, self.temp_scale.y, self.temp_scale.z))
-
-			self.bind_rotations[bone_name] = q
-		else
-			-- Fallback: Use world position difference (Old Skeleton)
-			if parent_name and self.bones[parent_name] then
-				self.bones[parent_name]:attach(node)
-				local pp = rest_pose[parent_name]
-				node:set_position(vec3(bp[1] - pp[1], bp[2] - pp[2], bp[3] - pp[3]))
-			else
-				self.char_root:attach(node)
-				node:set_position(vec3(unpack(bp)))
-			end
-		end
-
-		self:load_bone_model(bone_name)
-	end
-
-	-- Force update transforms to ensure positions are correct
-	self.root:recursive_update_transform()
-
-	-- Store WORLD bind rotations for skinning-like offset calculation
-	for bone_name, node in pairs(self.bones) do
-		self.bind_rotations[bone_name] = node:get_world_rotation()
-	end
-end
-
 function App:update(dt)
 	self.time = self.time + dt
-	self:apply_animation(dt)
-
-	-- Sync Models to Bones (Constraint)
-	if self.bones and self.bone_models then
-		for name, model in pairs(self.bone_models) do
-			local bone = self.bones[name]
-			if bone then
-				-- Copy World Transform
-				model:set_position(bone:get_world_position())
-
-				-- Apply bind rotation offset: Animated_World * Inverse(Bind_World)
-				local bind_world_rot = self.bind_rotations[name]
-				if bind_world_rot then
-					model:set_rotation(bone:get_world_rotation() * bind_world_rot:inverse())
-				else
-					model:set_rotation(bone:get_world_rotation())
-				end
-
-				model:set_scale(bone:get_world_scale())
-			end
-		end
-		-- Update scene graph again to apply these new world transforms to the flat models
-		self.root:recursive_update_transform()
-	end
+	self.actor:update(dt, self.animation_speed)
 
 	-- Camera Controls
 	if love.keyboard.isDown("left") then
@@ -455,8 +156,7 @@ function App:update(dt)
 	end
 
 	if love.keyboard.isDown("tab") and not self.k_tab_down then
-		self.active_anim_idx = (self.active_anim_idx % #self.animations) + 1
-		self.time = 0 -- Reset time for clean start
+		self.actor:next_animation()
 		self.k_tab_down = true
 	elseif not love.keyboard.isDown("tab") then
 		self.k_tab_down = false
@@ -516,30 +216,8 @@ function App:render_view(idx, camera)
 	end
 
 	-- Apply Colors before rendering
-	self.root:traverse(function(node)
-		if node.is_model_node then
-			local color = { 1, 1, 1, 1 }
-			if idx == 4 and self.bone_colors then
-				-- Find which bone this node belongs to
-				local owner_bone = nil
-				for bone_name, model_root in pairs(self.bone_models) do
-					local p = node
-					while p do
-						if p == model_root then
-							owner_bone = bone_name
-							break
-						end
-						p = p.parent
-					end
-					if owner_bone then
-						break
-					end
-				end
-				color = self.bone_colors[owner_bone] or { 1, 1, 1, 1 }
-			end
-			node.material:set("baseColor", color)
-		end
-	end)
+	local current_bone_colors = (idx == 4) and self.bone_colors or nil
+	self.actor:set_model_colors({1, 1, 1, 1}, current_bone_colors)
 
 	-- Render Reference Sprite (View 1 only)
 	if idx == 1 and self.ref_sprite_img then
@@ -573,30 +251,12 @@ function App:render_view(idx, camera)
 	end
 
 	-- Render using standard engine path
+	self.actor.mesh_root.visible = self.show_mesh
 	self.scene:render_nodes(self.root, self.env)
 
 	-- Draw Skeleton Lines (View 1 & 2 only)
-	if idx <= 2 and self.bones and self.show_skeleton then
-		love.graphics.setShader()
-		love.graphics.setDepthMode("always", false)
-		love.graphics.setColor(1, 1, 0, 1)
-
-		for _, bone in pairs(self.bones) do
-			local p1 = bone:get_world_position()
-			if type(p1) == "table" and type(p1.x) == "number" and type(p1.y) == "number" then
-				local s1 = camera:world_to_screen_point(p1, { 0, 0, self.view_w, self.view_h })
-
-				if s1.x > -100 and s1.x < self.view_w + 100 then
-					love.graphics.circle("fill", s1.x, s1.y, 3)
-
-					if bone.parent and self.bones[bone.parent.name] then
-						local p2 = bone.parent:get_world_position()
-						local s2 = camera:world_to_screen_point(p2, { 0, 0, self.view_w, self.view_h })
-						love.graphics.line(s1.x, s1.y, s2.x, s2.y)
-					end
-				end
-			end
-		end
+	if idx <= 2 and self.show_skeleton then
+		self.actor:draw_skeleton(camera, { 0, 0, self.view_w, self.view_h })
 	end
 
 	love.graphics.setCanvas()
@@ -656,8 +316,7 @@ function App:draw()
 	end
 
 	love.graphics.setColor(1, 1, 1)
-	local active_anim = self.animations[self.active_anim_idx]
-	local anim_name = active_anim and active_anim.name or "None"
+	local anim_name = self.actor:get_active_animation_name()
 	love.graphics.print("Animation: " .. anim_name .. " (Tab to switch)", 10, self.view_h * 2 - 40)
 
 	love.graphics.print(
