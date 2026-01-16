@@ -1,0 +1,578 @@
+[
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      256,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      256,
+      64,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      256,
+      128,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_corner",
+    "pos": [
+      256,
+      192,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      320,
+      192,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_river_corner",
+    "pos": [
+      384,
+      192,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      384,
+      256,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      384,
+      320,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      384,
+      384,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_river_straight",
+    "pos": [
+      384,
+      448,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      0,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      64,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      128,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      192,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      256,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      320,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      384,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      0,
+      448,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      0,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      64,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      128,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      192,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      256,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      320,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      384,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      64,
+      448,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      0,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      64,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      128,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      192,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      256,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      320,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      384,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_plateau",
+    "pos": [
+      128,
+      448,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      64,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      128,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      192,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      256,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      320,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      384,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_cliff",
+    "pos": [
+      192,
+      448,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      256,
+      256,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_tile_C",
+    "pos": [
+      256,
+      320,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      256,
+      384,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_tile_B",
+    "pos": [
+      256,
+      448,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      320,
+      0,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      320,
+      64,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      320,
+      128,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_tile_B",
+    "pos": [
+      320,
+      256,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      320,
+      320,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_tile_C",
+    "pos": [
+      320,
+      384,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      320,
+      448,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      384,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      384,
+      64,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      384,
+      128,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_tile_B",
+    "pos": [
+      448,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      64,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      128,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      192,
+      0
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      256,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      320,
+      0
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "collection_forest_tile_B",
+    "pos": [
+      448,
+      384,
+      0
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "collection_forest_meadow",
+    "pos": [
+      448,
+      448,
+      0
+    ],
+    "rot": 90
+  }
+]

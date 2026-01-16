@@ -1,0 +1,65 @@
+[
+  {
+    "asset_id": "tile_plateau",
+    "pos": [
+      0,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "willow_tree_xl",
+    "pos": [
+      32,
+      32,
+      32
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "flower_patch_blue",
+    "pos": [
+      57,
+      49,
+      32
+    ],
+    "rot": 90
+  },
+  {
+    "asset_id": "grass_patch",
+    "pos": [
+      49,
+      35,
+      32
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "grass_patch",
+    "pos": [
+      38,
+      57,
+      32
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "flower_patch_red",
+    "pos": [
+      5,
+      46,
+      32
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "debris_stump",
+    "pos": [
+      16,
+      22,
+      32
+    ],
+    "rot": 0
+  }
+]

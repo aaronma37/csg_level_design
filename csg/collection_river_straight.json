@@ -1,0 +1,74 @@
+[
+  {
+    "asset_id": "tile_river_straight",
+    "pos": [
+      0,
+      0,
+      0
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "grass_patch",
+    "pos": [
+      56,
+      7,
+      16
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "shrub_small",
+    "pos": [
+      47,
+      60,
+      16
+    ],
+    "rot": 0
+  },
+  {
+    "asset_id": "reeds_patch",
+    "pos": [
+      13,
+      13,
+      10
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "reeds_patch",
+    "pos": [
+      40,
+      52,
+      10
+    ],
+    "rot": 270
+  },
+  {
+    "asset_id": "reeds_patch",
+    "pos": [
+      11,
+      28,
+      10
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "reeds_patch",
+    "pos": [
+      17,
+      15,
+      10
+    ],
+    "rot": 180
+  },
+  {
+    "asset_id": "reeds_patch",
+    "pos": [
+      23,
+      17,
+      10
+    ],
+    "rot": 90
+  }
+]

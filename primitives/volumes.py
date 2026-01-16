@@ -56,3 +56,16 @@ def get_cone_voxels(cx, cy, cz, radius_bottom, radius_top, height, axis='z'):
                     else: # axis == 'x'
                         voxels.append((int(cx + h), int(cy + da), int(cz + db)))
     return voxels
+
+def get_ellipsoid_voxels(cx, cy, cz, rx, ry, rz):
+    voxels = []
+    # Bounding box
+    idx, idy, idz = int(math.ceil(rx)), int(math.ceil(ry)), int(math.ceil(rz))
+    
+    for dz in range(-idz, idz + 1):
+        for dy in range(-idy, idy + 1):
+            for dx in range(-idx, idx + 1):
+                # Ellipsoid equation: x^2/a^2 + y^2/b^2 + z^2/c^2 <= 1
+                if (dx*dx)/(rx*rx) + (dy*dy)/(ry*ry) + (dz*dz)/(rz*rz) <= 1.0:
+                    voxels.append((int(cx + dx), int(cy + dy), int(cz + dz)))
+    return voxels

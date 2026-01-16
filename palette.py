@@ -48,6 +48,14 @@ set_color(48, 80, 20, 20)    # Fabric Maroon
 set_color(49, 150, 130, 100) # Fabric Burlap (Brown)
 set_color(50, 255, 255, 255) # Pure White
 
+# --- NATURE RANGE (51-60) ---
+set_color(51, 58, 179, 58)   # Forest Green (Vibrant)
+set_color(52, 137, 172, 65)  # Olive Drab (Lighter)
+set_color(53, 100, 255, 100) # Lime Green (Bright Highlight)
+set_color(54, 30, 144, 255)  # Water Blue (Bright)
+set_color(55, 139, 69, 19)   # Saddle Brown (Dirt/Trunk)
+set_color(56, 45, 67, 27)    # Dark Olive Green (Shadows)
+
 # --- CHARACTER RANGE (100-149) ---
 # WARNING: DO NOT MODIFY OR REMOVE THESE COLORS. 
 set_color(100, 47, 30, 16); set_color(101, 174, 141, 98); set_color(102, 1, 1, 1); set_color(103, 237, 213, 188)
@@ -107,6 +115,8 @@ STONE_HIGHLIGHT = 23
 FABRIC_RED = 41; FABRIC_BLUE = 42; FABRIC_GOLD = 43; FABRIC_MAROON = 48; FABRIC_BURLAP = 49
 BEIGE_LIGHT = 44; BEIGE_MEDIUM = 45; BEIGE_DARK = 46
 WHITE = 50
+LEAF_BASE = 51; LEAF_LIGHT = 52; LEAF_BRIGHT = 53
+WATER_BLUE = 54; DIRT_BROWN = 55; LEAF_DARK = 56
 PURPLE_GLOW = 242; WINDOW_GLOW = 243
 GHOST_PURPLE = 250; GHOST_WHITE = 252
 GHOST_GREEN = 251; FIRE_CORE = 240; FIRE_GLOW = 241

@@ -178,6 +178,9 @@ def compile_asset(json_path):
             height = op.get("height", 1)
             axis = op.get("axis", "z")
             coords = volumes.get_cone_voxels(pos[0], pos[1], pos[2], radius_bottom, radius_top, height, axis)
+        elif shape == "ellipsoid":
+            size = op.get("size", [1,1,1]) # Treated as radii [rx, ry, rz]
+            coords = volumes.get_ellipsoid_voxels(pos[0], pos[1], pos[2], size[0], size[1], size[2])
         elif shape == "point_cloud":
             points = op.get("points", [])
             # points are relative to pos
