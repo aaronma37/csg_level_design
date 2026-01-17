@@ -9687,5 +9687,8 @@
       ],
       "color": 1
     }
+  ],
+  "tags": [
+    "occluder"
   ]
 }

@@ -363032,6 +363032,16 @@
     }
   ],
   "snap_points": {
-    "railing_side": { "pos": [-20, 0, 0], "rot": 270 }
-  }
+    "railing_side": {
+      "pos": [
+        -20,
+        0,
+        0
+      ],
+      "rot": 270
+    }
+  },
+  "tags": [
+    "occluder"
+  ]
 }

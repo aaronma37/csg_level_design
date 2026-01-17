@@ -1,57 +1,1141 @@
-[
-  {
-    "asset_id": "collection_tavern_shell",
-    "pos": [0, 0, 0],
-    "rot": 0
+{
+  "layout": [
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        0,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        0,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        160,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        160,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        0,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        64,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        128,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        192,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        256,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        308,
+        0,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        308,
+        64,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        308,
+        128,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        308,
+        192,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        308,
+        256,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "walkway_tile",
+      "pos": [
+        0,
+        256,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "walkway_tile",
+      "pos": [
+        160,
+        256,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "walkway_tile",
+      "pos": [
+        256,
+        0,
+        80
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "walkway_tile",
+      "pos": [
+        256,
+        160,
+        80
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "walkway_tile",
+      "pos": [
+        256,
+        256,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "railing_long",
+      "pos": [
+        39,
+        255,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "railing_long",
+      "pos": [
+        139,
+        255,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "railing_long",
+      "pos": [
+        255,
+        -1,
+        80
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "railing_long",
+      "pos": [
+        255,
+        159,
+        80
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "stairs",
+      "pos": [
+        265,
+        95,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "stair_railing",
+      "pos": [
+        264,
+        95,
+        0
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "door",
+      "pos": [
+        311,
+        24,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "door",
+      "pos": [
+        84,
+        311,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "door",
+      "pos": [
+        204,
+        311,
+        80
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "window",
+      "pos": [
+        82,
+        305,
+        68
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "window",
+      "pos": [
+        210,
+        305,
+        68
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "window",
+      "pos": [
+        305,
+        82,
+        68
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "window",
+      "pos": [
+        305,
+        210,
+        68
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "stone_fireplace",
+      "pos": [
+        300,
+        133,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        270,
+        145,
+        0.1
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "bar_counter",
+      "pos": [
+        20,
+        274,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shelf",
+      "pos": [
+        20,
+        309,
+        40
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        5,
+        265,
+        0
+      ],
+      "rot": 327
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        5,
+        285,
+        0
+      ],
+      "rot": 57
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        5,
+        305,
+        0
+      ],
+      "rot": 12
+    },
+    {
+      "asset_id": "barstool",
+      "pos": [
+        26,
+        259,
+        0
+      ],
+      "rot": -1
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        31,
+        283,
+        38
+      ],
+      "rot": 114
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        33,
+        281,
+        38
+      ],
+      "rot": 71
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        22,
+        283,
+        38
+      ],
+      "rot": 52
+    },
+    {
+      "asset_id": "barstool",
+      "pos": [
+        48,
+        261,
+        0
+      ],
+      "rot": 5
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        51,
+        283,
+        38
+      ],
+      "rot": 279
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        53,
+        281,
+        38
+      ],
+      "rot": 44
+    },
+    {
+      "asset_id": "barstool",
+      "pos": [
+        67,
+        260,
+        0
+      ],
+      "rot": 4
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        71,
+        283,
+        38
+      ],
+      "rot": 16
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        73,
+        281,
+        38
+      ],
+      "rot": 15
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        62,
+        283,
+        38
+      ],
+      "rot": 47
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        280,
+        180,
+        0
+      ],
+      "rot": 111
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        295,
+        195,
+        0
+      ],
+      "rot": 119
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        275,
+        210,
+        0
+      ],
+      "rot": 258
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        280,
+        180,
+        19
+      ],
+      "rot": 308
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        69,
+        133,
+        0.1
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        60,
+        150,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        68,
+        170,
+        0
+      ],
+      "rot": -10
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        104,
+        172,
+        0
+      ],
+      "rot": 10
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        66,
+        147,
+        0
+      ],
+      "rot": 183
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        103,
+        146,
+        0
+      ],
+      "rot": 188
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        99,
+        162,
+        24
+      ],
+      "rot": 357
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        91,
+        163,
+        24
+      ],
+      "rot": 110
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        91,
+        158,
+        24
+      ],
+      "rot": 194
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        76,
+        166,
+        24
+      ],
+      "rot": 309
+    },
+    {
+      "asset_id": "chandelier",
+      "pos": [
+        92,
+        166,
+        70
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        200,
+        200,
+        0.1
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        200,
+        200,
+        0.2
+      ],
+      "rot": 15
+    },
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        200,
+        220,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        210,
+        255,
+        0
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        210,
+        185,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        180,
+        220,
+        0
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        240,
+        220,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "skull",
+      "pos": [
+        210,
+        220,
+        26
+      ],
+      "rot": -15
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        210,
+        235,
+        26
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        210,
+        205,
+        26
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chandelier",
+      "pos": [
+        216,
+        252,
+        70
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        160,
+        40,
+        0.1
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        250,
+        113,
+        0.1
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        250,
+        143,
+        0
+      ],
+      "rot": 263
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        250,
+        103,
+        0
+      ],
+      "rot": 280
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        260,
+        123,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        260,
+        123,
+        19
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        255,
+        118,
+        19
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        40,
+        220,
+        0.1
+      ],
+      "rot": 45
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        40,
+        220,
+        0
+      ],
+      "rot": 135
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        45,
+        215,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shelf",
+      "pos": [
+        80,
+        308,
+        60
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        70,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        85,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        95,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shelf",
+      "pos": [
+        140,
+        308,
+        60
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        130,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        145,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        155,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shelf",
+      "pos": [
+        200,
+        308,
+        60
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        190,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        205,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        215,
+        308,
+        65
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "weapon_rack",
+      "pos": [
+        308,
+        100,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "trophy_wall",
+      "pos": [
+        160,
+        308,
+        40
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "trophy_wall",
+      "pos": [
+        220,
+        308,
+        40
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        10,
+        10,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        30,
+        15,
+        0
+      ],
+      "rot": 45
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        50,
+        260,
+        0
+      ],
+      "rot": 22
+    }
+  ],
+  "lights": [
+    {
+      "position": [
+        290,
+        133,
+        40
+      ],
+      "color": [
+        1.0,
+        0.6,
+        0.2
+      ],
+      "intensity": 50.0,
+      "radius": 1500
+    },
+    {
+      "position": [
+        22,
+        283,
+        43
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        62,
+        283,
+        43
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        99,
+        162,
+        29
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        92,
+        166,
+        60
+      ],
+      "color": [
+        1.0,
+        0.95,
+        0.8
+      ],
+      "intensity": 30.0,
+      "radius": 1200
+    },
+    {
+      "position": [
+        210,
+        235,
+        31
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        216,
+        252,
+        60
+      ],
+      "color": [
+        1.0,
+        0.95,
+        0.8
+      ],
+      "intensity": 30.0,
+      "radius": 1200
+    },
+    {
+      "position": [
+        95,
+        308,
+        70
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        155,
+        308,
+        70
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    },
+    {
+      "position": [
+        215,
+        308,
+        70
+      ],
+      "color": [
+        1.0,
+        0.7,
+        0.4
+      ],
+      "intensity": 8.0,
+      "radius": 600
+    }
+  ],
+  "team1_units": [
+    [
+      140,
+      60,
+      0
+    ],
+    [
+      160,
+      50,
+      0
+    ],
+    [
+      180,
+      60,
+      0
+    ]
+  ],
+  "team2_units": [
+    [
+      140,
+      190,
+      0
+    ],
+    [
+      160,
+      180,
+      0
+    ],
+    [
+      180,
+      190,
+      0
+    ]
+  ],
+  "camera": {
+    "eye": [
+      160,
+      -150,
+      250
+    ],
+    "center": [
+      160,
+      100,
+      0
+    ],
+    "fov": 45
   },
-  {
-    "asset_id": "collection_mezzanine_complete",
-    "pos": [0, 0, 0],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_bar_complete",
-    "pos": [20, 274, 1],
-    "rot": 180
-  },
-  {
-    "asset_id": "collection_dining_hall",
-    "pos": [60, 150, 3],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_fireplace_nook",
-    "pos": [300, 133, 1],
-    "rot": 90
-  },
-  {
-    "asset_id": "collection_stocked_shelf",
-    "pos": [80, 308, 61],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_stocked_shelf",
-    "pos": [140, 308, 61],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_stocked_shelf",
-    "pos": [200, 308, 61],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_armory_rack",
-    "pos": [308, 100, 1],
-    "rot": 90
-  },
-  {
-    "asset_id": "collection_storage_decor",
-    "pos": [0, 0, 1],
-    "rot": 0
-  },
-  {
-    "asset_id": "collection_misc_clutter",
-    "pos": [0, 0, 1],
-    "rot": 0
-  }
-]
+  "ambientColor": [
+    0.2,
+    0.2,
+    0.3
+  ],
+  "fogColor": [
+    0.1,
+    0.1,
+    0.15
+  ],
+  "fogNear": 300,
+  "fogFar": 800
+}

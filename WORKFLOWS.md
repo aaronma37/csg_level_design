@@ -45,5 +45,22 @@ This workflow is used for assets smaller than 16x16, or complex props made of re
 2.  **Compose Asset**: Create a generator script that imports these primitives and uses `builder.add_component(component, offset)` to arrange them.
 3.  **Compile & Deploy**: Use the standard `csg_compiler.py` and `deploy_assets.sh` as usual.
 
+### Layout Validation and Scene Generation
+This workflow covers procedural layout creation, verification, and Lua scene export.
+
+1.  **Generate Layout**: Run a layout generator to produce a scene JSON.
+    ```bash
+    python3 generators/generate_tavern_layout.py
+    ```
+2.  **Lint and Validate (MANDATORY)**: Run the linter to ensure characters are grounded and not stuck in walls.
+    ```bash
+    python3 tools/lint_layout.py csg/tavern_layout.json
+    ```
+    *Note: Use `tools/apply_tags.py` first if new assets were added.*
+3.  **Compose Scene**: Convert the validated JSON into a Lua scene file for the game engine.
+    ```bash
+    python3 scene_composer.py csg/tavern_layout.json
+    ```
+
 ## Notes
 *   The `view_vox.sh` script does not work currently. Do not use it.

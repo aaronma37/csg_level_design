@@ -168,18 +168,28 @@ def rotate_point(x, y, angle_deg):
 def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
     if not os.path.exists(layout_path):
         print(f"Warning: Layout file not found: {layout_path}")
-        return []
+        return [], {}
 
     with open(layout_path, 'r') as f:
         data = json.load(f)
     
-    flat_items = []
-    local_instances = {} # id -> { pos, rot, asset_id } (Local to this layout, but parent-transform applied?? No, let's store local-to-parent to be safe, or just resolved global?)
-    # Easier to store RESOLVED GLOBAL coords in local_instances for easy math, 
-    # BUT we need to be careful about the hierarchy. 
-    # Let's store RESOLVED GLOBAL.
+    # Handle dict input (new format) vs list input (legacy)
+    metadata = {}
+    items = []
     
-    for item in data:
+    if isinstance(data, dict):
+        items = data.get('layout', [])
+        # Copy other keys as metadata
+        for k, v in data.items():
+            if k != 'layout':
+                metadata[k] = v
+    else:
+        items = data
+
+    flat_items = []
+    local_instances = {} # id -> { pos, rot, asset_id } (Global coords)
+    
+    for item in items:
         aid = item['asset_id']
         
         # 1. Determine Local Transform (lx, ly, lz, lr)
@@ -196,9 +206,6 @@ def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
             t_rot = t_info['rot'] # Global
             
             # Load target asset to get snap points
-            # Search in csg/ or same dir
-            # We assume t_aid is a leaf asset for now, or a collection that has snap_points at top level?
-            # Usually assets have snap_points.
             t_path = os.path.join(os.path.dirname(layout_path), f"{t_aid}.json")
             if not os.path.exists(t_path): t_path = os.path.join("csg", f"{t_aid}.json")
             
@@ -216,7 +223,6 @@ def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
                 continue
                 
             # Apply Snap Point Transform
-            # The snap point (sx, sy, sz, sr) is local to the target asset (which is at t_pos, t_rot)
             sx, sy, sz = snap_def['pos']
             sr = snap_def.get('rot', 0)
             
@@ -260,13 +266,18 @@ def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
             try:
                 with open(collection_path, 'r') as cf:
                     c_data = json.load(cf)
-                if isinstance(c_data, list) and len(c_data) > 0 and isinstance(c_data[0], dict) and 'asset_id' in c_data[0]:
+                # Check if it looks like a layout (list or dict with 'layout')
+                if isinstance(c_data, list):
+                     if len(c_data) > 0 and isinstance(c_data[0], dict) and 'asset_id' in c_data[0]:
+                        is_collection = True
+                elif isinstance(c_data, dict) and 'layout' in c_data:
                     is_collection = True
             except:
                 pass
 
         if is_collection:
-            flat_items.extend(load_layout_recursively(collection_path, (gx, gy, gz), gr))
+            sub_items, _ = load_layout_recursively(collection_path, (gx, gy, gz), gr)
+            flat_items.extend(sub_items)
         else:
             flat_items.append({
                 'asset_id': aid,
@@ -274,13 +285,44 @@ def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
                 'rot': int(gr)
             })
             
-    return flat_items
+    return flat_items, metadata
+
+def format_lua_value(v, indent_level=1):
+    indent = "    " * indent_level
+    if isinstance(v, dict):
+        lines = ["{"]
+        for key, val in v.items():
+            lines.append(f"{indent}    {key} = {format_lua_value(val, indent_level + 1)},")
+        lines.append(f"{indent}}}")
+        return "\n".join(lines)
+    elif isinstance(v, list):
+        # Check if it's a list of numbers (vector)
+        if all(isinstance(x, (int, float)) for x in v):
+            return "{" + ", ".join(str(x) for x in v) + "}"
+        else:
+            lines = ["{"]
+            for item in v:
+                lines.append(f"{indent}    {format_lua_value(item, indent_level + 1)},")
+            lines.append(f"{indent}}}")
+            return "\n".join(lines)
+    elif isinstance(v, str):
+        return f"'{v}'"
+    elif isinstance(v, bool):
+        return "true" if v else "false"
+    else:
+        return str(v)
+
+def swizzle_coords(vec):
+    """Convert Z-up (x, y, z) to Y-up (x, z, y)."""
+    if len(vec) >= 3:
+        return [vec[0], vec[2], vec[1]]
+    return vec
 
 def run_composer(layout_file, output_file=None, merge=False):
     print(f"Composing Scene from {layout_file}...")
     
-    # Use recursive loader instead of direct json.load
-    scene_data = load_layout_recursively(layout_file)
+    # Use recursive loader
+    scene_data, metadata = load_layout_recursively(layout_file)
     
     # Generate Lua version of the layout
     base_name = os.path.basename(layout_file).replace(".json", "")
@@ -288,11 +330,45 @@ def run_composer(layout_file, output_file=None, merge=False):
     lua_output = os.path.join(scenes_dir, f"{base_name}.lua")
     
     lua_lines = ["-- Layout generated procedurally.", "return {"]
+    
+    # 1. Write Metadata (Camera, Lights, Units, etc.) with Swizzling
+    for key, value in metadata.items():
+        if key == 'lights':
+            # Handle list of light dicts
+            new_lights = []
+            for light in value:
+                l = light.copy()
+                if 'position' in l:
+                    l['position'] = swizzle_coords(l['position'])
+                new_lights.append(l)
+            lua_lines.append(f"    {key} = {format_lua_value(new_lights)},")
+            
+        elif key == 'camera':
+            # Handle camera dict
+            c = value.copy()
+            if 'eye' in c: c['eye'] = swizzle_coords(c['eye'])
+            if 'center' in c: c['center'] = swizzle_coords(c['center'])
+            lua_lines.append(f"    {key} = {format_lua_value(c)},")
+            
+        elif key in ['team1_units', 'team2_units']:
+            # Handle list of coordinate lists
+            units = [swizzle_coords(u) for u in value]
+            lua_lines.append(f"    {key} = {format_lua_value(units)},")
+            
+        else:
+            lua_lines.append(f"    {key} = {format_lua_value(value)},")
+
+    # 2. Write Layout (NO Swizzling - Engine loader handles CSG order)
+    lua_lines.append("    layout = {")
     for item in scene_data:
         aid = item['asset_id']
         pos = item['pos']
         rot = item.get('rot', 0)
-        lua_lines.append(f"    {{ asset_id = '{aid}', pos = {{{pos[0]}, {pos[1]}, {pos[2]}}}, rot = {rot} }},")
+        
+        # Keep original CSG (x, y, z) for the layout loader
+        lua_lines.append(f"        {{ asset_id = '{aid}', pos = {{{pos[0]}, {pos[1]}, {pos[2]}}}, rot = {rot} }},")
+    lua_lines.append("    }")
+    
     lua_lines.append("}")
     
     os.makedirs(scenes_dir, exist_ok=True)

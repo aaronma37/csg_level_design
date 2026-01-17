@@ -7241,7 +7241,24 @@
     }
   ],
   "snap_points": {
-    "window_mount": { "pos": [32, 0, 68], "rot": 0 },
-    "next_segment": { "pos": [64, 0, 0], "rot": 0 }
-  }
+    "window_mount": {
+      "pos": [
+        32,
+        0,
+        68
+      ],
+      "rot": 0
+    },
+    "next_segment": {
+      "pos": [
+        64,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  },
+  "tags": [
+    "occluder"
+  ]
 }

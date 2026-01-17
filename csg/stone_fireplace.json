@@ -9283,10 +9283,49 @@
     }
   ],
   "snap_points": {
-    "chair_left": { "pos": [-20, -30, 0], "rot": 30 },
-    "chair_right": { "pos": [20, -30, 0], "rot": 330 },
-    "mantle_left": { "pos": [-10, 10, 52], "rot": 0 },
-    "mantle_right": { "pos": [10, 10, 52], "rot": 0 },
-    "hearth_rug": { "pos": [0, -25, 1], "rot": 90 }
-  }
+    "chair_left": {
+      "pos": [
+        -20,
+        -30,
+        0
+      ],
+      "rot": 30
+    },
+    "chair_right": {
+      "pos": [
+        20,
+        -30,
+        0
+      ],
+      "rot": 330
+    },
+    "mantle_left": {
+      "pos": [
+        -10,
+        10,
+        52
+      ],
+      "rot": 0
+    },
+    "mantle_right": {
+      "pos": [
+        10,
+        10,
+        52
+      ],
+      "rot": 0
+    },
+    "hearth_rug": {
+      "pos": [
+        0,
+        -25,
+        1
+      ],
+      "rot": 90
+    }
+  },
+  "tags": [
+    "light_source",
+    "occluder"
+  ]
 }

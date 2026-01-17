@@ -570,5 +570,8 @@
       ],
       "color": 2
     }
+  ],
+  "tags": [
+    "passable"
   ]
 }

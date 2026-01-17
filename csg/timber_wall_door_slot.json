@@ -6639,7 +6639,24 @@
     }
   ],
   "snap_points": {
-    "door_mount": { "pos": [32, 0, 0], "rot": 0 },
-    "next_segment": { "pos": [64, 0, 0], "rot": 0 }
-  }
+    "door_mount": {
+      "pos": [
+        32,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    "next_segment": {
+      "pos": [
+        64,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  },
+  "tags": [
+    "occluder"
+  ]
 }

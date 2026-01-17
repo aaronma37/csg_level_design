@@ -25413,7 +25413,24 @@
     }
   ],
   "snap_points": {
-    "next_segment": { "pos": [256, 0, 0], "rot": 0 },
-    "corner_turn": { "pos": [256, 0, 0], "rot": 90 }
-  }
+    "next_segment": {
+      "pos": [
+        256,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    "corner_turn": {
+      "pos": [
+        256,
+        0,
+        0
+      ],
+      "rot": 90
+    }
+  },
+  "tags": [
+    "occluder"
+  ]
 }
