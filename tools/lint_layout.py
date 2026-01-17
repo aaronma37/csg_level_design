@@ -150,7 +150,9 @@ def check_unit_grounding(layout_file):
     errors = 0
     for u in units:
         # Units are usually float coordinates, snap to nearest integer voxel column
-        ux, uy, uz = int(round(u['pos'][0])), int(round(u['pos'][1])), int(u['pos'][2])
+        # Handle potential [x, y, z, rot]
+        pos = u['pos'][:3]
+        ux, uy, uz = int(round(pos[0])), int(round(pos[1])), int(pos[2])
         
         if (ux, uy) in floor_heights:
             floor_z = floor_heights[(ux, uy)]
@@ -204,7 +206,7 @@ def check_unit_occlusion(layout_file):
     errors = 0
     
     for u in units:
-        ux, uy, uz = u['pos'][0], u['pos'][1], u['pos'][2]
+        ux, uy, uz = u['pos'][:3]
         
         collision_found = False
         
@@ -249,11 +251,11 @@ def check_team_distance(layout_file):
     
     if not t1 or not t2: return
 
-    # Calculate Centroids
-    c1 = [sum(x)/len(t1) for x in zip(*t1)]
-    c2 = [sum(x)/len(t2) for x in zip(*t2)]
+    # Calculate Centroids (Slice to first 3 coords)
+    c1 = [sum(x)/len(t1) for x in zip(*[u[:3] for u in t1])]
+    c2 = [sum(x)/len(t2) for x in zip(*[u[:3] for u in t2])]
     
-    # Euclidean Distance
+    # Euclidean Distance (XYZ)
     dist = math.sqrt(sum((a - b)**2 for a, b in zip(c1, c2)))
     
     print(f"  Centroid Team 1: ({c1[0]:.1f}, {c1[1]:.1f}, {c1[2]:.1f})")
@@ -283,9 +285,9 @@ def check_camera_focus(layout_file):
     
     if not t1 or not t2: return
 
-    # Calculate Midpoint of Teams
-    c1 = [sum(x)/len(t1) for x in zip(*t1)]
-    c2 = [sum(x)/len(t2) for x in zip(*t2)]
+    # Calculate Midpoint of Teams (Slice to XYZ)
+    c1 = [sum(x)/len(t1) for x in zip(*[u[:3] for u in t1])]
+    c2 = [sum(x)/len(t2) for x in zip(*[u[:3] for u in t2])]
     midpoint = [(a+b)/2 for a, b in zip(c1, c2)]
     
     # Camera Center
@@ -408,6 +410,265 @@ def check_camera_line_of_sight(layout_file):
     if blocked_count == 0:
         print("  SUCCESS: Camera has clear line of sight to all units.")
 
+def check_unit_facing(layout_file):
+    print("\nChecking Unit Facing...")
+    with open(layout_file, 'r') as f:
+        data = json.load(f)
+    
+    if not isinstance(data, dict): return
+    t1 = data.get('team1_units', [])
+    t2 = data.get('team2_units', [])
+    if not t1 or not t2: return
+
+    # Calculate Enemy Centroids (XYZ only)
+    c1 = [sum(x)/len(t1) for x in zip(*[u[:3] for u in t1])]
+    c2 = [sum(x)/len(t2) for x in zip(*[u[:3] for u in t2])]
+    
+    errors = 0
+    
+    # Check Team 1 facing Team 2
+    for i, u in enumerate(t1):
+        if len(u) < 4: continue # No rotation data
+        
+        target_angle = math.atan2(c2[1] - u[1], c2[0] - u[0])
+        # Normalize to -pi..pi
+        current_angle = u[3]
+        
+        diff = abs(target_angle - current_angle)
+        while diff > math.pi: diff -= 2*math.pi
+        diff = abs(diff)
+        
+        if diff > math.radians(60): # 60 deg tolerance
+            print(f"  WARNING: Team 1 Unit {i} is not facing enemy. (Diff: {math.degrees(diff):.1f} deg)")
+            errors += 1
+
+    # Check Team 2 facing Team 1
+    for i, u in enumerate(t2):
+        if len(u) < 4: continue
+        
+        target_angle = math.atan2(c1[1] - u[1], c1[0] - u[0])
+        current_angle = u[3]
+        
+        diff = abs(target_angle - current_angle)
+        while diff > math.pi: diff -= 2*math.pi
+        diff = abs(diff)
+        
+        if diff > math.radians(60):
+            print(f"  WARNING: Team 2 Unit {i} is not facing enemy. (Diff: {math.degrees(diff):.1f} deg)")
+            errors += 1
+
+    if errors == 0:
+        print("  SUCCESS: All units are facing the enemy.")
+
+def check_unit_boundaries(layout_file):
+    print("\nChecking Unit Boundaries...")
+    with open(layout_file, 'r') as f:
+        data = json.load(f)
+    
+    if not isinstance(data, dict): return
+    t1 = data.get('team1_units', [])
+    t2 = data.get('team2_units', [])
+    if not t1 or not t2: return
+    
+    # Calculate Map Extents based on Floor assets
+    items = load_layout_flattened(layout_file)
+    min_x, min_y = float('inf'), float('inf')
+    max_x, max_y = float('-inf'), float('-inf')
+    
+    floor_found = False
+    for item in items:
+        if is_floor_asset(item['asset_id']):
+            # Get asset bbox.
+            # Simplified: Use pos. Most floor tiles are 64x64 or 160x160.
+            # Assuming origin 0,0 is min corner? No, center usually?
+            # 'tile_grass' is -32..32.
+            # 'wooden_floor' is 0..160.
+            # We need bounding box.
+            
+            # Using cached voxels is slow. Let's assume point is valid logic for now.
+            # Better: Update map bounds as we scan.
+            # Let's rely on the voxels since we have them cached.
+            
+            local_voxels = get_asset_voxels(item['asset_id'])
+            if not local_voxels: continue
+            
+            floor_found = True
+            for vx, vy, vz in local_voxels:
+                rx, ry = rotate_point(vx, vy, item['rot'])
+                wx, wy = item['pos'][0] + rx, item['pos'][1] + ry
+                
+                min_x = min(min_x, wx); max_x = max(max_x, wx)
+                min_y = min(min_y, wy); max_y = max(max_y, wy)
+
+    if not floor_found:
+        print("  Skipping boundary check (No floor detected).")
+        return
+        
+    print(f"  Map Bounds: [{min_x:.0f}, {min_y:.0f}] to [{max_x:.0f}, {max_y:.0f}]")
+    
+    PADDING = 32 # Minimum distance from edge
+    errors = 0
+    
+    all_units = t1 + t2
+    for i, u in enumerate(all_units):
+        ux, uy = u[0], u[1]
+        
+        # Check against bounds
+        if (ux < min_x + PADDING or ux > max_x - PADDING or
+            uy < min_y + PADDING or uy > max_y - PADDING):
+            print(f"  ERROR: Unit at ({ux}, {uy}) is too close to edge. (Bounds: {min_x}-{max_x}, {min_y}-{max_y})")
+            errors += 1
+
+    if errors == 0:
+        print(f"  SUCCESS: All units are safely inside the map (Padding {PADDING}).")
+
+def check_camera_params(layout_file):
+    print("\nChecking Camera Parameters...")
+    with open(layout_file, 'r') as f:
+        data = json.load(f)
+    
+    if not isinstance(data, dict) or 'camera' not in data: return
+    
+    c = data['camera']
+    eye = c.get('eye', [0,0,0])
+    center = c.get('center', [0,0,0])
+    
+    # Calculate derived params (Y-up swizzle handled in composer, but here we read raw JSON which is Z-up?)
+    # Wait, scene_composer swizzles `eye` from [x,y,z] to [x,z,y] BEFORE calculating params.
+    # The JSON input `generators` produce is [x,y,z].
+    # So `eye` in JSON is [x,y,z]. Height is Z.
+    
+    # Distance (Euclidean)
+    dx = eye[0] - center[0]
+    dy = eye[1] - center[1]
+    dz = eye[2] - center[2] # Z is height in generator space?
+    
+    # In Generator Space (Z-up):
+    # Height = abs(eye[2] - center[2])? Usually just eye[2] if center is 0.
+    # Distance = len(vec)
+    
+    dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+    
+    # Height: In swizzled engine space (Y-up), height is Y.
+    # In generator space (Z-up), height is Z.
+    # We should check the Z-difference.
+    height = eye[2] - center[2] 
+    
+    print(f"  Distance: {dist:.1f}")
+    print(f"  Height: {height:.1f}")
+    
+    errors = 0
+    if not (400 <= dist <= 600):
+        print(f"  ERROR: Camera Distance {dist:.1f} is out of range 400-600.")
+        errors += 1
+        
+    if not (100 <= height <= 300):
+        print(f"  ERROR: Camera Height {height:.1f} is out of range 100-300.")
+        errors += 1
+        
+    if errors == 0:
+        print("  SUCCESS: Camera parameters are within spec.")
+
+def check_camera_bounds_clipping(layout_file):
+    print("\nChecking Camera Bounds Clipping...")
+    with open(layout_file, 'r') as f:
+        data = json.load(f)
+    
+    if not isinstance(data, dict): return
+    if 'camera' not in data: return
+    
+    # 1. Get Map Bounds
+    items = load_layout_flattened(layout_file)
+    min_x, min_y = float('inf'), float('inf')
+    max_x, max_y = float('-inf'), float('-inf')
+    floor_z = 0
+    
+    floor_found = False
+    for item in items:
+        if is_floor_asset(item['asset_id']):
+            # Use cached voxels to be precise
+            local_voxels = get_asset_voxels(item['asset_id'])
+            if not local_voxels: continue
+            
+            floor_found = True
+            for vx, vy, vz in local_voxels:
+                rx, ry = rotate_point(vx, vy, item['rot'])
+                wx, wy = item['pos'][0] + rx, item['pos'][1] + ry
+                wz = item['pos'][2] + vz
+                
+                min_x = min(min_x, wx); max_x = max(max_x, wx)
+                min_y = min(min_y, wy); max_y = max(max_y, wy)
+                floor_z = wz # approximate floor height
+
+    if not floor_found: return
+
+    # 2. Camera Setup
+    cam = data['camera']
+    eye = cam.get('eye', [0,0,0])
+    center = cam.get('center', [0,0,0])
+    fov = cam.get('fov', 40)
+    
+    # 3. Raycast Bottom Center
+    # Coordinate system: Z-up
+    fwd = [center[0]-eye[0], center[1]-eye[1], center[2]-eye[2]]
+    fwd_len = math.sqrt(sum(x*x for x in fwd))
+    fwd = [x/fwd_len for x in fwd]
+    
+    up_world = [0, 0, 1]
+    
+    # Right = Fwd x Up
+    right = [fwd[1]*up_world[2] - fwd[2]*up_world[1],
+             fwd[2]*up_world[0] - fwd[0]*up_world[2],
+             fwd[0]*up_world[1] - fwd[1]*up_world[0]]
+    right_len = math.sqrt(sum(x*x for x in right))
+    if right_len < 1e-6: right = [1, 0, 0] # degenerate
+    else: right = [x/right_len for x in right]
+    
+    # CamUp = Right x Fwd
+    cam_up = [right[1]*fwd[2] - right[2]*fwd[1],
+              right[2]*fwd[0] - right[0]*fwd[2],
+              right[0]*fwd[1] - right[1]*fwd[0]]
+              
+    # Bottom Ray: Rotate Fwd down by FOV/2
+    # Simple approx: Fwd - CamUp * tan(fov/2)
+    tan_half_fov = math.tan(math.radians(fov) / 2.0)
+    
+    # Assuming vertical FOV.
+    # Ray = Fwd - CamUp * tan_half_fov (points "down" in view space)
+    # Wait, "down" in view space is -CamUp.
+    bottom_ray = [fwd[i] - cam_up[i] * tan_half_fov for i in range(3)]
+    
+    # Normalize
+    br_len = math.sqrt(sum(x*x for x in bottom_ray))
+    bottom_ray = [x/br_len for x in bottom_ray]
+    
+    # Intersect with Floor Plane (Z = floor_z)
+    # Eye + t * Ray = Target
+    # EyeZ + t * RayZ = FloorZ  =>  t = (FloorZ - EyeZ) / RayZ
+    
+    if abs(bottom_ray[2]) < 1e-6:
+        print("  WARNING: Camera view is parallel to floor?")
+        return
+        
+    t = (floor_z - eye[2]) / bottom_ray[2]
+    
+    if t < 0:
+        print("  WARNING: Camera is looking away from floor?")
+        return
+        
+    ix = eye[0] + t * bottom_ray[0]
+    iy = eye[1] + t * bottom_ray[1]
+    
+    print(f"  Bottom-Screen Intersection: ({ix:.1f}, {iy:.1f})")
+    print(f"  Map Bounds: X[{min_x:.0f}..{max_x:.0f}], Y[{min_y:.0f}..{max_y:.0f}]")
+    
+    # Check containment
+    # Be strict: intersection must be strictly inside bounds
+    if min_x <= ix <= max_x and min_y <= iy <= max_y:
+        print("  SUCCESS: Front edge of map is not visible (Camera cuts off inside map).")
+    else:
+        print(f"  ERROR: Front edge of map IS visible. Camera sees ground at ({ix:.1f}, {iy:.1f}), which is outside bounds.")
+
 def lint_layout(layout_file):
     print(f"Linting: {layout_file}")
     items = load_layout_flattened(layout_file)
@@ -463,6 +724,14 @@ def lint_layout(layout_file):
     check_camera_focus(layout_file)
     # Run LoS Check
     check_camera_line_of_sight(layout_file)
+    # Run Facing Check
+    check_unit_facing(layout_file)
+    # Run Boundary Check
+    check_unit_boundaries(layout_file)
+    # Run Param Check
+    check_camera_params(layout_file)
+    # Run Bounds Clipping Check
+    check_camera_bounds_clipping(layout_file)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

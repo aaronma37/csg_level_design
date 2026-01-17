@@ -237,26 +237,26 @@ def create_layout():
             })
 
     # --- Units ---
-    # Team 1 (Heroes): Near Entrance (South, centered X=160)
-    # Positions on flat floor, not on rug if possible to avoid Z-fighting? Rug is Z=1.
-    # Actors are usually Z=0 based (feet).
+    # Team 1 (Heroes): South facing North (pi/2)
+    t1_rot = 1.57
     team1_units = [
-        [140, 60, 0],
-        [160, 50, 0], # Point man
-        [180, 60, 0]
+        [140, 60, 0, t1_rot],
+        [160, 50, 0, t1_rot], # Point man
+        [180, 60, 0, t1_rot]
     ]
 
-    # Team 2 (Enemies): Guarding the path to Captain/Fireplace (Further North)
+    # Team 2 (Enemies): North facing South (-pi/2)
+    t2_rot = -1.57
     team2_units = [
-        [140, 190, 0],
-        [160, 180, 0],
-        [180, 190, 0]
+        [140, 190, 0, t2_rot],
+        [160, 180, 0, t2_rot],
+        [180, 190, 0, t2_rot]
     ]
 
     # --- Camera ---
     camera = {
-        "eye": [160, -150, 250], # Looking from South-ish
-        "center": [160, 100, 0],  # Looking at center of room
+        "eye": [160, -80, 300], # Looking from South-ish
+        "center": [160, 200, 0],  # Looking at center of room
         "fov": 45 # Standard
     }
 

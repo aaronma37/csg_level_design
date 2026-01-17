@@ -70,25 +70,29 @@ def generate_layout():
         })
 
     # Units
-    # Team 1 (Heroes) on River North (Cell 6,7 -> [384, 448]. Spawn Center [416, 480])
+    # Team 1 (Heroes) on River North (Cell 6,7 -> [384, 448]. Spawn slightly South of center [416, 460] to clear boundary)
     # Z=15 for River Surface
+    t1_rot = -1.57
     team1_units = [
-        [416, 480, 15],
-        [406, 470, 15],
-        [426, 470, 15]
+        [416, 460, 15, t1_rot],
+        [406, 450, 15, t1_rot],
+        [426, 450, 15, t1_rot]
     ]
     
     # Team 2 (Enemies) on River Mid (Cell 6,4 -> [384, 256]. Spawn Center [416, 288])
+    # Face North (1.57)
+    t2_rot = 1.57
     team2_units = [
-        [416, 288, 15],
-        [406, 298, 15],
-        [426, 298, 15]
+        [416, 288, 15, t2_rot],
+        [406, 298, 15, t2_rot],
+        [426, 298, 15, t2_rot]
     ]
 
-    # Camera - Centered on Midpoint [416, 384]
+    # Camera - Shifted South to avoid boundary clipping at the bottom of the screen
+    # Center [416, 300] is within 100 units of Midpoint [416, 374]
     camera = {
-        "eye": [416, 184, 550], # South of action, high up
-        "center": [416, 384, 0],
+        "eye": [416, 650, 300], 
+        "center": [416, 300, 0],
         "fov": 40
     }
 

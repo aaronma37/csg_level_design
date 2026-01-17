@@ -56,6 +56,30 @@ set_color(54, 30, 144, 255)  # Water Blue (Bright)
 set_color(55, 139, 69, 19)   # Saddle Brown (Dirt/Trunk)
 set_color(56, 45, 67, 27)    # Dark Olive Green (Shadows)
 
+# --- GRASS RANGE (60-69) ---
+set_color(60, 20, 40, 10)    # Deepest Shadow Green
+set_color(61, 30, 60, 20)    # Dark Shadow
+set_color(62, 45, 85, 30)    # Shadow Base
+set_color(63, 60, 110, 40)   # Base Green
+set_color(64, 80, 140, 50)   # Mid Green
+set_color(65, 100, 170, 60)  # Highlight Green
+set_color(66, 130, 200, 80)  # Sunny Green
+set_color(67, 160, 220, 100) # Bright Tip
+set_color(68, 190, 230, 120) # Yellowish Highlight
+set_color(69, 220, 240, 150) # Dry/Flower Spot
+
+# --- WATER RANGE (70-79) ---
+set_color(70, 5, 10, 40)     # Deepest Abyss
+set_color(71, 10, 20, 70)    # Deep Blue
+set_color(72, 20, 40, 100)   # Mid Deep
+set_color(73, 30, 70, 140)   # Main Water Body
+set_color(74, 40, 100, 180)  # Shallow Blue
+set_color(75, 60, 140, 210)  # Tropical Teal
+set_color(76, 100, 180, 230) # Shoreline Cyan
+set_color(77, 150, 210, 240) # Foam Base
+set_color(78, 200, 230, 250) # Foam High
+set_color(79, 240, 250, 255) # Whitecap
+
 # --- CHARACTER RANGE (100-149) ---
 # WARNING: DO NOT MODIFY OR REMOVE THESE COLORS. 
 set_color(100, 47, 30, 16); set_color(101, 174, 141, 98); set_color(102, 1, 1, 1); set_color(103, 237, 213, 188)
@@ -117,6 +141,8 @@ BEIGE_LIGHT = 44; BEIGE_MEDIUM = 45; BEIGE_DARK = 46
 WHITE = 50
 LEAF_BASE = 51; LEAF_LIGHT = 52; LEAF_BRIGHT = 53
 WATER_BLUE = 54; DIRT_BROWN = 55; LEAF_DARK = 56
+GRASS_RANGE = list(range(60, 70))
+WATER_RANGE = list(range(70, 80))
 PURPLE_GLOW = 242; WINDOW_GLOW = 243
 GHOST_PURPLE = 250; GHOST_WHITE = 252
 GHOST_GREEN = 251; FIRE_CORE = 240; FIRE_GLOW = 241

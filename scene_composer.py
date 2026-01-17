@@ -313,9 +313,9 @@ def format_lua_value(v, indent_level=1):
         return str(v)
 
 def swizzle_coords(vec):
-    """Convert Z-up (x, y, z) to Y-up (x, z, y)."""
+    """Convert Z-up (x, y, z) to Y-up (x, z, y). Preserves extra components."""
     if len(vec) >= 3:
-        return [vec[0], vec[2], vec[1]]
+        return [vec[0], vec[2], vec[1]] + vec[3:]
     return vec
 
 def run_composer(layout_file, output_file=None, merge=False):
@@ -348,6 +348,27 @@ def run_composer(layout_file, output_file=None, merge=False):
             c = value.copy()
             if 'eye' in c: c['eye'] = swizzle_coords(c['eye'])
             if 'center' in c: c['center'] = swizzle_coords(c['center'])
+            
+            # Calculate Derived Parameters (Angle, Distance, Height) for Engine
+            if 'eye' in c and 'center' in c:
+                ex, ey, ez = c['eye']
+                cx, cy, cz = c['center']
+                
+                dx = ex - cx
+                dy = ey - cy # Height difference (Y-up in engine)
+                dz = ez - cz
+                
+                # Height
+                c['height'] = dy
+                
+                # Distance (Euclidean)
+                c['distance'] = math.sqrt(dx*dx + dy*dy + dz*dz)
+                
+                # Angle (Azimuth around Y axis)
+                # Engine typically uses 0=East, 90=North? Or Z?
+                # Using standard atan2(z, x)
+                c['angle'] = math.atan2(dz, dx)
+                
             lua_lines.append(f"    {key} = {format_lua_value(c)},")
             
         elif key in ['team1_units', 'team2_units']:

@@ -12,62 +12,63 @@ def generate_foliage():
             json.dump({"name": name, "instructions": instructions}, f)
 
     # 1. Detailed Shrub (Organic Cloud)
-    shrub_voxels = []
+    shrub_instr = []
+    points_by_col = {}
+    
     # Grow from center
     for i in range(150):
-        # Random spherical distribution
         r = random.uniform(0, 6)
         theta = random.uniform(0, math.pi * 2)
         phi = random.uniform(0, math.pi)
         
         x = r * math.sin(phi) * math.cos(theta)
         y = r * math.sin(phi) * math.sin(theta)
-        z = r * math.cos(phi) * 0.5 # Flattened
-        
-        # Lift up so bottom is at 0
+        z = r * math.cos(phi) * 0.5 
         z += 3
         
-        c = palette.LEAF_BASE
-        if z > 4: c = palette.LEAF_LIGHT
-        if random.random() > 0.9: c = palette.LEAF_BRIGHT
+        # Pick color from GRASS_RANGE
+        # Higher Z -> Lighter Color
+        idx = int((z / 6.0) * 10) % 10
+        idx = max(0, min(9, idx))
+        col = palette.GRASS_RANGE[idx]
         
-        shrub_voxels.append([int(x), int(y), int(z)])
+        if col not in points_by_col: points_by_col[col] = []
+        points_by_col[col].append([int(x), int(y), int(z)])
+    
+    for c, pts in points_by_col.items():
+        shrub_instr.append({"op": "add", "shape": "point_cloud", "pos": [0,0,0], "points": pts, "color": c})
         
-    save("shrub_small", [{"op": "add", "shape": "point_cloud", "pos": [0,0,0], "points": shrub_voxels, "color": palette.LEAF_BASE}])
+    save("shrub_small", shrub_instr)
 
     # 2. Detailed Grass Patch
-    grass_voxels = []
+    grass_instr = []
+    points_by_col = {}
+    
     for _ in range(12): # 12 blades
         bx = random.randint(-6, 6)
         by = random.randint(-6, 6)
         h = random.randint(3, 7)
-        # Lean
         lean_x = random.randint(-1, 1)
         lean_y = random.randint(-1, 1)
         
+        # Random base color for this blade
+        blade_base_idx = random.randint(3, 8) # Lighter greens
+        
         for k in range(h):
-            grass_voxels.append([bx + (lean_x if k>2 else 0), by + (lean_y if k>2 else 0), k])
+            idx = blade_base_idx
+            if k > h-2: idx += 1 # Tip is lighter
+            idx = min(9, idx)
+            col = palette.GRASS_RANGE[idx]
             
-    # Assign random colors per blade? No, per voxel is fine for noise
-    save("grass_patch", [{"op": "add", "shape": "point_cloud", "pos": [0,0,0], "points": grass_voxels, "color": palette.LEAF_LIGHT}])
+            if col not in points_by_col: points_by_col[col] = []
+            points_by_col[col].append([bx + (lean_x if k>2 else 0), by + (lean_y if k>2 else 0), k])
+            
+    for c, pts in points_by_col.items():
+        grass_instr.append({"op": "add", "shape": "point_cloud", "pos": [0,0,0], "points": pts, "color": c})
+
+    save("grass_patch", grass_instr)
 
     # 3. Detailed Flower Clump (Red)
-    flower_voxels = []
-    for _ in range(5): # 5 flowers
-        fx = random.randint(-5, 5)
-        fy = random.randint(-5, 5)
-        h = random.randint(4, 6)
-        
-        # Stem
-        for k in range(h):
-            flower_voxels.append([fx, fy, k]) # Green stem? handled by color override later?
-            # Actually CSG point cloud takes one color. 
-            # We need multi-colored point cloud? 
-            # The compiler supports ONE color per instruction.
-            # So we split stem and petal instructions.
-            pass
-            
-    # Complex instruction set for flowers
     flower_instr = []
     
     # Generate 5 flowers
