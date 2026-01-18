@@ -91,7 +91,7 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "tile_grass",
       "pos": [
         128,
         0,
@@ -100,7 +100,7 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "tile_grass",
       "pos": [
         128,
         64,
@@ -181,7 +181,7 @@
       "rot": 180
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "tile_grass",
       "pos": [
         256,
         0,
@@ -190,7 +190,7 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "tile_grass",
       "pos": [
         256,
         64,
@@ -319,48 +319,48 @@
   "lights": [],
   "team1_units": [
     [
-      120,
+      180,
       100,
       2,
-      270
+      1.57
     ],
     [
-      100,
-      120,
-      2,
-      270
-    ],
-    [
-      100,
+      200,
       80,
       2,
-      270
+      1.57
+    ],
+    [
+      220,
+      100,
+      2,
+      1.57
     ]
   ],
   "team2_units": [
     [
-      280,
-      100,
+      180,
+      220,
       2,
-      90
+      -1.57
     ],
     [
-      300,
-      120,
+      200,
+      240,
       2,
-      90
+      -1.57
     ],
     [
-      300,
-      80,
+      220,
+      220,
       2,
-      90
+      -1.57
     ]
   ],
   "camera": {
     "eye": [
-      120,
-      -179,
+      40,
+      -139,
       135
     ],
     "center": [

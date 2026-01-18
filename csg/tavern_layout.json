@@ -163,105 +163,6 @@
       "rot": 90
     },
     {
-      "asset_id": "walkway_tile",
-      "pos": [
-        0,
-        256,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "walkway_tile",
-      "pos": [
-        160,
-        256,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "walkway_tile",
-      "pos": [
-        256,
-        0,
-        80
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "walkway_tile",
-      "pos": [
-        256,
-        160,
-        80
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "walkway_tile",
-      "pos": [
-        256,
-        256,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "railing_long",
-      "pos": [
-        39,
-        255,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "railing_long",
-      "pos": [
-        139,
-        255,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "railing_long",
-      "pos": [
-        255,
-        -1,
-        80
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "railing_long",
-      "pos": [
-        255,
-        159,
-        80
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "stairs",
-      "pos": [
-        265,
-        95,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "stair_railing",
-      "pos": [
-        264,
-        95,
-        0
-      ],
-      "rot": 270
-    },
-    {
       "asset_id": "stone_fireplace",
       "pos": [
         382,
@@ -269,15 +170,6 @@
         0
       ],
       "rot": 90
-    },
-    {
-      "asset_id": "stone_pillar",
-      "pos": [
-        382,
-        133,
-        0
-      ],
-      "rot": 0
     },
     {
       "asset_id": "bar_counter",
@@ -289,162 +181,9 @@
       "rot": 0
     },
     {
-      "asset_id": "barstool",
-      "pos": [
-        30,
-        226,
-        0
-      ],
-      "rot": 10
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        34,
-        249,
-        38
-      ],
-      "rot": 57
-    },
-    {
-      "asset_id": "barstool",
-      "pos": [
-        60,
-        226,
-        0
-      ],
-      "rot": -10
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        64,
-        249,
-        38
-      ],
-      "rot": 140
-    },
-    {
-      "asset_id": "barstool",
-      "pos": [
-        90,
-        226,
-        0
-      ],
-      "rot": -3
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        94,
-        249,
-        38
-      ],
-      "rot": 114
-    },
-    {
-      "asset_id": "barstool",
-      "pos": [
-        120,
-        226,
-        0
-      ],
-      "rot": -6
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        124,
-        249,
-        38
-      ],
-      "rot": 52
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
-        159,
-        123,
-        0.1
-      ],
-      "rot": 0
-    },
-    {
       "asset_id": "medieval_feast_table",
       "pos": [
-        150,
-        140,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        157,
-        161,
-        0
-      ],
-      "rot": 7
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        193,
-        161,
-        0
-      ],
-      "rot": -8
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        157,
-        137,
-        0
-      ],
-      "rot": 188
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        193,
-        137,
-        0
-      ],
-      "rot": 183
-    },
-    {
-      "asset_id": "chandelier",
-      "pos": [
-        182,
-        156,
-        70
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        170,
-        150,
-        24
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
-        309,
-        223,
-        0.1
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "medieval_feast_table",
-      "pos": [
-        300,
+        180,
         240,
         0
       ],
@@ -453,145 +192,101 @@
     {
       "asset_id": "chair",
       "pos": [
-        307,
+        187,
         261,
         0
       ],
-      "rot": -9
+      "rot": 10
     },
     {
       "asset_id": "chair",
       "pos": [
-        343,
+        223,
         261,
         0
       ],
-      "rot": -10
+      "rot": -7
     },
     {
       "asset_id": "chair",
       "pos": [
-        307,
+        187,
         237,
         0
       ],
-      "rot": 172
+      "rot": 170
     },
     {
       "asset_id": "chair",
       "pos": [
-        343,
+        223,
         237,
         0
       ],
-      "rot": 176
+      "rot": 178
     },
     {
-      "asset_id": "chandelier",
+      "asset_id": "medieval_feast_table",
       "pos": [
-        332,
-        256,
-        70
+        280,
+        100,
+        0
       ],
       "rot": 0
     },
     {
-      "asset_id": "candles",
+      "asset_id": "chair",
       "pos": [
-        320,
-        250,
-        24
+        287,
+        121,
+        0
       ],
-      "rot": 0
+      "rot": -3
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        323,
+        121,
+        0
+      ],
+      "rot": -3
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        287,
+        97,
+        0
+      ],
+      "rot": 174
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        323,
+        97,
+        0
+      ],
+      "rot": 173
     }
   ],
-  "lights": [
-    {
-      "position": [
-        360,
-        133,
-        40
-      ],
-      "color": [
-        1.0,
-        0.6,
-        0.2
-      ],
-      "intensity": 50.0,
-      "radius": 1500
-    },
-    {
-      "position": [
-        182,
-        156,
-        60
-      ],
-      "color": [
-        1.0,
-        0.95,
-        0.8
-      ],
-      "intensity": 30.0,
-      "radius": 1200
-    },
-    {
-      "position": [
-        170,
-        150,
-        30
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        332,
-        256,
-        60
-      ],
-      "color": [
-        1.0,
-        0.95,
-        0.8
-      ],
-      "intensity": 30.0,
-      "radius": 1200
-    },
-    {
-      "position": [
-        320,
-        250,
-        30
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    }
-  ],
+  "lights": [],
   "team1_units": [
     [
-      120,
+      180,
       100,
       0,
       1.57
     ],
     [
-      160,
+      200,
       80,
       0,
       1.57
     ],
     [
-      200,
+      220,
       100,
       0,
       1.57
@@ -599,19 +294,19 @@
   ],
   "team2_units": [
     [
-      120,
+      180,
       220,
       0,
       -1.57
     ],
     [
-      160,
+      200,
       240,
       0,
       -1.57
     ],
     [
-      200,
+      220,
       220,
       0,
       -1.57
@@ -619,12 +314,12 @@
   ],
   "camera": {
     "eye": [
-      120,
-      -179,
+      40,
+      -139,
       135
     ],
     "center": [
-      160,
+      200,
       160,
       0
     ],
