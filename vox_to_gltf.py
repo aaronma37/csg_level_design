@@ -6,7 +6,6 @@ import sys
 import palette
 
 def generate_palette_png(filename="palette_texture.png"):
-    """Generates a 256x1 PNG from the palette.py colors using pure Python + zlib."""
     import zlib
     signature = b'\x89PNG\r\n\x1a\n'
     ihdr_data = struct.pack('>IIBBBBB', 256, 1, 8, 2, 0, 0, 0)
@@ -24,9 +23,8 @@ def generate_palette_png(filename="palette_texture.png"):
     print(f"Generated {filename}")
 
 class VoxToGltf:
-    def __init__(self, vox_path, no_center=False):
+    def __init__(self, vox_path):
         self.vox_path = vox_path
-        self.no_center = no_center
         self.models = [] 
         self.nodes = {}
         self.world_voxels = {}
@@ -55,17 +53,13 @@ class VoxToGltf:
                 cid = f.read(4)
                 if not cid: break
                 cs, chs = struct.unpack('<II', f.read(8))
-                print(f"DEBUG: Found chunk {cid} cs={cs} chs={chs}")
                 if cid == b'MAIN': continue
-                
                 start_p = f.tell()
                 if cid == b'SIZE':
                     dims = struct.unpack('<III', f.read(12))
-                    print(f"DEBUG: SIZE {dims}")
                     self.models.append({"dims": dims, "voxels": {}})
                 elif cid == b'XYZI':
                     n = struct.unpack('<I', f.read(4))[0]
-                    print(f"DEBUG: XYZI {n} voxels")
                     for _ in range(n):
                         x, y, z, c = struct.unpack('<BBBB', f.read(4))
                         self.models[-1]["voxels"][(x, y, z)] = c
@@ -80,68 +74,33 @@ class VoxToGltf:
                     f.read(12)
                     frame_attr = self._read_dict(f)
                     self.nodes[nid] = {"type": "TRN", "child": child, "t": frame_attr.get("_t", "0 0 0"), "r": frame_attr.get("_r", "4")}
-                    print(f"DEBUG: nTRN {nid} -> {child}")
                 elif cid == b'nGRP':
                     nid = struct.unpack('<I', f.read(4))[0]
                     attr = self._read_dict(f)
                     num_children = struct.unpack('<I', f.read(4))[0]
                     children = [struct.unpack('<I', f.read(4))[0] for _ in range(num_children)]
                     self.nodes[nid] = {"type": "GRP", "children": children}
-                    print(f"DEBUG: nGRP {nid} kids={children}")
                 elif cid == b'nSHP':
                     nid = struct.unpack('<I', f.read(4))[0]
                     attr = self._read_dict(f)
                     f.read(4)
                     mid = struct.unpack('<I', f.read(4))[0]
                     self.nodes[nid] = {"type": "SHP", "model": mid}
-                    print(f"DEBUG: nSHP {nid} model={mid}")
                 f.seek(start_p + cs)
 
-    def write_palette_png(self, filename):
-        import zlib
-        pal = self.palette if self.palette and len(self.palette) == 256 else palette.PALETTE_COLORS
-        signature = b'\x89PNG\r\n\x1a\n'
-        ihdr_data = struct.pack('>IIBBBBB', 256, 1, 8, 2, 0, 0, 0)
-        def make_chunk(tag, data):
-            return struct.pack('>I', len(data)) + tag + data + struct.pack('>I', zlib.crc32(tag + data) & 0xffffffff)
-        ihdr = make_chunk(b'IHDR', ihdr_data)
-        raw_data = b'\x00'
-        for i in range(256):
-            r, g, b, a = pal[i]
-            raw_data += struct.pack('BBB', r, g, b)
-        idat = make_chunk(b'IDAT', zlib.compress(raw_data))
-        iend = make_chunk(b'IEND', b'')
-        with open(filename, 'wb') as f:
-            f.write(signature + ihdr + idat + iend)
-        print(f"Generated {filename}")
-
     def recompose_world(self):
-        print(f"Recomposing {len(self.models)} models into world space...")
-        
-        # MagicaVoxel rotation lookup (24 possible orientations)
-        def apply_rot(lx, ly, lz, mx, my, mz, r_byte, no_center=False):
-            # 1. Center coordinates (unless no_center is True)
-            if no_center:
-                cx, cy, cz = lx, ly, lz
-            else:
-                cx, cy, cz = lx - mx//2, ly - my//2, lz - mz//2
-            
-            # 2. Extract rotation components from byte
+        # 1. First Pass: Collect all raw world voxels
+        def apply_rot_raw(lx, ly, lz, r_byte):
             r0_idx = r_byte & 3
             r1_idx = (r_byte >> 2) & 3
             r2_idx = 3 - r0_idx - r1_idx
-            
             s0 = -1 if (r_byte >> 4) & 1 else 1
             s1 = -1 if (r_byte >> 5) & 1 else 1
             s2 = -1 if (r_byte >> 6) & 1 else 1
-            
-            coords = [cx, cy, cz]
-            nx = coords[r0_idx] * s0
-            ny = coords[r1_idx] * s1
-            nz = coords[r2_idx] * s2
-            
-            return nx, ny, nz
+            coords = [lx, ly, lz]
+            return coords[r0_idx] * s0, coords[r1_idx] * s1, coords[r2_idx] * s2
 
+        raw_voxels = {}
         def traverse(nid, current_t, current_r):
             node = self.nodes.get(nid)
             if not node: return
@@ -154,24 +113,33 @@ class VoxToGltf:
                 for cnid in node["children"]: traverse(cnid, current_t, current_r)
             elif node["type"] == "SHP":
                 model = self.models[node["model"]]
-                mx, my, mz = model["dims"]
                 for (lx, ly, lz), c in model["voxels"].items():
-                    # Apply rotation around local center (or origin if no_center)
-                    nx, ny, nz = apply_rot(lx, ly, lz, mx, my, mz, current_r, self.no_center)
-                    
-                    # Apply world translation
+                    nx, ny, nz = apply_rot_raw(lx, ly, lz, current_r)
                     wx, wy, wz = int(nx + current_t[0]), int(ny + current_t[1]), int(nz + current_t[2])
-                    
-                    self.world_voxels[(wx, wy, wz)] = c
-                    self.bounds_min = [min(self.bounds_min[0], wx), min(self.bounds_min[1], wy), min(self.bounds_min[2], wz)]
-                    self.bounds_max = [max(self.bounds_max[0], wx), max(self.bounds_max[1], wy), max(self.bounds_max[2], wz)]
+                    raw_voxels[(wx, wy, wz)] = c
 
         if 0 in self.nodes: traverse(0, (0,0,0), 4)
-        elif self.models:
-            m = self.models[0]
-            self.world_voxels = m["voxels"]
-            self.bounds_max, self.bounds_min = list(m["dims"]), [0,0,0]
-        print(f"Total world voxels: {len(self.world_voxels)}")
+        elif self.models: raw_voxels = self.models[0]["voxels"]
+
+        if not raw_voxels: return
+
+        # 2. Second Pass: Calculate bounds and apply "Expected" centering/grounding
+        pts = np.array(list(raw_voxels.keys()))
+        rmin = pts.min(axis=0)
+        rmax = pts.max(axis=0)
+        
+        # Shift math:
+        # Horizontal: Center around 0
+        # Vertical: Ground min_z to 0
+        center_x = (rmin[0] + rmax[0]) // 2
+        center_y = (rmin[1] + rmax[1]) // 2
+        ground_z = rmin[2]
+
+        for (wx, wy, wz), c in raw_voxels.items():
+            nx, ny, nz = wx - center_x, wy - center_y, wz - ground_z
+            self.world_voxels[(nx, ny, nz)] = c
+            self.bounds_min = [min(self.bounds_min[0], nx), min(self.bounds_min[1], ny), min(self.bounds_min[2], nz)]
+            self.bounds_max = [max(self.bounds_max[0], nx), max(self.bounds_max[1], ny), max(self.bounds_max[2], nz)]
 
     def get_voxel(self, x, y, z):
         return self.world_voxels.get((x, y, z), 0)
@@ -209,7 +177,6 @@ class VoxToGltf:
                                     row_ok = False; break
                             if not row_ok: break
                             h += 1
-                        # Group 240-255 as emissive (includes visible and ghost ranges)
                         g = groups["emissive" if color >= 240 else "standard"]
                         v_start = len(g["verts"])
                         uv_x = (color + 0.5) / 256.0
@@ -266,40 +233,18 @@ class VoxToGltf:
         gltf["buffers"][0]["byteLength"] = len(buffer_data)
         with open(out_path, 'w') as f: json.dump(gltf, f, indent=2)
         with open(os.path.join(os.path.dirname(out_path), bin_name), 'wb') as f: f.write(buffer_data)
-        print(f"Exported {out_path} and {bin_name}")
+        print(f"Exported {out_path}")
 
 if __name__ == "__main__":
 
-    import argparse
+    if len(sys.argv) < 2:
 
-    parser = argparse.ArgumentParser(description="Convert VOX to GLTF.")
+        print("Usage: python vox_to_gltf.py input.vox [output.gltf]")
 
-    parser.add_argument("input", help="Input VOX file.")
+        sys.exit(1)
 
-    parser.add_argument("output", nargs="?", help="Output GLTF file.")
+    input_vox = sys.argv[1]
 
-    parser.add_argument("--no-center", action="store_true", help="Skip automatic centering of voxels.")
+    output_gltf = sys.argv[2] if len(sys.argv) > 2 else input_vox.replace(".vox", ".gltf")
 
-    
-
-    args = parser.parse_args()
-
-    input_vox = args.input
-
-    output_gltf = args.output if args.output else input_vox.replace(".vox", ".gltf")
-
-    
-
-    # Determine output directory
-
-    output_dir = os.path.dirname(output_gltf)
-
-    palette_path = os.path.join(output_dir, "palette_texture.png") if output_dir else "palette_texture.png"
-
-    
-
-    # Always generate to stay in sync with palette.py
-
-    generate_palette_png(palette_path)
-
-    VoxToGltf(input_vox, no_center=args.no_center).export(output_gltf)
+    VoxToGltf(input_vox).export(output_gltf)

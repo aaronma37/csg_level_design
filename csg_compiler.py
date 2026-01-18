@@ -147,14 +147,21 @@ def compile_asset(json_path):
     with open(json_path, 'r') as f:
         data = json.load(f)
     
-    custom_pal = data.get("palette")
+    if isinstance(data, list):
+        # Handle list-based format where metadata is missing
+        instructions = data
+        asset_name = os.path.basename(json_path).replace(".json", "")
+        custom_pal = None
+    else:
+        instructions = data.get("instructions", [])
+        asset_name = data.get("name", "unknown")
+        custom_pal = data.get("palette")
+
     model = VoxelModel(custom_palette=custom_pal)
-    asset_name = data.get("name", "unknown")
-    
     print(f"Compiling Asset: {asset_name}...")
     
     # Execute Instructions in Order
-    for op in data.get("instructions", []):
+    for op in instructions:
         action = op.get("op") # e.g., "add", "subtract", "intersect"
         shape = op.get("shape", "cuboid")
         pos = op.get("pos", [0,0,0])

@@ -1,0 +1,14 @@
+return {
+    name = "Stone Pillar Tile (64x64)",
+    size = {64, 64},
+    metadata = {
+        base_height = 0,
+        height_type = "flat",
+        nav_mask = 0,
+        tags = {"stone", "obstacle"}
+    },
+    layout = {
+        { asset_id = 'floor_64', pos = {0, 0, 0}, rot = 0 },
+        { asset_id = 'stone_pillar', pos = {0, 0, 0}, rot = 0 }
+    }
+}

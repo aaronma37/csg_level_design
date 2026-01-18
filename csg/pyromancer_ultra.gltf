@@ -1,0 +1,213 @@
+{
+  "asset": {
+    "version": "2.0"
+  },
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0
+        },
+        {
+          "attributes": {
+            "POSITION": 4,
+            "NORMAL": 5,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "Standard",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8
+      }
+    },
+    {
+      "name": "Emissive",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8
+      },
+      "emissiveTexture": {
+        "index": 0
+      },
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    }
+  ],
+  "images": [
+    {
+      "uri": "palette_texture.png"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9728,
+      "minFilter": 9728
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 562128,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 562128,
+      "byteLength": 562128,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1124256,
+      "byteLength": 374752,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1499008,
+      "byteLength": 281064,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1780072,
+      "byteLength": 51312,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1831384,
+      "byteLength": 51312,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1882696,
+      "byteLength": 34208,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1916904,
+      "byteLength": 25656,
+      "target": 34963
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 46844,
+      "type": "VEC3",
+      "max": [
+        25.0,
+        114.0,
+        30.0
+      ],
+      "min": [
+        -21.0,
+        0.0,
+        -27.0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 46844,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 46844,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5125,
+      "count": 70266,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 4276,
+      "type": "VEC3",
+      "max": [
+        6.0,
+        120.0,
+        -1.0
+      ],
+      "min": [
+        -23.0,
+        4.0,
+        -29.0
+      ]
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 4276,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 4276,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5125,
+      "count": 6414,
+      "type": "SCALAR"
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1942560,
+      "uri": "pyromancer_ultra.bin"
+    }
+  ]
+}
