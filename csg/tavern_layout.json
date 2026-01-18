@@ -37,6 +37,24 @@
       "rot": 0
     },
     {
+      "asset_id": "wooden_floor",
+      "pos": [
+        320,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        320,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
       "asset_id": "timber_wall",
       "pos": [
         0,
@@ -84,7 +102,25 @@
     {
       "asset_id": "timber_wall",
       "pos": [
+        320,
         308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        384,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
         0,
         0
       ],
@@ -93,7 +129,7 @@
     {
       "asset_id": "timber_wall",
       "pos": [
-        308,
+        390,
         64,
         0
       ],
@@ -102,7 +138,7 @@
     {
       "asset_id": "timber_wall",
       "pos": [
-        308,
+        390,
         128,
         0
       ],
@@ -111,7 +147,7 @@
     {
       "asset_id": "timber_wall",
       "pos": [
-        308,
+        390,
         192,
         0
       ],
@@ -120,7 +156,7 @@
     {
       "asset_id": "timber_wall",
       "pos": [
-        308,
+        390,
         256,
         0
       ],
@@ -226,271 +262,109 @@
       "rot": 270
     },
     {
-      "asset_id": "door",
-      "pos": [
-        311,
-        24,
-        0
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "door",
-      "pos": [
-        84,
-        311,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "door",
-      "pos": [
-        204,
-        311,
-        80
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "window",
-      "pos": [
-        82,
-        305,
-        68
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "window",
-      "pos": [
-        210,
-        305,
-        68
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "window",
-      "pos": [
-        305,
-        82,
-        68
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "window",
-      "pos": [
-        305,
-        210,
-        68
-      ],
-      "rot": 270
-    },
-    {
       "asset_id": "stone_fireplace",
       "pos": [
-        300,
+        382,
         133,
         0
       ],
       "rot": 90
     },
     {
-      "asset_id": "ornate_rug",
+      "asset_id": "stone_pillar",
       "pos": [
-        270,
-        145,
-        0.1
+        382,
+        133,
+        0
       ],
-      "rot": 90
+      "rot": 0
     },
     {
       "asset_id": "bar_counter",
       "pos": [
         20,
-        274,
+        240,
         0
       ],
       "rot": 0
-    },
-    {
-      "asset_id": "shelf",
-      "pos": [
-        20,
-        309,
-        40
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        5,
-        265,
-        0
-      ],
-      "rot": 327
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        5,
-        285,
-        0
-      ],
-      "rot": 57
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        5,
-        305,
-        0
-      ],
-      "rot": 12
     },
     {
       "asset_id": "barstool",
       "pos": [
-        26,
-        259,
+        30,
+        226,
         0
       ],
-      "rot": -1
+      "rot": 10
     },
     {
       "asset_id": "bottle",
       "pos": [
-        31,
-        283,
+        34,
+        249,
+        38
+      ],
+      "rot": 57
+    },
+    {
+      "asset_id": "barstool",
+      "pos": [
+        60,
+        226,
+        0
+      ],
+      "rot": -10
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        64,
+        249,
+        38
+      ],
+      "rot": 140
+    },
+    {
+      "asset_id": "barstool",
+      "pos": [
+        90,
+        226,
+        0
+      ],
+      "rot": -3
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        94,
+        249,
         38
       ],
       "rot": 114
     },
     {
-      "asset_id": "tankard",
+      "asset_id": "barstool",
       "pos": [
-        33,
-        281,
-        38
+        120,
+        226,
+        0
       ],
-      "rot": 71
+      "rot": -6
     },
     {
-      "asset_id": "candles",
+      "asset_id": "bottle",
       "pos": [
-        22,
-        283,
+        124,
+        249,
         38
       ],
       "rot": 52
     },
     {
-      "asset_id": "barstool",
-      "pos": [
-        48,
-        261,
-        0
-      ],
-      "rot": 5
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        51,
-        283,
-        38
-      ],
-      "rot": 279
-    },
-    {
-      "asset_id": "tankard",
-      "pos": [
-        53,
-        281,
-        38
-      ],
-      "rot": 44
-    },
-    {
-      "asset_id": "barstool",
-      "pos": [
-        67,
-        260,
-        0
-      ],
-      "rot": 4
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        71,
-        283,
-        38
-      ],
-      "rot": 16
-    },
-    {
-      "asset_id": "tankard",
-      "pos": [
-        73,
-        281,
-        38
-      ],
-      "rot": 15
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        62,
-        283,
-        38
-      ],
-      "rot": 47
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        280,
-        180,
-        0
-      ],
-      "rot": 111
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        295,
-        195,
-        0
-      ],
-      "rot": 119
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        275,
-        210,
-        0
-      ],
-      "rot": 258
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        280,
-        180,
-        19
-      ],
-      "rot": 308
-    },
-    {
       "asset_id": "ornate_rug",
       "pos": [
-        69,
-        133,
+        159,
+        123,
         0.1
       ],
       "rot": 0
@@ -498,8 +372,8 @@
     {
       "asset_id": "medieval_feast_table",
       "pos": [
-        60,
         150,
+        140,
         0
       ],
       "rot": 0
@@ -507,8 +381,89 @@
     {
       "asset_id": "chair",
       "pos": [
-        68,
+        157,
+        161,
+        0
+      ],
+      "rot": 7
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        193,
+        161,
+        0
+      ],
+      "rot": -8
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        157,
+        137,
+        0
+      ],
+      "rot": 188
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        193,
+        137,
+        0
+      ],
+      "rot": 183
+    },
+    {
+      "asset_id": "chandelier",
+      "pos": [
+        182,
+        156,
+        70
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
         170,
+        150,
+        24
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        309,
+        223,
+        0.1
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        300,
+        240,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        307,
+        261,
+        0
+      ],
+      "rot": -9
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        343,
+        261,
         0
       ],
       "rot": -10
@@ -516,431 +471,44 @@
     {
       "asset_id": "chair",
       "pos": [
-        104,
-        172,
+        307,
+        237,
         0
       ],
-      "rot": 10
+      "rot": 172
     },
     {
       "asset_id": "chair",
       "pos": [
-        66,
-        147,
+        343,
+        237,
         0
       ],
-      "rot": 183
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        103,
-        146,
-        0
-      ],
-      "rot": 188
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        99,
-        162,
-        24
-      ],
-      "rot": 357
-    },
-    {
-      "asset_id": "mug",
-      "pos": [
-        91,
-        163,
-        24
-      ],
-      "rot": 110
-    },
-    {
-      "asset_id": "tankard",
-      "pos": [
-        91,
-        158,
-        24
-      ],
-      "rot": 194
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        76,
-        166,
-        24
-      ],
-      "rot": 309
+      "rot": 176
     },
     {
       "asset_id": "chandelier",
       "pos": [
-        92,
-        166,
+        332,
+        256,
         70
       ],
       "rot": 0
     },
     {
-      "asset_id": "ornate_rug",
-      "pos": [
-        200,
-        200,
-        0.1
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
-        200,
-        200,
-        0.2
-      ],
-      "rot": 15
-    },
-    {
-      "asset_id": "medieval_feast_table",
-      "pos": [
-        200,
-        220,
-        0
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        210,
-        255,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        210,
-        185,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        180,
-        220,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        240,
-        220,
-        0
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "skull",
-      "pos": [
-        210,
-        220,
-        26
-      ],
-      "rot": -15
-    },
-    {
       "asset_id": "candles",
       "pos": [
-        210,
-        235,
-        26
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        210,
-        205,
-        26
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "chandelier",
-      "pos": [
-        216,
-        252,
-        70
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
-        160,
-        40,
-        0.1
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
+        320,
         250,
-        113,
-        0.1
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        250,
-        143,
-        0
-      ],
-      "rot": 263
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        250,
-        103,
-        0
-      ],
-      "rot": 280
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        260,
-        123,
-        0
+        24
       ],
       "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        260,
-        123,
-        19
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "mug",
-      "pos": [
-        255,
-        118,
-        19
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "ornate_rug",
-      "pos": [
-        40,
-        220,
-        0.1
-      ],
-      "rot": 45
-    },
-    {
-      "asset_id": "chair",
-      "pos": [
-        40,
-        220,
-        0
-      ],
-      "rot": 135
-    },
-    {
-      "asset_id": "mug",
-      "pos": [
-        45,
-        215,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "shelf",
-      "pos": [
-        80,
-        308,
-        60
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        70,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        85,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        95,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "shelf",
-      "pos": [
-        140,
-        308,
-        60
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        130,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        145,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        155,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "shelf",
-      "pos": [
-        200,
-        308,
-        60
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        190,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "bottle",
-      "pos": [
-        205,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "candles",
-      "pos": [
-        215,
-        308,
-        65
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "weapon_rack",
-      "pos": [
-        308,
-        100,
-        0
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "trophy_wall",
-      "pos": [
-        160,
-        308,
-        40
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "trophy_wall",
-      "pos": [
-        220,
-        308,
-        40
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        10,
-        10,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "barrel",
-      "pos": [
-        30,
-        15,
-        0
-      ],
-      "rot": 45
-    },
-    {
-      "asset_id": "tankard",
-      "pos": [
-        50,
-        260,
-        0
-      ],
-      "rot": 22
     }
   ],
   "lights": [
     {
       "position": [
-        290,
+        360,
         133,
         40
       ],
@@ -954,50 +522,8 @@
     },
     {
       "position": [
-        22,
-        283,
-        43
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        62,
-        283,
-        43
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        99,
-        162,
-        29
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        92,
-        166,
+        182,
+        156,
         60
       ],
       "color": [
@@ -1010,9 +536,9 @@
     },
     {
       "position": [
-        210,
-        235,
-        31
+        170,
+        150,
+        30
       ],
       "color": [
         1.0,
@@ -1024,8 +550,8 @@
     },
     {
       "position": [
-        216,
-        252,
+        332,
+        256,
         60
       ],
       "color": [
@@ -1038,37 +564,9 @@
     },
     {
       "position": [
-        95,
-        308,
-        70
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        155,
-        308,
-        70
-      ],
-      "color": [
-        1.0,
-        0.7,
-        0.4
-      ],
-      "intensity": 8.0,
-      "radius": 600
-    },
-    {
-      "position": [
-        215,
-        308,
-        70
+        320,
+        250,
+        30
       ],
       "color": [
         1.0,
@@ -1081,57 +579,65 @@
   ],
   "team1_units": [
     [
-      140,
-      60,
+      120,
+      100,
       0,
       1.57
     ],
     [
       160,
-      50,
+      80,
       0,
       1.57
     ],
     [
-      180,
-      60,
+      200,
+      100,
       0,
       1.57
     ]
   ],
   "team2_units": [
     [
-      140,
-      190,
+      120,
+      220,
       0,
       -1.57
     ],
     [
       160,
-      180,
+      240,
       0,
       -1.57
     ],
     [
-      180,
-      190,
+      200,
+      220,
       0,
       -1.57
     ]
   ],
   "camera": {
     "eye": [
-      160,
-      -80,
-      300
+      120,
+      -179,
+      135
     ],
     "center": [
       160,
-      200,
+      160,
       0
     ],
+    "angle": 3.5,
+    "distance": 365,
+    "height": 135,
     "fov": 45
   },
+  "sunDirection": [
+    0.33,
+    -0.39,
+    0.29
+  ],
   "ambientColor": [
     0.2,
     0.2,
@@ -1143,5 +649,5 @@
     0.15
   ],
   "fogNear": 300,
-  "fogFar": 800
+  "fogFar": 1000
 }

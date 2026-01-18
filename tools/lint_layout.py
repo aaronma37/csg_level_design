@@ -558,12 +558,12 @@ def check_camera_params(layout_file):
     print(f"  Height: {height:.1f}")
     
     errors = 0
-    if not (400 <= dist <= 600):
-        print(f"  ERROR: Camera Distance {dist:.1f} is out of range 400-600.")
+    if not (300 <= dist <= 450):
+        print(f"  ERROR: Camera Distance {dist:.1f} is out of range 300-450 (Target 365).")
         errors += 1
         
-    if not (100 <= height <= 300):
-        print(f"  ERROR: Camera Height {height:.1f} is out of range 100-300.")
+    if not (100 <= height <= 180):
+        print(f"  ERROR: Camera Height {height:.1f} is out of range 100-180 (Target 135).")
         errors += 1
         
     if errors == 0:
@@ -732,9 +732,81 @@ def lint_layout(layout_file):
     check_camera_params(layout_file)
     # Run Bounds Clipping Check
     check_camera_bounds_clipping(layout_file)
+    # Run Stage Grid Check
+    check_stage_grid(layout_file)
+    
+    # Generate Visual ASCII Grid
+    from tools import print_stage_grid
+    print_stage_grid.visualize_layout(layout_file)
+
+def check_stage_grid(layout_file):
+    print("\nChecking Stage Grid Compliance...")
+    with open(layout_file, 'r') as f:
+        data = json.load(f)
+    
+    # 1. Define Grid (5x4)
+    GRID_WIDTH = 400
+    GRID_HEIGHT = 320
+    CELL_SIZE = 80
+    
+    def get_cell_id(x, y):
+        col = int(x // CELL_SIZE)
+        row = int(y // CELL_SIZE)
+        if not (0 <= col <= 4 and 0 <= row <= 3): return None
+        
+        letters = [
+            ['P', 'Q', 'R', 'S', 'T'], # Row 0 (Front)
+            ['K', 'L', 'M', 'N', 'O'], # Row 1
+            ['F', 'G', 'H', 'I', 'J'], # Row 2
+            ['A', 'B', 'C', 'D', 'E']  # Row 3 (Back)
+        ]
+        return letters[row][col]
+
+    # Check Sun Direction
+    sun = data.get('sunDirection', [])
+    target_sun = [0.33, -0.39, 0.29]
+    if sun == target_sun:
+        print("  SUCCESS: Sun Direction matches standard.")
+    else:
+        print(f"  WARNING: Sun Direction {sun} deviates from standard {target_sun}.")
+
+    cam = data.get('camera', {})
+    eye = cam.get('eye', [0,0,0])
+    cam_x, cam_y = eye[0], eye[1]
+    
+    dist_m = math.sqrt((cam_x - 64)**2 + (cam_y - 64)**2)
+    
+    if dist_m < 150:
+        print("  SUCCESS: Camera is anchored near Cell M (Bottom-Left).")
+    else:
+        print(f"  WARNING: Camera at ({cam_x:.0f}, {cam_y:.0f}) is far from Cell M center (Dist: {dist_m:.0f}).")
+
+    items = load_layout_flattened(layout_file)
+    low_detail_cells = {'A', 'B', 'C', 'D'}
+    
+    warnings = 0
+    for item in items:
+        cx, cy = item['pos'][0], item['pos'][1]
+        cell = get_cell_id(cx, cy)
+        
+        if cell in low_detail_cells:
+            path = os.path.join("csg", f"{item['asset_id']}.json")
+            if not os.path.exists(path): continue
+            with open(path, 'r') as af:
+                adata = json.load(af)
+            instr_count = len(adata.get('instructions', []))
+            if instr_count > 50:
+                print(f"  WARNING: High Detail Asset found in Backdrop.")
+                warnings += 1
+
+    if warnings == 0:
+        print("  SUCCESS: Backdrop respects Low Detail guidelines.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python3 tools/lint_layout.py csg/layout.json")
     else:
         lint_layout(sys.argv[1])
+
+    
+    

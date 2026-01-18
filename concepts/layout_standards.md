@@ -51,3 +51,7 @@ To prevent flickering (Z-fighting) and linter collisions, use standard vertical 
 *   **Z=2:** Primary furniture bases (Table legs, Chair legs, Bar base).
 *   **Z=TableHeight + 1:** Props sitting on surfaces (Mugs, Bottles).
 *   **Z=80+:** Mezzanine level structural elements.
+
+## 8. The Stage Grid (Communication)
+For high-level composition and ASCII-based communication, we use the **Stage Grid** (4x4 Matrix).
+See: [concepts/stage_grid.md](./stage_grid.md)

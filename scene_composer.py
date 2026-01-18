@@ -332,6 +332,9 @@ def run_composer(layout_file, output_file=None, merge=False):
     lua_lines = ["-- Layout generated procedurally.", "return {"]
     
     # 1. Write Metadata (Camera, Lights, Units, etc.) with Swizzling
+    if 'sunDirection' not in metadata:
+        metadata['sunDirection'] = [0.33, -0.39, 0.29]
+        
     for key, value in metadata.items():
         if key == 'lights':
             # Handle list of light dicts
@@ -359,15 +362,16 @@ def run_composer(layout_file, output_file=None, merge=False):
                 dz = ez - cz
                 
                 # Height
-                c['height'] = dy
+                if 'height' not in c:
+                    c['height'] = dy
                 
                 # Distance (Euclidean)
-                c['distance'] = math.sqrt(dx*dx + dy*dy + dz*dz)
+                if 'distance' not in c:
+                    c['distance'] = math.sqrt(dx*dx + dy*dy + dz*dz)
                 
                 # Angle (Azimuth around Y axis)
-                # Engine typically uses 0=East, 90=North? Or Z?
-                # Using standard atan2(z, x)
-                c['angle'] = math.atan2(dz, dx)
+                if 'angle' not in c:
+                    c['angle'] = math.atan2(dz, dx)
                 
             lua_lines.append(f"    {key} = {format_lua_value(c)},")
             

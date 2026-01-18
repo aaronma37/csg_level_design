@@ -1,18 +1,18 @@
 {
   "layout": [
     {
-      "asset_id": "collection_river_straight",
+      "asset_id": "collection_forest_meadow",
       "pos": [
-        256,
+        0,
         0,
         0
       ],
       "rot": 0
     },
     {
-      "asset_id": "collection_river_straight",
+      "asset_id": "collection_forest_meadow",
       "pos": [
-        256,
+        0,
         64,
         0
       ],
@@ -21,89 +21,17 @@
     {
       "asset_id": "collection_river_straight",
       "pos": [
-        256,
+        0,
         128,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_river_corner",
-      "pos": [
-        256,
-        192,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_river_straight",
-      "pos": [
-        320,
-        192,
         0
       ],
       "rot": 90
     },
     {
-      "asset_id": "collection_river_corner",
+      "asset_id": "collection_forest_cliff",
       "pos": [
-        384,
+        0,
         192,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_river_straight",
-      "pos": [
-        384,
-        256,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_river_straight",
-      "pos": [
-        384,
-        320,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_river_straight",
-      "pos": [
-        384,
-        384,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_river_straight",
-      "pos": [
-        384,
-        448,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        0,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        64,
         0
       ],
       "rot": 90
@@ -112,67 +40,22 @@
       "asset_id": "collection_forest_plateau",
       "pos": [
         0,
-        128,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        192,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
         256,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        320,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        384,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        0,
-        448,
         0
       ],
       "rot": 90
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_meadow",
       "pos": [
         64,
         0,
         0
       ],
-      "rot": 180
+      "rot": 90
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_meadow",
       "pos": [
         64,
         64,
@@ -181,16 +64,16 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_river_straight",
       "pos": [
         64,
         128,
         0
       ],
-      "rot": 270
+      "rot": 90
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_cliff",
       "pos": [
         64,
         192,
@@ -208,43 +91,16 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        64,
-        320,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        64,
-        384,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        64,
-        448,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_meadow",
       "pos": [
         128,
         0,
         0
       ],
-      "rot": 180
+      "rot": 0
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_meadow",
       "pos": [
         128,
         64,
@@ -253,37 +109,19 @@
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_river_straight",
       "pos": [
         128,
         128,
         0
       ],
-      "rot": 180
+      "rot": 90
     },
     {
-      "asset_id": "collection_forest_plateau",
+      "asset_id": "collection_forest_cliff",
       "pos": [
         128,
         192,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        128,
-        256,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        128,
-        320,
         0
       ],
       "rot": 90
@@ -292,94 +130,94 @@
       "asset_id": "collection_forest_plateau",
       "pos": [
         128,
-        384,
-        0
-      ],
-      "rot": 90
-    },
-    {
-      "asset_id": "collection_forest_plateau",
-      "pos": [
-        128,
-        448,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_cliff",
-      "pos": [
-        192,
-        0,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_cliff",
-      "pos": [
-        192,
-        64,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_cliff",
-      "pos": [
-        192,
-        128,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_cliff",
-      "pos": [
-        192,
-        192,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_cliff",
-      "pos": [
-        192,
         256,
         0
       ],
       "rot": 0
     },
     {
-      "asset_id": "collection_forest_cliff",
+      "asset_id": "tile_grass",
       "pos": [
         192,
-        320,
+        0,
         0
       ],
-      "rot": 0
+      "rot": 90
+    },
+    {
+      "asset_id": "tile_grass",
+      "pos": [
+        192,
+        64,
+        0
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "collection_river_straight",
+      "pos": [
+        192,
+        128,
+        0
+      ],
+      "rot": 90
     },
     {
       "asset_id": "collection_forest_cliff",
       "pos": [
         192,
-        384,
+        192,
+        0
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "collection_forest_plateau",
+      "pos": [
+        192,
+        256,
+        0
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "collection_forest_meadow",
+      "pos": [
+        256,
+        0,
         0
       ],
       "rot": 0
+    },
+    {
+      "asset_id": "collection_forest_meadow",
+      "pos": [
+        256,
+        64,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "collection_river_straight",
+      "pos": [
+        256,
+        128,
+        0
+      ],
+      "rot": 90
     },
     {
       "asset_id": "collection_forest_cliff",
       "pos": [
+        256,
         192,
-        448,
         0
       ],
-      "rot": 0
+      "rot": 180
     },
     {
-      "asset_id": "collection_forest_tile_B",
+      "asset_id": "collection_forest_plateau",
       "pos": [
         256,
         256,
@@ -390,38 +228,11 @@
     {
       "asset_id": "collection_forest_meadow",
       "pos": [
-        256,
-        320,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_tile_C",
-      "pos": [
-        256,
-        384,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        256,
-        448,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
         320,
         0,
         0
       ],
-      "rot": 0
+      "rot": 90
     },
     {
       "asset_id": "collection_forest_meadow",
@@ -433,58 +244,40 @@
       "rot": 90
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "collection_river_straight",
       "pos": [
         320,
         128,
         0
       ],
-      "rot": 180
+      "rot": 90
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "collection_forest_cliff",
+      "pos": [
+        320,
+        192,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "collection_forest_plateau",
       "pos": [
         320,
         256,
         0
       ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        320,
-        320,
-        0
-      ],
       "rot": 0
     },
     {
       "asset_id": "collection_forest_meadow",
-      "pos": [
-        320,
-        384,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        320,
-        448,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_tile_C",
       "pos": [
         384,
         0,
         0
       ],
-      "rot": 180
+      "rot": 270
     },
     {
       "asset_id": "collection_forest_meadow",
@@ -493,10 +286,10 @@
         64,
         0
       ],
-      "rot": 90
+      "rot": 0
     },
     {
-      "asset_id": "collection_forest_tile_C",
+      "asset_id": "collection_river_straight",
       "pos": [
         384,
         128,
@@ -505,213 +298,84 @@
       "rot": 90
     },
     {
-      "asset_id": "collection_forest_meadow",
+      "asset_id": "collection_forest_cliff",
       "pos": [
-        448,
-        0,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_tile_B",
-      "pos": [
-        448,
-        64,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_tile_C",
-      "pos": [
-        448,
-        128,
-        0
-      ],
-      "rot": 270
-    },
-    {
-      "asset_id": "collection_forest_tile_C",
-      "pos": [
-        448,
+        384,
         192,
         0
       ],
       "rot": 180
     },
     {
-      "asset_id": "collection_forest_tile_C",
+      "asset_id": "collection_forest_plateau",
       "pos": [
-        448,
-        256,
-        0
-      ],
-      "rot": 180
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        448,
-        320,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        448,
         384,
-        0
-      ],
-      "rot": 0
-    },
-    {
-      "asset_id": "collection_forest_meadow",
-      "pos": [
-        448,
-        448,
+        256,
         0
       ],
       "rot": 180
     }
   ],
-  "lights": [
-    {
-      "position": [
-        80,
-        196,
-        58
-      ],
-      "color": [
-        0.4,
-        0.8,
-        1.0
-      ],
-      "intensity": 20.0,
-      "radius": 400
-    },
-    {
-      "position": [
-        450,
-        259,
-        34
-      ],
-      "color": [
-        0.4,
-        0.8,
-        1.0
-      ],
-      "intensity": 20.0,
-      "radius": 400
-    },
-    {
-      "position": [
-        54,
-        153,
-        58
-      ],
-      "color": [
-        0.4,
-        0.8,
-        1.0
-      ],
-      "intensity": 20.0,
-      "radius": 400
-    },
-    {
-      "position": [
-        437,
-        357,
-        34
-      ],
-      "color": [
-        0.4,
-        0.8,
-        1.0
-      ],
-      "intensity": 20.0,
-      "radius": 400
-    },
-    {
-      "position": [
-        43,
-        440,
-        58
-      ],
-      "color": [
-        0.4,
-        0.8,
-        1.0
-      ],
-      "intensity": 20.0,
-      "radius": 400
-    }
-  ],
+  "lights": [],
   "team1_units": [
     [
-      416,
-      460,
-      15,
-      -1.57
+      120,
+      100,
+      2,
+      270
     ],
     [
-      406,
-      450,
-      15,
-      -1.57
+      100,
+      120,
+      2,
+      270
     ],
     [
-      426,
-      450,
-      15,
-      -1.57
+      100,
+      80,
+      2,
+      270
     ]
   ],
   "team2_units": [
     [
-      416,
-      288,
-      15,
-      1.57
+      280,
+      100,
+      2,
+      90
     ],
     [
-      406,
-      298,
-      15,
-      1.57
+      300,
+      120,
+      2,
+      90
     ],
     [
-      426,
-      298,
-      15,
-      1.57
+      300,
+      80,
+      2,
+      90
     ]
   ],
   "camera": {
     "eye": [
-      416,
-      650,
-      300
+      120,
+      -179,
+      135
     ],
     "center": [
-      416,
-      300,
+      200,
+      160,
       0
     ],
+    "angle": 3.5,
+    "distance": 365,
+    "height": 135,
     "fov": 40
   },
-  "ambientColor": [
-    0.1,
-    0.1,
-    0.2
-  ],
-  "fogColor": [
-    0.05,
-    0.05,
-    0.1
-  ],
-  "fogNear": 200,
-  "fogFar": 1000
+  "sunDirection": [
+    0.33,
+    -0.39,
+    0.29
+  ]
 }
