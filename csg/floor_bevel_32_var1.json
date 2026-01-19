@@ -1,0 +1,19 @@
+{
+  "name": "floor_bevel_32_var1",
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        -16,
+        -15,
+        0
+      ],
+      "size": [
+        31,
+        31,
+        2
+      ],
+      "color": 3
+    }
+  ]
+}

@@ -81,13 +81,6 @@ def create_brick_volume(start_pos, size, end_size=None, brick_size=(4, 2, 2), co
                 real_x_end = min(cur_layer_w, current_x + this_brick_w + dx_e)
                 real_w = real_x_end - real_x_start
                 
-                # We need to handle Y and Z similarly but clamped to layer bounds
-                real_y_start = max(0, current_y + dy_s)
-                real_y_end = min(actual_d, actual_d + dy_e) # Relative to current_y
-                # Wait, current_y is the loop var. actual_d is the size of this row.
-                # The brick is at sy + offset_y + current_y.
-                # So we modify the size relative to that.
-                
                 # Simplified: modify pos and size directly
                 final_x = sx + offset_x + real_x_start
                 final_y = sy + offset_y + current_y + dy_s
@@ -111,7 +104,7 @@ def create_brick_volume(start_pos, size, end_size=None, brick_size=(4, 2, 2), co
         current_z += layer_h + mortar
     return instructions
 
-def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=0, direction='x'):
+def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=0, direction='x', paint_mortar=False, mortar_color=2):
     """
     Generates a list of CSG 'add' instructions for floorboards.
     Assumes Z is UP.
@@ -121,14 +114,24 @@ def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=
         size: (w, d, h)
         plank_size: (length, width, thickness)
         color: palette index OR list of palette indices
-        mortar: gap between planks
+        mortar: Gap size (int) OR tuple (side_gap, end_gap). If int, applies to both.
         direction: 'x' or 'y' for plank orientation
+        paint_mortar: If True, fills gaps with mortar_color instead of leaving empty space.
+        mortar_color: Palette index for the mortar.
     """
     instructions = []
     sx, sy, sz = start_pos
     w, d, h = size
     pl_len, pl_wid, pl_thk = plank_size
     colors = color if isinstance(color, list) else [color]
+    
+    # Handle mortar tuple or int
+    if isinstance(mortar, tuple) or isinstance(mortar, list):
+        mortar_side = mortar[0]
+        mortar_end = mortar[1]
+    else:
+        mortar_side = mortar
+        mortar_end = mortar
 
     current_z = 0
     while current_z < h:
@@ -161,9 +164,36 @@ def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=
                             "size": [real_w, actual_wid, actual_h],
                             "color": random.choice(colors)
                         })
-                    current_x += this_len + mortar
+                    
+                    # PAINT MORTAR (End joint)
+                    if paint_mortar and mortar_end > 0:
+                        m_start = real_x_end
+                        m_end = min(w, current_x + this_len + mortar_end)
+                        m_w = m_end - m_start
+                        if m_w > 0:
+                             instructions.append({
+                                "op": "add",
+                                "pos": [sx + m_start, sy + current_y, sz + current_z],
+                                "size": [m_w, actual_wid, actual_h],
+                                "color": mortar_color
+                            })
+
+                    current_x += this_len + mortar_end
                 
-                current_y += pl_wid + mortar
+                # PAINT MORTAR (Side joint)
+                if paint_mortar and mortar_side > 0:
+                    m_y_start = current_y + actual_wid
+                    m_y_end = min(d, current_y + pl_wid + mortar_side)
+                    m_d = m_y_end - m_y_start
+                    if m_d > 0:
+                         instructions.append({
+                            "op": "add",
+                            "pos": [sx, sy + m_y_start, sz + current_z],
+                            "size": [w, m_d, actual_h],
+                            "color": mortar_color
+                        })
+
+                current_y += pl_wid + mortar_side
                 row_idx += 1
         else:
             # Planks run along Y, wide along X
@@ -190,8 +220,36 @@ def create_plank_volume(start_pos, size, plank_size=(24, 6, 2), color=4, mortar=
                             "size": [actual_wid, real_d, actual_h],
                             "color": random.choice(colors)
                         })
-                    current_y += this_len + mortar
-                current_x += pl_wid + mortar
+                    
+                    # PAINT MORTAR (End joint)
+                    if paint_mortar and mortar_end > 0:
+                        m_start = real_y_end
+                        m_end = min(d, current_y + this_len + mortar_end)
+                        m_d = m_end - m_start
+                        if m_d > 0:
+                             instructions.append({
+                                "op": "add",
+                                "pos": [sx + current_x, sy + m_start, sz + current_z],
+                                "size": [actual_wid, m_d, actual_h],
+                                "color": mortar_color
+                            })
+
+                    current_y += this_len + mortar_end
+                
+                # PAINT MORTAR (Side joint)
+                if paint_mortar and mortar_side > 0:
+                    m_x_start = current_x + actual_wid
+                    m_x_end = min(w, current_x + pl_wid + mortar_side)
+                    m_w = m_x_end - m_x_start
+                    if m_w > 0:
+                         instructions.append({
+                            "op": "add",
+                            "pos": [sx + m_x_start, sy, sz + current_z],
+                            "size": [m_w, d, actual_h],
+                            "color": mortar_color
+                        })
+
+                current_x += pl_wid + mortar_side
                 row_idx += 1
                 
         current_z += pl_thk

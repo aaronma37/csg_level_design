@@ -23,8 +23,9 @@ def generate_palette_png(filename="palette_texture.png"):
     print(f"Generated {filename}")
 
 class VoxToGltf:
-    def __init__(self, vox_path):
+    def __init__(self, vox_path, no_center=False):
         self.vox_path = vox_path
+        self.no_center = no_center
         self.models = [] 
         self.nodes = {}
         self.world_voxels = {}
@@ -50,54 +51,51 @@ class VoxToGltf:
             if f.read(4) != b'VOX ': raise ValueError("Not a VOX file")
             f.read(4) # version
             while True:
-                cid = f.read(4)
-                if not cid: break
-                cs, chs = struct.unpack('<II', f.read(8))
-                if cid == b'MAIN': continue
-                start_p = f.tell()
-                if cid == b'SIZE':
-                    dims = struct.unpack('<III', f.read(12))
-                    self.models.append({"dims": dims, "voxels": {}})
-                elif cid == b'XYZI':
-                    n = struct.unpack('<I', f.read(4))[0]
-                    for _ in range(n):
+                chunk_id = f.read(4)
+                if not chunk_id: break
+                chunk_len, child_len = struct.unpack('<II', f.read(8))
+                if chunk_id == b'SIZE':
+                    w, d, h = struct.unpack('<III', f.read(12))
+                    self.models.append({"size": (w, d, h), "voxels": {}})
+                elif chunk_id == b'XYZI':
+                    num_voxels = struct.unpack('<I', f.read(4))[0]
+                    for _ in range(num_voxels):
                         x, y, z, c = struct.unpack('<BBBB', f.read(4))
                         self.models[-1]["voxels"][(x, y, z)] = c
-                elif cid == b'RGBA':
-                    for _ in range(256):
-                        r, g, b, a = struct.unpack('<BBBB', f.read(4))
-                        self.palette.append((r, g, b, a))
-                elif cid == b'nTRN':
+                elif chunk_id == b'nTRN':
                     nid = struct.unpack('<I', f.read(4))[0]
-                    attr = self._read_dict(f)
-                    child = struct.unpack('<I', f.read(4))[0]
-                    f.read(12)
-                    frame_attr = self._read_dict(f)
-                    self.nodes[nid] = {"type": "TRN", "child": child, "t": frame_attr.get("_t", "0 0 0"), "r": frame_attr.get("_r", "4")}
-                elif cid == b'nGRP':
+                    attrs = self._read_dict(f)
+                    cid, rid, lid, num_frames = struct.unpack('<IIII', f.read(16))
+                    frames = [self._read_dict(f) for _ in range(num_frames)]
+                    self.nodes[nid] = {"type": "TRN", "child": cid, "t": frames[0].get("_t", "0 0 0"), "r": frames[0].get("_r", "4")}
+                elif chunk_id == b'nGRP':
                     nid = struct.unpack('<I', f.read(4))[0]
-                    attr = self._read_dict(f)
+                    attrs = self._read_dict(f)
                     num_children = struct.unpack('<I', f.read(4))[0]
                     children = [struct.unpack('<I', f.read(4))[0] for _ in range(num_children)]
                     self.nodes[nid] = {"type": "GRP", "children": children}
-                elif cid == b'nSHP':
+                elif chunk_id == b'nSHP':
                     nid = struct.unpack('<I', f.read(4))[0]
-                    attr = self._read_dict(f)
-                    f.read(4)
-                    mid = struct.unpack('<I', f.read(4))[0]
-                    self.nodes[nid] = {"type": "SHP", "model": mid}
-                f.seek(start_p + cs)
+                    attrs = self._read_dict(f)
+                    num_models = struct.unpack('<I', f.read(4))[0]
+                    ms = []
+                    for _ in range(num_models):
+                        mid = struct.unpack('<I', f.read(4))[0]
+                        mattrs = self._read_dict(f)
+                        ms.append(mid)
+                    self.nodes[nid] = {"type": "SHP", "model": ms[0]}
+                else: f.read(chunk_len)
 
     def recompose_world(self):
-        # 1. First Pass: Collect all raw world voxels
-        def apply_rot_raw(lx, ly, lz, r_byte):
-            r0_idx = r_byte & 3
-            r1_idx = (r_byte >> 2) & 3
-            r2_idx = 3 - r0_idx - r1_idx
-            s0 = -1 if (r_byte >> 4) & 1 else 1
-            s1 = -1 if (r_byte >> 5) & 1 else 1
-            s2 = -1 if (r_byte >> 6) & 1 else 1
-            coords = [lx, ly, lz]
+        def apply_rot_raw(x, y, z, r):
+            # Magical MagicaVoxel rotation byte handling
+            row0 = [(r >> 0) & 3, (r >> 4) & 1]
+            row1 = [(r >> 2) & 3, (r >> 5) & 1]
+            row2 = [3 - row0[0] - row1[0], (r >> 6) & 1]
+            coords = [x, y, z]
+            r0_idx, s0 = row0[0], (1 if row0[1] == 0 else -1)
+            r1_idx, s1 = row1[0], (1 if row1[1] == 0 else -1)
+            r2_idx, s2 = row2[0], (1 if row2[1] == 0 else -1)
             return coords[r0_idx] * s0, coords[r1_idx] * s1, coords[r2_idx] * s2
 
         raw_voxels = {}
@@ -123,17 +121,19 @@ class VoxToGltf:
 
         if not raw_voxels: return
 
-        # 2. Second Pass: Calculate bounds and apply "Expected" centering/grounding
+        # 2. Second Pass: Calculate bounds and apply centering/grounding
         pts = np.array(list(raw_voxels.keys()))
         rmin = pts.min(axis=0)
         rmax = pts.max(axis=0)
         
-        # Shift math:
-        # Horizontal: Center around 0
-        # Vertical: Ground min_z to 0
-        center_x = (rmin[0] + rmax[0]) // 2
-        center_y = (rmin[1] + rmax[1]) // 2
-        ground_z = rmin[2]
+        if self.no_center:
+            center_x = 0
+            center_y = 0
+            ground_z = rmin[2] # Still ground Z to 0
+        else:
+            center_x = (rmin[0] + rmax[0]) // 2
+            center_y = (rmin[1] + rmax[1]) // 2
+            ground_z = rmin[2]
 
         for (wx, wy, wz), c in raw_voxels.items():
             nx, ny, nz = wx - center_x, wy - center_y, wz - ground_z
@@ -236,15 +236,18 @@ class VoxToGltf:
         print(f"Exported {out_path}")
 
 if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-
-        print("Usage: python vox_to_gltf.py input.vox [output.gltf]")
-
+    args = sys.argv[1:]
+    no_center = False
+    if "--no-center" in args:
+        no_center = True
+        args.remove("--no-center")
+    
+    if len(args) < 1:
+        print("Usage: python vox_to_gltf.py [--no-center] input.vox [output.gltf]")
         sys.exit(1)
 
-    input_vox = sys.argv[1]
+    input_vox = args[0]
+    output_gltf = args[1] if len(args) > 1 else input_vox.replace(".vox", ".gltf")
 
-    output_gltf = sys.argv[2] if len(sys.argv) > 2 else input_vox.replace(".vox", ".gltf")
-
-    VoxToGltf(input_vox).export(output_gltf)
+    generate_palette_png()
+    VoxToGltf(input_vox, no_center=no_center).export(output_gltf)

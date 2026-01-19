@@ -1,7 +1,7 @@
 # Voxel Style Guide
 
 ## 1. Scale & Resolution
-- **Standard Tile:** 64x64 voxels (Composition Unit).
+- **Standard Tile:** 32x32 voxels (Composition Unit).
 - **Standard Character:** 55-65 voxels tall.
 - **Doorways:** 70 voxels tall.
 - **Furniture Scale:** 1 unit = 1 voxel. A standard chair seat should be ~10-12 voxels high.
