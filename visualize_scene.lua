@@ -84,8 +84,18 @@ for y = max_y, min_y, -1 do
         local char = (grid[y] and grid[y][x]) or "."
         row_str = row_str .. " " .. char
     end
-    log(row_str)
+log(row_str)
 end
+
+-- Add Column Numbering
+local col_header = "     "
+local col_divider = "     "
+for x = min_x, max_x do
+    col_header = col_header .. string.format(" %X", x % 16) -- Use Hex for single-char numbering
+    col_divider = col_divider .. "--"
+end
+log(col_divider)
+log(col_header)
 
 -- Save to file
 local f = io.open(out_path, "w")

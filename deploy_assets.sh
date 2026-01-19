@@ -30,8 +30,8 @@ if [ "$SKIP_RECOMPILE" = false ]; then
         # Check if recompile is needed (vox newer than gltf)
         if [ ! -f "$gltf_file" ] || [ "$vox_path" -nt "$gltf_file" ]; then
             echo "Processing $vox_path (needs update)..."
-            # Run converter
-            python3 vox_to_gltf.py "$vox_path"
+            # Run converter with --no-center to respect manual origins
+            python3 vox_to_gltf.py --no-center "$vox_path"
             
             # Move to assets dir from the location where vox_to_gltf generated them
             # vox_to_gltf.py outputs to the same dir as the input .vox

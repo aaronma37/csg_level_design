@@ -8,6 +8,7 @@ return {
         tags = {"wall", "indoor", "wood"}
     },
     layout = {
-        { asset_id = 'timber_wall_straight_32_var2', pos = {0, 20, 0}, rot = 0 }
+        { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
+        { asset_id = 'timber_wall_straight_32_var2', pos = {16, 26, 0}, rot = 0 }
     }
 }
