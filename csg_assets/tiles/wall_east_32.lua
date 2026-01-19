@@ -7,7 +7,7 @@ return {
     },
     layout = {
         { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
-        -- Standard East Wall: rot=90, pivot at 26,16
+        -- Standard East Position
         { asset_id = 'timber_wall_straight_32', pos = {26, 16, 0}, rot = 90 }
     }
 }

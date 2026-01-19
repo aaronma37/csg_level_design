@@ -11,10 +11,11 @@ return {
     layout = {
         { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
         { asset_id = 'floor_bevel_32', pos = {32, 0, 0}, rot = 0 },
-        -- North Walls
+        -- Wall background segments
         { asset_id = 'timber_wall_straight_32', pos = {16, 26, 0}, rot = 0 },
         { asset_id = 'timber_wall_straight_32', pos = {48, 26, 0}, rot = 0 },
-        -- Fireplace (Pivot 18 to align back with wall back)
-        { asset_id = 'stone_fireplace', pos = {32, 18, 0}, rot = 0 }
+        -- Fireplace: Anchor North Edge to 32. 
+        -- JSON Back Face is at 6. Pivot + 6 = 32 -> Pivot = 26.
+        { asset_id = 'stone_fireplace', pos = {32, 26, 0}, rot = 0 }
     }
 }

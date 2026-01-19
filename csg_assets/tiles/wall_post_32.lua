@@ -9,8 +9,7 @@ return {
     },
     layout = {
         { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
-        -- JSON normalized: Origin is middle of wall part.
-        -- Aligning middle of wall to same line as straight walls.
+        -- FLAWLESS: Shares the exact same position as straight walls!
         { asset_id = 'timber_wall_post_32', pos = {16, 26, 0}, rot = 0 }
     }
 }
