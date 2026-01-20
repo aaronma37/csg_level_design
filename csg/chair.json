@@ -5147,5 +5147,10 @@
       ],
       "color": 3
     }
+  ],
+  "asset_tags": [
+    "furniture",
+    "habitable",
+    "seating"
   ]
 }

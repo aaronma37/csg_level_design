@@ -1,7 +1,7 @@
 return {
     name = "Bar Corner NW (64x64)",
     size = {64, 64},
-    metadata = { base_height = 0, nav_mask = 0, tags = {"furniture", "bar", "corner", "clutter"} },
+    metadata = { base_height = 0, nav_mask = 0, tile_tags = {"furniture", "bar", "corner", "clutter"} },
     lights = {
         { position = {0, 28, 45}, color = {1.0, 0.7, 0.3}, intensity = 100 }
     },

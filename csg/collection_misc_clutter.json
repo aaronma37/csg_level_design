@@ -1,15 +1,124 @@
-[
-  { "asset_id": "barrel", "pos": [10, 10, 2], "rot": 0 },
-  { "asset_id": "barrel", "pos": [30, 15, 2], "rot": 45 },
-  { "asset_id": "tankard", "pos": [50, 260, 2], "rot": 22 },
-  { "asset_id": "ornate_rug", "pos": [160, 40, 1], "rot": 90 },
-  { "asset_id": "ornate_rug", "pos": [40, 220, 1], "rot": 45 },
-  { "asset_id": "chair", "pos": [40, 220, 2], "rot": 135 },
-  { "asset_id": "mug", "pos": [45, 215, 2], "rot": 0 },
-  { "asset_id": "ornate_rug", "pos": [250, 113, 1], "rot": 90 },
-  { "asset_id": "chair", "pos": [250, 143, 2], "rot": 263 },
-  { "asset_id": "chair", "pos": [250, 103, 2], "rot": 280 },
-  { "asset_id": "barrel", "pos": [260, 123, 2], "rot": 0 },
-  { "asset_id": "bottle", "pos": [260, 123, 21], "rot": 0 },
-  { "asset_id": "mug", "pos": [255, 118, 21], "rot": 0 }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "barrel",
+      "pos": [
+        10,
+        10,
+        2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        30,
+        15,
+        2
+      ],
+      "rot": 45
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        50,
+        260,
+        2
+      ],
+      "rot": 22
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        160,
+        40,
+        1
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        40,
+        220,
+        1
+      ],
+      "rot": 45
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        40,
+        220,
+        2
+      ],
+      "rot": 135
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        45,
+        215,
+        2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "pos": [
+        250,
+        113,
+        1
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        250,
+        143,
+        2
+      ],
+      "rot": 263
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        250,
+        103,
+        2
+      ],
+      "rot": 280
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        260,
+        123,
+        2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        260,
+        123,
+        21
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        255,
+        118,
+        21
+      ],
+      "rot": 0
+    }
+  ]
+}

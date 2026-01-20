@@ -214400,5 +214400,10 @@
       ],
       "color": 2
     }
+  ],
+  "asset_tags": [
+    "furniture",
+    "habitable",
+    "bar"
   ]
 }

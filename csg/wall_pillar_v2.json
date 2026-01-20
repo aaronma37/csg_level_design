@@ -1,0 +1,79 @@
+{
+  "name": "wall_pillar_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "pillar",
+    "v2"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        48
+      ],
+      "size": [
+        32,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        -14,
+        -2,
+        48
+      ],
+      "size": [
+        4,
+        6,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        14,
+        -2,
+        48
+      ],
+      "size": [
+        4,
+        6,
+        96
+      ],
+      "color": 2
+    }
+  ],
+  "snap_points": {
+    "front": {
+      "pos": [
+        0,
+        -2,
+        0
+      ],
+      "rot": 0
+    },
+    "back": {
+      "pos": [
+        0,
+        2,
+        0
+      ],
+      "rot": 0
+    },
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}

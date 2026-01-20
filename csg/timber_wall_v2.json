@@ -1,0 +1,65 @@
+{
+  "name": "timber_wall_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "wood",
+    "v2"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        48
+      ],
+      "size": [
+        32,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        94
+      ],
+      "size": [
+        34,
+        6,
+        4
+      ],
+      "color": 45
+    }
+  ],
+  "snap_points": {
+    "front": {
+      "pos": [
+        0,
+        -2,
+        0
+      ],
+      "rot": 0
+    },
+    "back": {
+      "pos": [
+        0,
+        2,
+        0
+      ],
+      "rot": 0
+    },
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}

@@ -1,28 +1,37 @@
-[
-  {
-    "id": "fp",
-    "asset_id": "stone_fireplace",
-    "pos": [0, 0, 0],
-    "rot": 0
-  },
-  {
-    "asset_id": "ornate_rug",
-    "snap_to": "fp.hearth_rug"
-  },
-  {
-    "asset_id": "chair",
-    "snap_to": "fp.chair_left"
-  },
-  {
-    "asset_id": "chair",
-    "snap_to": "fp.chair_right"
-  },
-  {
-    "asset_id": "candles",
-    "snap_to": "fp.mantle_left"
-  },
-  {
-    "asset_id": "skull",
-    "snap_to": "fp.mantle_right"
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "id": "fp",
+      "asset_id": "stone_fireplace",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "ornate_rug",
+      "snap_to": "fp.hearth_rug"
+    },
+    {
+      "asset_id": "chair",
+      "snap_to": "fp.chair_left"
+    },
+    {
+      "asset_id": "chair",
+      "snap_to": "fp.chair_right"
+    },
+    {
+      "asset_id": "candles",
+      "snap_to": "fp.mantle_left"
+    },
+    {
+      "asset_id": "skull",
+      "snap_to": "fp.mantle_right"
+    }
+  ]
+}

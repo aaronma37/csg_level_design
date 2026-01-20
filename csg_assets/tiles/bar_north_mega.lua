@@ -2,7 +2,7 @@ return {
     name = "Bar Straight Mega (2x2)",
     size = {32, 32}, -- Fixed grid size
     metadata = { 
-        tags = {"furniture", "bar", "mega"},
+        tile_tags = {"furniture", "bar", "mega"},
         block_size = {2, 2}
     },
     layout = {

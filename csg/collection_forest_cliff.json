@@ -1,11 +1,16 @@
-[
-  {
-    "asset_id": "tile_cliff_straight",
-    "pos": [
-      0,
-      0,
-      0
-    ],
-    "rot": 0
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "tile_cliff_straight",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  ]
+}

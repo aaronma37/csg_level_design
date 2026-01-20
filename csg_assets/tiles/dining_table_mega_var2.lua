@@ -2,7 +2,7 @@ return {
     name = "Dining Table Mega Var2 (2x1)",
     size = {32, 32},
     metadata = { 
-        tags = {"furniture", "table", "mega"},
+        tile_tags = {"furniture", "table", "mega"},
         block_size = {2, 1}
     },
     lights = {

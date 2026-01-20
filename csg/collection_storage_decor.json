@@ -1,32 +1,61 @@
-[
-  {
-    "asset_id": "barrel",
-    "pos": [300, 180, 1],
-    "rot": 111
-  },
-  {
-    "asset_id": "barrel",
-    "pos": [305, 195, 1],
-    "rot": 119
-  },
-  {
-    "asset_id": "barrel",
-    "pos": [300, 210, 1],
-    "rot": 258
-  },
-  {
-    "asset_id": "barrel",
-    "pos": [300, 180, 20],
-    "rot": 308
-  },
-  {
-    "asset_id": "trophy_wall",
-    "pos": [160, 321, 41],
-    "rot": 0
-  },
-  {
-    "asset_id": "trophy_wall",
-    "pos": [220, 321, 41],
-    "rot": 0
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "barrel",
+      "pos": [
+        300,
+        180,
+        1
+      ],
+      "rot": 111
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        305,
+        195,
+        1
+      ],
+      "rot": 119
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        300,
+        210,
+        1
+      ],
+      "rot": 258
+    },
+    {
+      "asset_id": "barrel",
+      "pos": [
+        300,
+        180,
+        20
+      ],
+      "rot": 308
+    },
+    {
+      "asset_id": "trophy_wall",
+      "pos": [
+        160,
+        321,
+        41
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "trophy_wall",
+      "pos": [
+        220,
+        321,
+        41
+      ],
+      "rot": 0
+    }
+  ]
+}

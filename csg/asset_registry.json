@@ -1,0 +1,1090 @@
+{
+  "stone_pillar": {
+    "name": "stone_pillar",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_stocked_shelf": {
+    "name": "collection_stocked_shelf",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "floor_64": {
+    "name": "floor_64",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "corner_pillar": {
+    "name": "corner_pillar",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "wall_north",
+      "wall_east"
+    ],
+    "type": "raw"
+  },
+  "wall_window_v2": {
+    "name": "wall_window_v2",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "window",
+      "v2"
+    ],
+    "snap_points": [
+      "front",
+      "back",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "reeds_patch": {
+    "name": "reeds_patch",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "decor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_storage_decor": {
+    "name": "collection_storage_decor",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "bar_corner_64": {
+    "name": "bar_corner_64",
+    "asset_tags": [
+      "furniture",
+      "habitable",
+      "bar"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "forest_signpost": {
+    "name": "forest_signpost",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "structure"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_armory_rack": {
+    "name": "collection_armory_rack",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "bottle": {
+    "name": "bottle",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "timber_beam": {
+    "name": "timber_beam",
+    "asset_tags": [
+      "structure",
+      "wood"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_upper_arm": {
+    "name": "base_upper_arm",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "mug": {
+    "name": "mug",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "bar_counter": {
+    "name": "bar_counter",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "stool_1",
+      "stool_2",
+      "stool_3",
+      "top_left",
+      "top_right"
+    ],
+    "type": "raw"
+  },
+  "pyromancer_hd": {
+    "name": "pyromancer_hd",
+    "asset_tags": [
+      "unit",
+      "enemy"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "floor_bevel_32_var2": {
+    "name": "floor_bevel_32_var2",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [
+      "north",
+      "south",
+      "east",
+      "west",
+      "north_outer",
+      "south_outer",
+      "east_outer",
+      "west_outer",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "floor_80": {
+    "name": "floor_80",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "block_64": {
+    "name": "block_64",
+    "asset_tags": [
+      "floor",
+      "base",
+      "block"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "block_80": {
+    "name": "block_80",
+    "asset_tags": [
+      "floor",
+      "base",
+      "block"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "willow_terrain": {
+    "name": "willow_terrain",
+    "asset_tags": [
+      "floor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "debris_rock_moss": {
+    "name": "debris_rock_moss",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "medieval_feast_table": {
+    "name": "medieval_feast_table",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "seat_1",
+      "seat_2",
+      "seat_3",
+      "seat_4",
+      "center_top",
+      "end_top"
+    ],
+    "type": "raw"
+  },
+  "tile_grass_var2": {
+    "name": "tile_grass_var2",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_dining_snapped": {
+    "name": "collection_dining_snapped",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_forest_cliff": {
+    "name": "collection_forest_cliff",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "flower_patch_red": {
+    "name": "flower_patch_red",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "decor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "test_wall": {
+    "name": "cracked_wall",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "shrub_small": {
+    "name": "shrub_small",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "decor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "floor_bevel_32": {
+    "name": "floor_bevel_32_var1",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [
+      "north",
+      "south",
+      "east",
+      "west",
+      "north_outer",
+      "south_outer",
+      "east_outer",
+      "west_outer",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "railing_short": {
+    "name": "railing_short",
+    "asset_tags": [
+      "structure",
+      "railing"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "figurine_hero": {
+    "name": "figurine_hero",
+    "asset_tags": [
+      "unit",
+      "hero"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_dining_hall": {
+    "name": "collection_dining_hall",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "willow_grove_layout": {
+    "name": "willow_grove_layout",
+    "asset_tags": [],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "timber_wall_v2": {
+    "name": "timber_wall_v2",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "wood",
+      "v2"
+    ],
+    "snap_points": [
+      "front",
+      "back",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "bar_straight_64": {
+    "name": "bar_straight_64",
+    "asset_tags": [
+      "furniture",
+      "habitable",
+      "bar"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "flower_patch_blue": {
+    "name": "flower_patch_blue",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "decor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "willow_tree_xl": {
+    "name": "willow_tree_xl",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "forest_lamppost": {
+    "name": "forest_lamppost",
+    "asset_tags": [
+      "light_source"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "tankard": {
+    "name": "tankard",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "wall_pillar_v2": {
+    "name": "wall_pillar_v2",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "pillar",
+      "v2"
+    ],
+    "snap_points": [
+      "front",
+      "back",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "high_density_cave": {
+    "name": "high_density_cave",
+    "asset_tags": [
+      "terrain",
+      "cave"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "wall_lantern_64": {
+    "name": "wall_lantern_64",
+    "asset_tags": [
+      "clutter",
+      "decor",
+      "light"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "grass_patch": {
+    "name": "grass_patch",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "decor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "skull": {
+    "name": "skull",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_bar_set": {
+    "name": "collection_bar_set",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "weapon_rack": {
+    "name": "weapon_rack",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "slot_1",
+      "slot_2",
+      "slot_3"
+    ],
+    "type": "raw"
+  },
+  "wooden_floor": {
+    "name": "wooden_floor",
+    "asset_tags": [
+      "floor"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "chandelier": {
+    "name": "chandelier",
+    "asset_tags": [
+      "light_source"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "timber_wall": {
+    "name": "timber_wall",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "next_segment",
+      "corner_turn"
+    ],
+    "type": "raw"
+  },
+  "pyromancer": {
+    "name": "pyromancer",
+    "asset_tags": [
+      "unit",
+      "enemy"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "ornate_rug": {
+    "name": "ornate_rug",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "pyromancer_ultra": {
+    "name": "pyromancer_ultra",
+    "asset_tags": [
+      "unit",
+      "enemy"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "barstool": {
+    "name": "barstool",
+    "asset_tags": [
+      "furniture",
+      "habitable",
+      "seating"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "window_64": {
+    "name": "window_64",
+    "asset_tags": [
+      "furniture",
+      "structure",
+      "window"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_head": {
+    "name": "base_head",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_torso": {
+    "name": "base_torso",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_river_corner": {
+    "name": "collection_river_corner",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "floor_bevel_64": {
+    "name": "floor_bevel_64",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "test_sprite": {
+    "name": "pixel_sprite",
+    "asset_tags": [],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "tile_grass": {
+    "name": "tile_grass",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_mezzanine_straight": {
+    "name": "collection_mezzanine_straight",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "forest_fence": {
+    "name": "forest_fence",
+    "asset_tags": [
+      "nature",
+      "outdoor",
+      "structure"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "floor_bevel_32_var3": {
+    "name": "floor_bevel_32_var3",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [
+      "north",
+      "south",
+      "east",
+      "west",
+      "north_outer",
+      "south_outer",
+      "east_outer",
+      "west_outer",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "tile_plateau": {
+    "name": "tile_plateau",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "shelf": {
+    "name": "shelf",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "tier1_left",
+      "tier1_center",
+      "tier1_right",
+      "tier2_left",
+      "tier2_center",
+      "tier2_right",
+      "tier3_left",
+      "tier3_center",
+      "tier3_right"
+    ],
+    "type": "raw"
+  },
+  "collection_mezzanine_complete": {
+    "name": "collection_mezzanine_complete",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_misc_clutter": {
+    "name": "collection_misc_clutter",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "debris_stump": {
+    "name": "debris_stump",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_hand": {
+    "name": "base_hand",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "door": {
+    "name": "door",
+    "asset_tags": [
+      "furniture",
+      "structure",
+      "door"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "stocked_shelf_64": {
+    "name": "stocked_shelf_64",
+    "asset_tags": [
+      "furniture",
+      "storage"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "tile_river_straight": {
+    "name": "tile_river_straight",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_fireplace_nook": {
+    "name": "collection_fireplace_nook",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "stone_fireplace": {
+    "name": "stone_fireplace",
+    "asset_tags": [
+      "light_source",
+      "occluder"
+    ],
+    "snap_points": [
+      "back",
+      "front",
+      "center",
+      "chair_left",
+      "chair_right",
+      "mantle_left",
+      "mantle_right",
+      "hearth_rug"
+    ],
+    "type": "raw"
+  },
+  "collection_forest_plateau": {
+    "name": "collection_forest_plateau",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_forest_tile_A": {
+    "name": "collection_forest_tile_A",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "stairs_64": {
+    "name": "stairs_64",
+    "asset_tags": [
+      "structure",
+      "stairs"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_shinfoot": {
+    "name": "base_shinfoot",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "debris_log": {
+    "name": "debris_log",
+    "asset_tags": [
+      "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "walkway_tile": {
+    "name": "walkway_tile",
+    "asset_tags": [
+      "floor"
+    ],
+    "snap_points": [
+      "railing_y0",
+      "railing_y32",
+      "railing_x0",
+      "railing_x160",
+      "next_tile_x",
+      "next_tile_y"
+    ],
+    "type": "raw"
+  },
+  "chair": {
+    "name": "chair",
+    "asset_tags": [
+      "furniture",
+      "habitable",
+      "seating"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "stairs": {
+    "name": "stairs",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "railing_side"
+    ],
+    "type": "raw"
+  },
+  "window": {
+    "name": "window",
+    "asset_tags": [
+      "furniture",
+      "structure",
+      "window"
+    ],
+    "snap_points": [
+      "center"
+    ],
+    "type": "raw"
+  },
+  "stair_railing": {
+    "name": "stair_railing",
+    "asset_tags": [
+      "structure",
+      "stairs"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "tile_river_corner": {
+    "name": "tile_river_corner",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_forest_tile_B": {
+    "name": "collection_forest_tile_B",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_forest_meadow": {
+    "name": "collection_forest_meadow",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "tavern_layout": {
+    "name": "tavern_layout",
+    "asset_tags": [],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "tile_grass_hills": {
+    "name": "tile_grass_hills",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "character": {
+    "name": "character_logical",
+    "asset_tags": [
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_forearm": {
+    "name": "base_forearm",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "candles": {
+    "name": "candles",
+    "asset_tags": [
+      "light_source"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_thigh": {
+    "name": "base_thigh",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_bar_complete": {
+    "name": "collection_bar_complete",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_mezzanine_corner": {
+    "name": "collection_mezzanine_corner",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "floor_bevel_48": {
+    "name": "floor_bevel_48",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [
+      "north",
+      "south",
+      "east",
+      "west",
+      "north_outer",
+      "south_outer",
+      "east_outer",
+      "west_outer",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "trophy_wall": {
+    "name": "trophy_wall",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "collection_tavern_shell": {
+    "name": "collection_tavern_shell",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "railing_long": {
+    "name": "railing_long",
+    "asset_tags": [
+      "structure",
+      "railing"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "tile_grass_var1": {
+    "name": "tile_grass_var1",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "timber_wall_short": {
+    "name": "timber_wall_short",
+    "asset_tags": [
+      "occluder"
+    ],
+    "snap_points": [
+      "next_segment",
+      "corner_turn"
+    ],
+    "type": "raw"
+  },
+  "collection_river_straight": {
+    "name": "collection_river_straight",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "collection_forest_tile_C": {
+    "name": "collection_forest_tile_C",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  },
+  "tile_cliff_straight": {
+    "name": "tile_cliff_straight",
+    "asset_tags": [
+      "floor",
+      "base",
+      "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "barrel": {
+    "name": "barrel",
+    "asset_tags": [
+      "clutter",
+      "decor",
+      "storage"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "base_pelvis": {
+    "name": "base_pelvis",
+    "asset_tags": [
+      "rig_part",
+      "unit"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "door_slot_v2": {
+    "name": "door_slot_v2",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "door",
+      "v2"
+    ],
+    "snap_points": [
+      "front",
+      "back",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "floor_bevel_32_var1": {
+    "name": "floor_bevel_32_var1",
+    "asset_tags": [
+      "floor",
+      "base"
+    ],
+    "snap_points": [
+      "north",
+      "south",
+      "east",
+      "west",
+      "north_outer",
+      "south_outer",
+      "east_outer",
+      "west_outer",
+      "center"
+    ],
+    "type": "raw"
+  },
+  "collection_dining_set": {
+    "name": "collection_dining_set",
+    "asset_tags": [
+      "collection"
+    ],
+    "snap_points": [],
+    "type": "collection"
+  }
+}

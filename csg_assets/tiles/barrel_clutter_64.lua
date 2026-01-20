@@ -1,7 +1,7 @@
 return {
     name = "Barrel Clutter (64x64)",
     size = {64, 64},
-    metadata = { base_height = 0, nav_mask = 0, tags = {"clutter", "barrels"} },
+    metadata = { base_height = 0, nav_mask = 0, tile_tags = {"clutter", "barrels"} },
     layout = {
         { asset_id = 'floor_64', pos = {0, 0, 0}, rot = 0 },
         -- A cluster of three barrels

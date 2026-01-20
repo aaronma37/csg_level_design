@@ -1,56 +1,61 @@
-[
-  {
-    "asset_id": "tile_river_corner",
-    "pos": [
-      0,
-      0,
-      0
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "reeds_patch",
-    "pos": [
-      52,
-      14,
-      10
-    ],
-    "rot": 180
-  },
-  {
-    "asset_id": "reeds_patch",
-    "pos": [
-      41,
-      46,
-      10
-    ],
-    "rot": 270
-  },
-  {
-    "asset_id": "reeds_patch",
-    "pos": [
-      52,
-      42,
-      10
-    ],
-    "rot": 90
-  },
-  {
-    "asset_id": "reeds_patch",
-    "pos": [
-      28,
-      29,
-      10
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "reeds_patch",
-    "pos": [
-      18,
-      15,
-      10
-    ],
-    "rot": 90
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "tile_river_corner",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "reeds_patch",
+      "pos": [
+        52,
+        14,
+        10
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "reeds_patch",
+      "pos": [
+        41,
+        46,
+        10
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "reeds_patch",
+      "pos": [
+        52,
+        42,
+        10
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "reeds_patch",
+      "pos": [
+        28,
+        29,
+        10
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "reeds_patch",
+      "pos": [
+        18,
+        15,
+        10
+      ],
+      "rot": 90
+    }
+  ]
+}

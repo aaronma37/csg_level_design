@@ -472,5 +472,9 @@
         0
       ]
     }
-  }
+  },
+  "asset_tags": [
+    "floor",
+    "base"
+  ]
 }

@@ -23,6 +23,18 @@
 - [ ] Implement rotation logic for tiles (ensure metadata like `slope_dir` rotates correctly).
 - [ ] Add "Prop" support to tiles (allowing random clutter based on tags).
 
+## Phase 3: Semantic Procedural Generation
+- [ ] **Audit & Tagging**:
+    - [ ] Add `tags` to all Asset JSON files in `csg/`.
+    - [ ] Add `tags` to all Tile Lua files in `csg_assets/tiles/`.
+- [ ] **Generator Infrastructure**:
+    - [ ] Create `tools/tile_registry.py` to index and query tiles by tags.
+    - [ ] Implement Phase 1: Connectivity solver (N/W wall doors).
+    - [ ] Implement Phase 2: Walkability path protector.
+    - [ ] Implement Phase 3: WFC/Random-Fill populate.
+- [ ] **Validation**:
+    - [ ] Create `tactical_procedural_test.lua` to demonstrate the multi-phase gen.
+
 ## Deprecated/Retired
 - [x] ASCII Map communication (superseded by Tile Grid).
 - [x] 80x80 Grid (too large for character scale).

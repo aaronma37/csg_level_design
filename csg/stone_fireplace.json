@@ -7651,7 +7651,7 @@
       "rot": 90
     }
   },
-  "tags": [
+  "asset_tags": [
     "light_source",
     "occluder"
   ]

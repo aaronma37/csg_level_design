@@ -10521,6 +10521,17 @@
     }
   ],
   "snap_points": {
-    "center": {"pos": [0, 0, 0]}
-  }
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "asset_tags": [
+    "furniture",
+    "structure",
+    "window"
+  ]
 }

@@ -5,7 +5,7 @@ return {
         base_height = 0,
         height_type = "flat",
         nav_mask = 0,
-        tags = {"furniture", "fireplace", "mega", "north"},
+        tile_tags = {"furniture", "fireplace", "mega", "north"},
         block_size = {2, 1}
     },
     layout = {

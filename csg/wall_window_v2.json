@@ -1,0 +1,64 @@
+{
+  "name": "wall_window_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "window",
+    "v2"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        48
+      ],
+      "size": [
+        32,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "sub",
+      "pos": [
+        0,
+        0,
+        45
+      ],
+      "size": [
+        16,
+        10,
+        24
+      ]
+    }
+  ],
+  "snap_points": {
+    "front": {
+      "pos": [
+        0,
+        -2,
+        0
+      ],
+      "rot": 0
+    },
+    "back": {
+      "pos": [
+        0,
+        2,
+        0
+      ],
+      "rot": 0
+    },
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}

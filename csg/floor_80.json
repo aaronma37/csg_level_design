@@ -617,5 +617,9 @@
       ],
       "color": 3
     }
+  ],
+  "asset_tags": [
+    "floor",
+    "base"
   ]
 }

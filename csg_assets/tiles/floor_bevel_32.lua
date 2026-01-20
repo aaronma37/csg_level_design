@@ -5,7 +5,7 @@ return {
         base_height = 0,
         height_type = "flat",
         nav_mask = 1,
-        tags = {"wood", "indoor", "beveled"}
+        tile_tags = {"wood", "indoor", "beveled", "walkable"}
     },
     layout = {
         -- Asset Centered [-16, 16].

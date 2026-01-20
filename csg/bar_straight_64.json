@@ -100962,5 +100962,10 @@
       ],
       "color": 22
     }
+  ],
+  "asset_tags": [
+    "furniture",
+    "habitable",
+    "bar"
   ]
 }

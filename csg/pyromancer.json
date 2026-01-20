@@ -827,5 +827,9 @@
       ],
       "color": 251
     }
+  ],
+  "asset_tags": [
+    "unit",
+    "enemy"
   ]
 }

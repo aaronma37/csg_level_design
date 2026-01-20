@@ -28,5 +28,9 @@
       ],
       "color": 100
     }
+  ],
+  "asset_tags": [
+    "rig_part",
+    "unit"
   ]
 }

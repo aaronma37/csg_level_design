@@ -1,83 +1,88 @@
-[
-  {
-    "asset_id": "tile_grass",
-    "pos": [
-      0,
-      0,
-      0
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "willow_tree_xl",
-    "pos": [
-      16,
-      48,
-      16
-    ],
-    "rot": 90
-  },
-  {
-    "asset_id": "forest_fence",
-    "pos": [
-      48,
-      16,
-      16
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "flower_patch_blue",
-    "pos": [
-      11,
-      37,
-      16
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "shrub_small",
-    "pos": [
-      37,
-      47,
-      16
-    ],
-    "rot": 90
-  },
-  {
-    "asset_id": "shrub_small",
-    "pos": [
-      55,
-      48,
-      16
-    ],
-    "rot": 270
-  },
-  {
-    "asset_id": "debris_rock_moss",
-    "pos": [
-      58,
-      18,
-      16
-    ],
-    "rot": 180
-  },
-  {
-    "asset_id": "shrub_small",
-    "pos": [
-      7,
-      42,
-      16
-    ],
-    "rot": 0
-  },
-  {
-    "asset_id": "grass_patch",
-    "pos": [
-      27,
-      10,
-      16
-    ],
-    "rot": 0
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "tile_grass",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "willow_tree_xl",
+      "pos": [
+        16,
+        48,
+        16
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "forest_fence",
+      "pos": [
+        48,
+        16,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "flower_patch_blue",
+      "pos": [
+        11,
+        37,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shrub_small",
+      "pos": [
+        37,
+        47,
+        16
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "shrub_small",
+      "pos": [
+        55,
+        48,
+        16
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "debris_rock_moss",
+      "pos": [
+        58,
+        18,
+        16
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "shrub_small",
+      "pos": [
+        7,
+        42,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "grass_patch",
+      "pos": [
+        27,
+        10,
+        16
+      ],
+      "rot": 0
+    }
+  ]
+}

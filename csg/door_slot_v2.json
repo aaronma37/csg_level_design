@@ -1,0 +1,79 @@
+{
+  "name": "door_slot_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "door",
+    "v2"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        -24,
+        0,
+        48
+      ],
+      "size": [
+        16,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        24,
+        0,
+        48
+      ],
+      "size": [
+        16,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        86
+      ],
+      "size": [
+        32,
+        4,
+        20
+      ],
+      "color": 2
+    }
+  ],
+  "snap_points": {
+    "front": {
+      "pos": [
+        0,
+        -2,
+        0
+      ],
+      "rot": 0
+    },
+    "back": {
+      "pos": [
+        0,
+        2,
+        0
+      ],
+      "rot": 0
+    },
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}

@@ -603,5 +603,10 @@
       ],
       "color": 1
     }
+  ],
+  "asset_tags": [
+    "floor",
+    "base",
+    "block"
   ]
 }

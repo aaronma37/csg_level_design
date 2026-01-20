@@ -1,1 +1,70 @@
-{"name": "forest_fence", "instructions": [{"op": "add", "shape": "cuboid", "pos": [0, 0, 0], "size": [4, 4, 16], "color": 1}, {"op": "add", "shape": "cuboid", "pos": [28, 0, 0], "size": [4, 4, 16], "color": 1}, {"op": "add", "shape": "cuboid", "pos": [2, 1, 10], "size": [28, 2, 2], "color": 3}, {"op": "add", "shape": "cuboid", "pos": [2, 1, 5], "size": [28, 2, 2], "color": 3}]}
+{
+  "name": "forest_fence",
+  "instructions": [
+    {
+      "op": "add",
+      "shape": "cuboid",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        4,
+        16
+      ],
+      "color": 1
+    },
+    {
+      "op": "add",
+      "shape": "cuboid",
+      "pos": [
+        28,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        4,
+        16
+      ],
+      "color": 1
+    },
+    {
+      "op": "add",
+      "shape": "cuboid",
+      "pos": [
+        2,
+        1,
+        10
+      ],
+      "size": [
+        28,
+        2,
+        2
+      ],
+      "color": 3
+    },
+    {
+      "op": "add",
+      "shape": "cuboid",
+      "pos": [
+        2,
+        1,
+        5
+      ],
+      "size": [
+        28,
+        2,
+        2
+      ],
+      "color": 3
+    }
+  ],
+  "asset_tags": [
+    "nature",
+    "outdoor",
+    "structure"
+  ]
+}

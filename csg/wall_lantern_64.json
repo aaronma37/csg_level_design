@@ -8325,5 +8325,10 @@
       ],
       "color": 2
     }
+  ],
+  "asset_tags": [
+    "clutter",
+    "decor",
+    "light"
   ]
 }

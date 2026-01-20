@@ -5,7 +5,7 @@ return {
         base_height = 0,
         height_type = "flat",
         nav_mask = 0,
-        tags = {"wall", "indoor", "wood", "pillar"}
+        tile_tags = {"wall", "indoor", "wood", "pillar"}
     },
     layout = {
         -- Fixed asset_id from floor_wood_32 to floor_bevel_32

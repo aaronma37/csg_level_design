@@ -1,7 +1,7 @@
 return {
     name = "Lantern on Floor (64x64)",
     size = {64, 64},
-    metadata = { base_height = 0, nav_mask = 1, tags = {"light", "test"} },
+    metadata = { base_height = 0, nav_mask = 1, tile_tags = {"light", "test", "walkable"} },
     lights = {
         { position = {0, 0, 40}, color = {1.0, 0.8, 0.4}, intensity = 200 }
     },

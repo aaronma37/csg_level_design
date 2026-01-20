@@ -1,47 +1,88 @@
-[
-  {
-    "asset_id": "medieval_feast_table",
-    "pos": [0, 0, 0],
-    "rot": 0
-  },
-  {
-    "asset_id": "chair",
-    "pos": [8, 20, 0],
-    "rot": -10
-  },
-  {
-    "asset_id": "chair",
-    "pos": [44, 22, 0],
-    "rot": 10
-  },
-  {
-    "asset_id": "chair",
-    "pos": [6, -3, 0],
-    "rot": 183
-  },
-  {
-    "asset_id": "chair",
-    "pos": [43, -4, 0],
-    "rot": 188
-  },
-  {
-    "asset_id": "candles",
-    "pos": [39, 12, 24],
-    "rot": 357
-  },
-  {
-    "asset_id": "mug",
-    "pos": [31, 13, 24],
-    "rot": 110
-  },
-  {
-    "asset_id": "tankard",
-    "pos": [31, 8, 24],
-    "rot": 194
-  },
-  {
-    "asset_id": "bottle",
-    "pos": [16, 16, 24],
-    "rot": 309
-  }
-]
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        8,
+        20,
+        0
+      ],
+      "rot": -10
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        44,
+        22,
+        0
+      ],
+      "rot": 10
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        6,
+        -3,
+        0
+      ],
+      "rot": 183
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        43,
+        -4,
+        0
+      ],
+      "rot": 188
+    },
+    {
+      "asset_id": "candles",
+      "pos": [
+        39,
+        12,
+        24
+      ],
+      "rot": 357
+    },
+    {
+      "asset_id": "mug",
+      "pos": [
+        31,
+        13,
+        24
+      ],
+      "rot": 110
+    },
+    {
+      "asset_id": "tankard",
+      "pos": [
+        31,
+        8,
+        24
+      ],
+      "rot": 194
+    },
+    {
+      "asset_id": "bottle",
+      "pos": [
+        16,
+        16,
+        24
+      ],
+      "rot": 309
+    }
+  ]
+}

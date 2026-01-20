@@ -1,7 +1,7 @@
 return {
     name = "Cluttered Dining Set (64x64)",
     size = {64, 64},
-    metadata = { base_height = 0, nav_mask = 0, tags = {"furniture", "table", "clutter"} },
+    metadata = { base_height = 0, nav_mask = 0, tile_tags = {"furniture", "table", "clutter"} },
     lights = {
         { position = {0, 28, 0}, color = {1.0, 0.7, 0.3}, intensity = 80 }
     },

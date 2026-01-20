@@ -53,11 +53,16 @@ fi
 echo "Copying to game directory: $GAME_ASSET_DIR"
 cp -rv "$ASSET_DIR"/* "$GAME_ASSET_DIR/"
 
-# 3. Compile Tiles (Resolve Anchors)
+# 3. Build Registries (Automated Indexing)
+echo "Building Registries..."
+python3 tools/tile_registry.py
+python3 tools/asset_registry.py
+
+# 4. Compile Tiles (Resolve Anchors)
 echo "Compiling Tile Definitions..."
 python3 tile_compiler.py
 
-# 4. Update Visualizations
+# 5. Update Visualizations
 echo "Updating ASCII visualization for tactical_test_32..."
 lua visualize_scene.lua csg_assets/scenes/tactical_test_32.lua
 
