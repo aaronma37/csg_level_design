@@ -8,6 +8,7 @@ return {
         tags = {"wood", "indoor", "beveled"}
     },
     layout = {
+        -- Asset Centered [-16, 16].
         { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 }
     }
 }

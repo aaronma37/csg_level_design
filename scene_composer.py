@@ -65,8 +65,8 @@ class VoxWriter:
                 if rot == 90 or rot == 270:
                     cur_w, cur_d = m_size[1], m_size[0]
                     
-                # Translation is to the center of the model
-                tx, ty, tz = int(pos[0] + cur_w // 2), int(pos[1] + cur_d // 2), int(pos[2] + m_size[2] // 2)
+                # Translation is the Asset Origin
+                tx, ty, tz = int(pos[0]), int(pos[1]), int(pos[2])
             
             shp_id = next_id; next_id += 1
             trn_id = next_id; next_id += 1
@@ -233,7 +233,35 @@ def load_layout_recursively(layout_path, parent_pos=(0,0,0), parent_rot=0):
             gx = t_pos[0] + rsx
             gy = t_pos[1] + rsy
             gz = t_pos[2] + sz
-            gr = (t_rot + sr) % 360
+            
+            # Handle 'snap_from' (Align Source Anchor to Target Anchor)
+            if 'snap_from' in item:
+                source_point_name = item['snap_from']
+                
+                # Load current asset
+                c_path = os.path.join(os.path.dirname(layout_path), f"{aid}.json")
+                if not os.path.exists(c_path): c_path = os.path.join("csg", f"{aid}.json")
+                
+                source_snap = None
+                if os.path.exists(c_path):
+                    try:
+                        with open(c_path, 'r') as cf:
+                            c_data = json.load(cf)
+                            if 'snap_points' in c_data:
+                                source_snap = c_data['snap_points'].get(source_point_name)
+                    except: pass
+                
+                if source_snap:
+                    ssx, ssy, ssz = source_snap['pos']
+                    # Rotate source offset by CURRENT item rotation (lr + parent_rot)
+                    rssx, rssy = rotate_point(ssx, ssy, gr)
+                    
+                    # Subtract rotated source offset from global position
+                    gx -= rssx
+                    gy -= rssy
+                    gz -= ssz
+                else:
+                    print(f"Warning: Snap from point '{source_point_name}' not found on asset '{aid}'.")
             
         else:
             # Standard explicit transform
@@ -349,30 +377,11 @@ def run_composer(layout_file, output_file=None, merge=False):
         elif key == 'camera':
             # Handle camera dict
             c = value.copy()
-            if 'eye' in c: c['eye'] = swizzle_coords(c['eye'])
             if 'center' in c: c['center'] = swizzle_coords(c['center'])
             
-            # Calculate Derived Parameters (Angle, Distance, Height) for Engine
-            if 'eye' in c and 'center' in c:
-                ex, ey, ez = c['eye']
-                cx, cy, cz = c['center']
-                
-                dx = ex - cx
-                dy = ey - cy # Height difference (Y-up in engine)
-                dz = ez - cz
-                
-                # Height
-                if 'height' not in c:
-                    c['height'] = dy
-                
-                # Distance (Euclidean)
-                if 'distance' not in c:
-                    c['distance'] = math.sqrt(dx*dx + dy*dy + dz*dz)
-                
-                # Angle (Azimuth around Y axis)
-                if 'angle' not in c:
-                    c['angle'] = math.atan2(dz, dx)
-                
+            # Pass orbit parameters directly
+            # 'height', 'distance', 'angle' should be defined in the source layout
+            
             lua_lines.append(f"    {key} = {format_lua_value(c)},")
             
         elif key in ['team1_units', 'team2_units']:

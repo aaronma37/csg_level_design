@@ -1,0 +1,19 @@
+Layout: tactical_test_32.lua
+Range: (-2,-2) to (2,2)
+Legend:
+  A: floor_bevel_32 (H=0)
+  B: floor_bevel_32 (H=16)
+  C: pillar_stone_32 (H=32)
+
+Grid (North ^ [-Z]):
+       North (Back Wall)
+         ^
+                   -2 |  A A A A A
+                   -1 |  A B B B A
+ West (Back Wall) <  0 |  A B C B A > East (Front)
+                    1 |  A B B B A
+                    2 |  A A A A A
+         v
+       South (Front/Camera)
+          ----------
+           E F 0 1 2

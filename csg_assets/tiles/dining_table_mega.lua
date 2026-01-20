@@ -6,6 +6,9 @@ return {
         block_size = {2, 1}
     },
     layout = {
+        -- Base Floor (Anchor Cell)
+        { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
+
         -- Asset normalized (Center 0,0).
         -- 2x1 Block Center: {32, 16, 0} relative to Anchor Corner.
         { asset_id = 'medieval_feast_table', pos = {32, 16, 0}, rot = 0 },

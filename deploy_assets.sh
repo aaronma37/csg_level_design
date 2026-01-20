@@ -53,4 +53,12 @@ fi
 echo "Copying to game directory: $GAME_ASSET_DIR"
 cp -rv "$ASSET_DIR"/* "$GAME_ASSET_DIR/"
 
+# 3. Compile Tiles (Resolve Anchors)
+echo "Compiling Tile Definitions..."
+python3 tile_compiler.py
+
+# 4. Update Visualizations
+echo "Updating ASCII visualization for tactical_test_32..."
+lua visualize_scene.lua csg_assets/scenes/tactical_test_32.lua
+
 echo "Done."

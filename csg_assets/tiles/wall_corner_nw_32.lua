@@ -8,11 +8,14 @@ return {
         tags = {"wall", "indoor", "wood", "corner"}
     },
     layout = {
-        -- North Side
-        { asset_id = 'timber_wall_straight_32', pos = {0, 20, 0}, rot = 0 },
-        -- West Side
-        { asset_id = 'timber_wall_straight_32', pos = {12, 0, 0}, rot = 90 },
-        -- Corner Pillar (To hide the seam)
-        { asset_id = 'stone_pillar', pos = {6, 26, 0}, rot = 0 }
+        { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
+        -- North Wall Segment
+        { asset_id = 'timber_wall_32', pos = {0, -8, 0}, rot = 180 },
+        -- West Wall Segment (Rot 270)
+        -- X Pos = -8.
+        { asset_id = 'timber_wall_32', pos = {-8, 0, 0}, rot = 270 },
+        -- Corner Pillar
+        -- Centered on junction (-8, -8)
+        { asset_id = 'stone_pillar', pos = {-8, -8, 0}, rot = 0 }
     }
 }
