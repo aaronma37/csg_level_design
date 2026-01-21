@@ -4,6 +4,8 @@ import json
 from generators.floors import floor_wood_plain
 import palette
 
+import math
+
 def offset_instructions(instr_list, offset):
     new_list = []
     ox, oy, oz = offset
@@ -12,6 +14,60 @@ def offset_instructions(instr_list, offset):
         if 'pos' in new_item:
             px, py, pz = new_item['pos']
             new_item['pos'] = [px + ox, py + oy, pz + oz]
+        new_list.append(new_item)
+    return new_list
+
+def rotate_instructions(instr_list, angle_degrees):
+    """
+    Rotates instructions around the Z axis (XY plane).
+    angle_degrees: 90, 180, 270 (Counter-Clockwise)
+    """
+    rad = math.radians(angle_degrees)
+    cos_a = int(round(math.cos(rad))) # forcing int for 90/180/270 cleanliness
+    sin_a = int(round(math.sin(rad)))
+    
+    new_list = []
+    for item in instr_list:
+        new_item = item.copy()
+        if 'pos' in new_item and 'size' in new_item:
+            x, y, z = new_item['pos']
+            w, h, d = new_item['size']
+            
+            # Calculate the 4 corners of the base rectangle
+            corners = [
+                (x, y),
+                (x + w, y),
+                (x, y + h),
+                (x + w, y + h)
+            ]
+            
+            # Rotate all corners
+            rotated_corners = []
+            for cx, cy in corners:
+                rx = cx * cos_a - cy * sin_a
+                ry = cx * sin_a + cy * cos_a
+                rotated_corners.append((rx, ry))
+                
+            # Find new min corner
+            min_x = min(c[0] for c in rotated_corners)
+            min_y = min(c[1] for c in rotated_corners)
+            
+            new_item['pos'] = [min_x, min_y, z]
+            
+            # Swap dimensions if 90 or 270
+            if abs(angle_degrees % 180) == 90:
+                new_item['size'] = [h, w, d]
+                
+        elif 'pos' in new_item:
+             # Point rotation (for things without size, if any)
+            x, y, z = new_item['pos']
+            rx = x * cos_a - y * sin_a
+            ry = x * sin_a + cy * cos_a # Typos in original thought, fixing here: y*cos_a
+            # Wait, correcting point rotation logic just in case
+            rx = x * cos_a - y * sin_a
+            ry = x * sin_a + y * cos_a
+            new_item['pos'] = [rx, ry, z]
+
         new_list.append(new_item)
     return new_list
 
@@ -47,6 +103,9 @@ def generate_fireplace_mega_base():
         with open(fp_path, 'r') as f:
             fp_data = json.load(f)
             fp_instr = fp_data.get('instructions', [])
+            
+            # Rotate 180 degrees (facing South)
+            fp_instr = rotate_instructions(fp_instr, 180)
             
             # Position: 
             # X: Centered in 2x2 block -> Absolute 32. Relative: 32 - 16 = 16.

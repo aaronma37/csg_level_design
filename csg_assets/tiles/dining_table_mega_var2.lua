@@ -10,10 +10,10 @@ return {
         { position = {44, 25, 32}, color = {1.0, 0.7, 0.3}, intensity = 40 }
     },
     layout = {
-        { asset_id = 'dining_table_mega_base', pos = {0, 0, 0}, rot = 0 },
-        -- Chairs
-        { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_2', rot = 0 },
-        { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_4', rot = 180 },
+    { asset_id = 'dining_table_mega_base', pos = {0, 0, 0}, rot = 0 },
+    -- Chairs attached to table base
+    { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_2', rot = 180 },
+    { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_4', rot = 0 },
         -- Clutter
         { asset_id = 'candles', snap_to = 'dining_table_mega_base.clutter_left', rot = 45 },
         { asset_id = 'candles', snap_to = 'dining_table_mega_base.clutter_right', rot = -30 },
