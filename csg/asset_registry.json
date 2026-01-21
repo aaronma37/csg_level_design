@@ -15,15 +15,6 @@
     "snap_points": [],
     "type": "collection"
   },
-  "floor_64": {
-    "name": "floor_64",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "corner_pillar": {
     "name": "corner_pillar",
     "asset_tags": [
@@ -32,21 +23,6 @@
     "snap_points": [
       "wall_north",
       "wall_east"
-    ],
-    "type": "raw"
-  },
-  "wall_window_v2": {
-    "name": "wall_window_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "window",
-      "v2"
-    ],
-    "snap_points": [
-      "front",
-      "back",
-      "center"
     ],
     "type": "raw"
   },
@@ -67,16 +43,6 @@
     ],
     "snap_points": [],
     "type": "collection"
-  },
-  "bar_corner_64": {
-    "name": "bar_corner_64",
-    "asset_tags": [
-      "furniture",
-      "habitable",
-      "bar"
-    ],
-    "snap_points": [],
-    "type": "raw"
   },
   "forest_signpost": {
     "name": "forest_signpost",
@@ -113,15 +79,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "base_upper_arm": {
-    "name": "base_upper_arm",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "mug": {
     "name": "mug",
     "asset_tags": [
@@ -144,15 +101,6 @@
     ],
     "type": "raw"
   },
-  "pyromancer_hd": {
-    "name": "pyromancer_hd",
-    "asset_tags": [
-      "unit",
-      "enemy"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "floor_bevel_32_var2": {
     "name": "floor_bevel_32_var2",
     "asset_tags": [
@@ -170,35 +118,6 @@
       "west_outer",
       "center"
     ],
-    "type": "raw"
-  },
-  "floor_80": {
-    "name": "floor_80",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "block_64": {
-    "name": "block_64",
-    "asset_tags": [
-      "floor",
-      "base",
-      "block"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "block_80": {
-    "name": "block_80",
-    "asset_tags": [
-      "floor",
-      "base",
-      "block"
-    ],
-    "snap_points": [],
     "type": "raw"
   },
   "willow_terrain": {
@@ -268,14 +187,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "test_wall": {
-    "name": "cracked_wall",
-    "asset_tags": [
-      "occluder"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "shrub_small": {
     "name": "shrub_small",
     "asset_tags": [
@@ -327,15 +238,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "figurine_hero": {
-    "name": "figurine_hero",
-    "asset_tags": [
-      "unit",
-      "hero"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "collection_dining_hall": {
     "name": "collection_dining_hall",
     "asset_tags": [
@@ -349,31 +251,6 @@
     "asset_tags": [],
     "snap_points": [],
     "type": "collection"
-  },
-  "timber_wall_v2": {
-    "name": "timber_wall_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "wood",
-      "v2"
-    ],
-    "snap_points": [
-      "front",
-      "back",
-      "center"
-    ],
-    "type": "raw"
-  },
-  "bar_straight_64": {
-    "name": "bar_straight_64",
-    "asset_tags": [
-      "furniture",
-      "habitable",
-      "bar"
-    ],
-    "snap_points": [],
-    "type": "raw"
   },
   "flower_patch_blue": {
     "name": "flower_patch_blue",
@@ -393,20 +270,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "wall_corner_nw_baked_v2": {
-    "name": "wall_corner_nw_baked_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "corner",
-      "v2",
-      "baked"
-    ],
-    "snap_points": [
-      "center"
-    ],
-    "type": "raw"
-  },
   "forest_lamppost": {
     "name": "forest_lamppost",
     "asset_tags": [
@@ -423,36 +286,11 @@
     "snap_points": [],
     "type": "raw"
   },
-  "wall_pillar_v2": {
-    "name": "wall_pillar_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "pillar",
-      "v2"
-    ],
-    "snap_points": [
-      "front",
-      "back",
-      "center"
-    ],
-    "type": "raw"
-  },
   "high_density_cave": {
     "name": "high_density_cave",
     "asset_tags": [
       "terrain",
       "cave"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "wall_lantern_64": {
-    "name": "wall_lantern_64",
-    "asset_tags": [
-      "clutter",
-      "decor",
-      "light"
     ],
     "snap_points": [],
     "type": "raw"
@@ -483,20 +321,6 @@
     "snap_points": [],
     "type": "collection"
   },
-  "wall_straight_baked_v2": {
-    "name": "wall_straight_baked_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "straight",
-      "v2",
-      "baked"
-    ],
-    "snap_points": [
-      "center"
-    ],
-    "type": "raw"
-  },
   "weapon_rack": {
     "name": "weapon_rack",
     "asset_tags": [
@@ -517,26 +341,29 @@
     "snap_points": [],
     "type": "raw"
   },
+  "fireplace_mega_base": {
+    "name": "fireplace_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "fireplace"
+    ],
+    "snap_points": [
+      "hearth",
+      "hearth_rug",
+      "chair_left",
+      "chair_right",
+      "mantle_left",
+      "mantle_right"
+    ],
+    "type": "raw"
+  },
   "chandelier": {
     "name": "chandelier",
     "asset_tags": [
       "light_source"
     ],
     "snap_points": [],
-    "type": "raw"
-  },
-  "wall_door_baked_v2": {
-    "name": "wall_door_baked_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "doorway",
-      "v2",
-      "baked"
-    ],
-    "snap_points": [
-      "center"
-    ],
     "type": "raw"
   },
   "timber_wall": {
@@ -550,28 +377,10 @@
     ],
     "type": "raw"
   },
-  "pyromancer": {
-    "name": "pyromancer",
-    "asset_tags": [
-      "unit",
-      "enemy"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "ornate_rug": {
     "name": "ornate_rug",
     "asset_tags": [
       "passable"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "pyromancer_ultra": {
-    "name": "pyromancer_ultra",
-    "asset_tags": [
-      "unit",
-      "enemy"
     ],
     "snap_points": [],
     "type": "raw"
@@ -586,34 +395,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "window_64": {
-    "name": "window_64",
-    "asset_tags": [
-      "furniture",
-      "structure",
-      "window"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "base_head": {
-    "name": "base_head",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "base_torso": {
-    "name": "base_torso",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "collection_river_corner": {
     "name": "collection_river_corner",
     "asset_tags": [
@@ -621,21 +402,6 @@
     ],
     "snap_points": [],
     "type": "collection"
-  },
-  "floor_bevel_64": {
-    "name": "floor_bevel_64",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "test_sprite": {
-    "name": "pixel_sprite",
-    "asset_tags": [],
-    "snap_points": [],
-    "type": "raw"
   },
   "tile_grass": {
     "name": "tile_grass",
@@ -663,20 +429,6 @@
       "structure"
     ],
     "snap_points": [],
-    "type": "raw"
-  },
-  "wall_window_baked_v2": {
-    "name": "wall_window_baked_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "window",
-      "v2",
-      "baked"
-    ],
-    "snap_points": [
-      "center"
-    ],
     "type": "raw"
   },
   "floor_bevel_32_var3": {
@@ -760,30 +512,12 @@
     ],
     "type": "raw"
   },
-  "base_hand": {
-    "name": "base_hand",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "door": {
     "name": "door",
     "asset_tags": [
       "furniture",
       "structure",
       "door"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "stocked_shelf_64": {
-    "name": "stocked_shelf_64",
-    "asset_tags": [
-      "furniture",
-      "storage"
     ],
     "snap_points": [],
     "type": "raw"
@@ -852,45 +586,12 @@
     "snap_points": [],
     "type": "collection"
   },
-  "stairs_64": {
-    "name": "stairs_64",
-    "asset_tags": [
-      "structure",
-      "stairs"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "base_shinfoot": {
-    "name": "base_shinfoot",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "debris_log": {
     "name": "debris_log",
     "asset_tags": [
       "passable"
     ],
     "snap_points": [],
-    "type": "raw"
-  },
-  "walkway_tile": {
-    "name": "walkway_tile",
-    "asset_tags": [
-      "floor"
-    ],
-    "snap_points": [
-      "railing_y0",
-      "railing_y32",
-      "railing_x0",
-      "railing_x160",
-      "next_tile_x",
-      "next_tile_y"
-    ],
     "type": "raw"
   },
   "chair": {
@@ -976,36 +677,10 @@
     "snap_points": [],
     "type": "raw"
   },
-  "character": {
-    "name": "character_logical",
-    "asset_tags": [
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "base_forearm": {
-    "name": "base_forearm",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "candles": {
     "name": "candles",
     "asset_tags": [
       "light_source"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
-  "base_thigh": {
-    "name": "base_thigh",
-    "asset_tags": [
-      "rig_part",
-      "unit"
     ],
     "snap_points": [],
     "type": "raw"
@@ -1127,15 +802,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "base_pelvis": {
-    "name": "base_pelvis",
-    "asset_tags": [
-      "rig_part",
-      "unit"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "wall_north_door_32": {
     "name": "wall_north_door_32",
     "asset_tags": [],
@@ -1145,21 +811,6 @@
       "south",
       "east",
       "west"
-    ],
-    "type": "raw"
-  },
-  "door_slot_v2": {
-    "name": "door_slot_v2",
-    "asset_tags": [
-      "structure",
-      "wall",
-      "door",
-      "v2"
-    ],
-    "snap_points": [
-      "front",
-      "back",
-      "center"
     ],
     "type": "raw"
   },

@@ -64,16 +64,20 @@ How to change the rules of the world or add new biome features.
     *   Ensure your tiles have the right tags in `csg_assets/tile_registry.json`.
     *   *Note*: `tile_registry.json` is auto-built by `tools/tile_registry.py` (run `deploy_assets.sh`).
 
-3.  **Algorithm Update (`tools/procedural_gen.py`)**:
+3. **Theme Definition (`tools/procedural_gen.py`)**:
+    *   **Define the Theme**: Add a new entry to the `THEMES` dictionary mapping logical roles (e.g., `wall_north`, `floor`) to specific asset tags.
+    *   *Code Pattern*: `THEMES["my_biome"] = { "floor_primary": {"include": ["lava"]} }`
+
+4. **Algorithm Update (Logic)**:
     *   **Phase 1 (Structure)**: Modify `generate_room` to change wall pools or exit logic.
     *   **Phase 2 (Pathing)**: Update `get_path` if you change walkability rules.
     *   **Phase 3 (Filling)**: Update the asset placement loops.
         *   *Code Pattern*: `query_registry(include=["my_new_tag"])`
-    
-4.  **Testing**:
-    *   Run the generator directly:
+
+5.  **Testing**:
+    *   Run the generator directly with your theme:
     ```bash
-    python3 tools/procedural_gen.py --name test_gen --width 12 --height 12
+    python3 tools/procedural_gen.py --name test_gen --width 12 --height 12 --theme tavern
     ```
 5.  **Visualize**:
     *   **ASCII Check** (Fastest):

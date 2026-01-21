@@ -40,7 +40,24 @@ Transition from hardcoded coordinate loops to a semantic, multi-phase generation
 - **Tile Tags**: Every `.lua` in `csg_assets/tiles/` needs a `tile_tags` field (e.g., `floor`, `wall`, `doorway`, `transition`).
 - **Tile Registry**: A central registry (`csg_assets/tile_registry.json`) that the generator queries.
 
-## 4. Usage
+## 4. Theming System (Abstraction)
+To allow the same algorithms to generate Taverns, Dungeons, or Forests, we decouple "Roles" from "Assets" using a **Theme Definition**.
+
+The Generator queries the Theme for tags, rather than hardcoding "wood" or "stone".
+
+### Theme Structure
+A Theme defines the specific tags required to fulfill logical slots in the room:
+
+| Role | Description | Tavern Example Tags |
+| poss | ----------- | ------------------- |
+| **`floor`** | Standard ground tile | `["floor", "wood"]` |
+| **`wall_north`** | Backdrop wall segments | `["wall", "north", "interior"]` |
+| **`corner_nw`** | The 0,0 corner piece | `["wall", "corner", "north"]` |
+| **`door_north`** | North-facing exit | `["wall", "doorway", "north"]` |
+| **`feature_main`** | Major focal point (Fireplace) | `["fireplace", "mega"]` |
+| **`scatter`** | Random decor | `["clutter", "mug"]` |
+
+## 5. Usage
 ```bash
-python3 tools/procedural_gen.py --name "tavern_test" --width 12 --height 12 --north --west
+python3 tools/procedural_gen.py --name "tavern_test" --width 12 --height 12 --north --west --theme tavern
 ```

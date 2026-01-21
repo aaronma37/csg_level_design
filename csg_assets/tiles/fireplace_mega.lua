@@ -9,13 +9,15 @@ return {
         block_size = {2, 1}
     },
     layout = {
-        { asset_id = 'floor_bevel_32', pos = {0, 0, 0}, rot = 0 },
-        { asset_id = 'floor_bevel_32', pos = {32, 0, 0}, rot = 0 },
-        -- Wall background segments
-        { asset_id = 'timber_wall_straight_32', pos = {16, 26, 0}, rot = 0 },
-        { asset_id = 'timber_wall_straight_32', pos = {48, 26, 0}, rot = 0 },
-        -- Fireplace: Anchor North Edge to 32. 
-        -- JSON Back Face is at 6. Pivot + 6 = 32 -> Pivot = 26.
-        { asset_id = 'stone_fireplace', pos = {32, 26, 0}, rot = 0 }
+        -- Base Asset containing Floor + Fireplace + Back Walls
+        -- Note: Asset Origin (0,0,0) corresponds to Tile Anchor (Top-Left of first cell).
+        { asset_id = 'fireplace_mega_base', pos = {0, 0, 0}, rot = 0 },
+        
+        -- Props attached to Snap Points defined in the Base Asset
+        { asset_id = 'ornate_rug', snap_to = 'fireplace_mega_base.hearth_rug', rot = 0 },
+        { asset_id = 'chair', snap_to = 'fireplace_mega_base.chair_left', rot = -45 }, -- Angled inward
+        { asset_id = 'chair', snap_to = 'fireplace_mega_base.chair_right', rot = 45 }, -- Angled inward
+        { asset_id = 'candles', snap_to = 'fireplace_mega_base.mantle_left', rot = 0 },
+        { asset_id = 'skull', snap_to = 'fireplace_mega_base.mantle_right', rot = 15 }
     }
 }
