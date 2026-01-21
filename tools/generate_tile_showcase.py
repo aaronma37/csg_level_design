@@ -60,29 +60,38 @@ def generate_showcase(name, theme_filter=None):
         
     tiles_to_show.sort() # Alphabetical order
     
-    count = len(tiles_to_show)
-    width = int(math.ceil(math.sqrt(count)))
-    height = int(math.ceil(count / width))
-    
-    print(f"Generating showcase for {count} tiles (Grid {width}x{height})...")
+    print(f"Generating showcase for {len(tiles_to_show)} tiles...")
     
     lua_output = os.path.join(OUTPUT_DIR, f"{name}.lua")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     with open(lua_output, 'w') as f:
-        f.write(f"-- Showcase: {name} ({count} tiles)\n")
+        f.write(f"-- Showcase: {name} ({len(tiles_to_show)} tiles)\n")
         f.write("return {\n    tiles = {\n")
         
-        for i, tid in enumerate(tiles_to_show):
-            x = (i % width) * 2 # Spacing * 2 to leave gaps
-            z = (i // width) * 2
+        cur_x = 0
+        cur_z = 0
+        max_z_in_row = 0
+        row_width_limit = 10 # 10 tiles wide
+        
+        for tid in tiles_to_show:
+            data = tile_reg[tid]
+            bw, bh = data.get("block_size", [1, 1])
+            
+            # If we exceed row width, wrap to next row
+            if cur_x + bw > row_width_limit:
+                cur_x = 0
+                cur_z += max_z_in_row + 1 # +1 for gap
+                max_z_in_row = 0
             
             # Place the tile
-            f.write(f"        {{ tile_id = '{tid}', pos = {{{x}, {z}}}, height = 0, rot = 0 }},\n")
+            # We add a +0.5 offset if the engine treats coords as corners?
+            # Actually, let's stick to integers and see if they overlap.
+            f.write(f"        {{ tile_id = '{tid}', pos = {{{cur_x}, {cur_z}}}, height = 0, rot = 0 }},\n")
             
-            # Add floor underneath if it's not a floor itself (optional, for visibility)
-            # if "floor" not in tile_reg[tid].get("tile_tags", []):
-            #    f.write(f"        {{ tile_id = 'floor_wood_80', pos = {{{x}, {z}}}, height = -16, rot = 0 }},\n")
+            # Update cursors
+            cur_x += bw + 1 # +1 for gap
+            max_z_in_row = max(max_z_in_row, bh)
 
         f.write("    },\n    layout = {}\n}")
         

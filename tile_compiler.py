@@ -113,8 +113,13 @@ def compile_tile(filename):
     
     # Pass 1: Register items with explicit pos (or defaults)
     for item in items:
+        # Use explicit id if provided
         if 'id' in item:
             lookup[item['id']] = item
+        # FALLBACK: Use asset_id as the lookup key if no id provided
+        # This allows snapping to the base asset by name
+        if 'asset_id' in item and item['asset_id'] not in lookup:
+            lookup[item['asset_id']] = item
             
     # Pass 2: Resolve snaps
     # (Simple single-pass for now, assumes target is already resolved or earlier in list)
