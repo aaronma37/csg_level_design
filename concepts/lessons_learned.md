@@ -18,6 +18,6 @@
     - Stair Rise: 1.6 CU per floor (80v)
 
 ## 4. Tile Paradigm Shift (FFT-Style)
-- **Grid Scale (64x64 vs 80x80):** 80x80 grid cells created too much "dead space" around the character (50-60v). A 64x64 grid makes characters feel substantial and improves distance readability.
+- **Grid Scale (32x32 Final Standard):** We iterated from 80x80 (too loose) to 64x64 (better), but finally settled on **32x32**. This scale provides the tightest tactical "density" where characters (50-70v tall) feel powerful and occupy the grid meaningfully. It also simplifies the "Baked Tile" generation math significantly.
 - **ASCII Maps vs. Lua Tiles:** While ASCII is good for quick communication, it lacks the precision for 3D metadata (height, rotation). Pure Lua Tile definitions are more robust for defining collision, navigation, and lighting logic.
 - **Tile-Internal Flooring:** Tiles that represent habitable areas should contain their own base floor geometry. This prevents Z-fighting and simplifies the high-level scene layout.

@@ -41,9 +41,13 @@ local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 local id_to_char = {}
 
 for _, tile in ipairs(scene.tiles) do
-    local x, y = tile.pos[1], tile.pos[2]
-    local z = tile.pos[3] or 0
-    local id = tile.tile_id
+    local x, y, z
+    if tile.pos then
+        x, y, z = tile.pos[1], tile.pos[2], tile.pos[3] or 0
+    else
+        x, y, z = tile.x or 0, tile.y or 0, tile.z or 0
+    end
+    local id = tile.tile_id or tile.asset_id
     local unique_key = id .. ":" .. z
     
     if x < min_x then min_x = x end

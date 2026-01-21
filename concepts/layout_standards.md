@@ -42,45 +42,38 @@ Every tile is a 32x32 "slice" of the map.
 Since the camera is fixed at a **South-East** perspective (looking North-West):
 *   **North (-Z) & West (-X) Edges**: These are the "Back Walls". Use these for tall structures, windows, and high shelving. They form the visible backdrop.
 *   **South (+Z) & East (+X) Edges**: These are the "Foreground". Keep these clear or use low-profile "cutaway" assets to prevent blocking the view of the play area.
-*   **Modular Walls**: Walls should be designed as 32-unit segments that can be swapped into a tile's `layout`.
+*   **Modular Walls**: Walls should be designed as 32-unit segments.
 
-## 5. Tile Hierarchy
-*   **Level 0: Assets** (`floor_bevel_32.gltf`, `chair.gltf`) - The raw geometry.
-*   **Level 1: Tiles** (`floor_wood_32.lua`, `dining_table_mega.lua`) - Combinations of assets + navigation metadata.
-*   **Level 2: Scenes** (`tavern_grid.lua`) - A collection of tiles arranged on the global grid.
+## 5. The Baked-Tile Standard (Base Assets)
+To ensure perfect alignment and eliminate runtime composition errors (floating walls, gap seams), we use a **Baked Base Asset** workflow.
 
-## 6. Vertical Stacking (Y-Axis)
-*   **Y=0**: Sub-floor/Backing.
-*   **Y=1**: Surface planks/Tile top.
-*   **Y=2**: Furniture base contact.
-*   **Y=Surface + 1**: Clutter (Mugs, Bottles).
+*   **The Golden Rule**: Every Tile (`.lua`) must contain **exactly one** `base` asset.
+    *   This asset physically contains the floor and the primary structure (e.g., Wall, Pillar, Bar Counter) combined into a single voxel model.
+    *   **No Runtime Glues**: The engine does not glue a "Wall" to a "Floor". It renders one solid "WallTile" model.
+*   **Asset Construction**:
+    *   Generators should import a shared primitive (e.g., `floor_base_32`) to ensure the floor section is identical across all base assets.
+    *   The structure is "baked" onto this floor during the generation phase (Python), not the compilation phase.
 
-## 7. Mega Tile Positioning Standards
-To ensure multi-tile assets (Mega Tiles) align correctly:
+## 6. Tile Hierarchy
+*   **Level 0: Substrates** (`generators/floors/`) - Voxel logic for floor patterns (Wood, Grass).
+*   **Level 1: Baked Base Assets** (`wall_stone_grass_32.gltf`) - A monolithic unit mashing a feature onto a substrate. Must have `asset_tags = {"base"}`.
+*   **Level 2: Tiles** (`wall_stone_32.lua`) - A wrapper around the Base Asset that adds metadata and Props.
+*   **Level 3: Scenes** - A grid of Tiles.
 
-1.  **Grid-Lock**: In the Tile Definition (`.lua`), always set `size = {32, 32}`. This forces the scene loader to use the standard grid step.
-2.  **Asset Origin**: Ensure the referenced asset is normalized (Centered X/Y at 0, Z at 0).
-3.  **Layout Offset Formula**:
-    *   To center an asset on a Mega Tile block (assuming Top-Left Anchor):
-    *   **Offset X** = `(Total_Width_In_Voxels / 2)`
-    *   **Offset Y** = `(Total_Depth_In_Voxels / 2)` (or align to wall as needed).
-    
-    *Example: 2x2 Mega Tile (64x64)*
-    *   Asset Center: 0,0
-    *   Layout Pos: `{32, 32, 0}`
+## 7. Sockets & Props
+Instead of gluing "Tiles" together, we attach "Props" (decorations) to **Sockets** on the Base Asset.
 
-## 8. Anchors & Snapping (The Compiler Paradigm)
-To solve alignment issues (e.g., flushing walls to tile edges), use the Anchor System resolved by `tile_compiler.py`:
+*   **Sockets**: Defined as `snap_points` in the Base Asset's JSON (e.g., `mantle_left`, `counter_top`).
+*   **Props**: Small, non-base assets (candles, mugs) placed by the Tile definition.
+*   **Compiler Logic**: The Tile Compiler resolves the Prop's position by looking up the Socket's coordinate in the Base Asset.
+    *   *Lua Example*: `{ asset_id = 'candle', snap_to = 'base.mantle_left' }`
 
-*   **Snap Points**: Defined in Asset JSON (`.json`) under `snap_points`.
-    *   **Standard**: `north` (-16), `south` (16), `east` (16), `west` (-16) for tiles.
-    *   **Wall Standard**: `front` (0), `back` (12) for walls.
-*   **Workflow**:
-    1.  Source Lua: `{ id = 'w1', snap_to = 'floor.north', snap_from = 'front' }`.
-    2.  Build Step: `tile_compiler.py` runs during `./deploy_assets.sh`.
-    3.  Math: `Final_Pos = Target_Anchor_World_Pos - Source_Anchor_Local_Rotated_Offset`.
-    4.  Output Lua: `{ id = 'w1', pos = {0, -16, 0} }`.
-*   **Result**: Semantic positioning in source files, explicit performance in the engine.
+## 8. Mega Base Assets
+For assets larger than 32x32 (e.g., a 2x1 Bar Counter):
+*   The asset itself is a single large model (e.g., 64x32 voxels).
+*   It is still the "Base Asset" for the multi-tile group.
+*   The Scene places this Base Asset at the origin of the primary tile.
+
 
 ## 9. Gotchas & Best Practices
 *   **Rotation Center**: Rotation happens around the asset's (0,0,0) center. 

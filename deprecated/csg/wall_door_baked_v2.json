@@ -1,0 +1,78 @@
+{
+  "name": "wall_door_baked_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "doorway",
+    "v2",
+    "baked"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        32,
+        32,
+        1
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        -12,
+        14,
+        48
+      ],
+      "size": [
+        8,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        12,
+        14,
+        48
+      ],
+      "size": [
+        8,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        0,
+        14,
+        80
+      ],
+      "size": [
+        32,
+        4,
+        32
+      ],
+      "color": 2
+    }
+  ],
+  "snap_points": {
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}

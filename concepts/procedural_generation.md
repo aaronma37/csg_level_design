@@ -1,11 +1,14 @@
-# Semantic Procedural Generation (Phase 3 Roadmap)
+# Semantic Procedural Generation
 
 ## 1. Core Objectives
 Transition from hardcoded coordinate loops to a semantic, multi-phase generation system that obeys room constraints, ensures walkability, and populates detail via a tagged tile/asset registry.
 
-## 2. Generation Phases
+**Active Tool**: `tools/procedural_gen.py`
+
+## 2. Generation Phases (Implemented)
 
 ### Phase 1: Constraint & Connectivity (Skeleton)
+*Implemented in `generate_room`*
 - **Stability Rules**:
     - **Pool Filtering**: Queries for backdrop walls MUST exclude functional tags like `doorway`, `fireplace`, or `mega`.
     - **Corner Awareness**: The Northwest corner (0,0) must use a tile explicitly tagged `corner`.
@@ -19,11 +22,13 @@ Transition from hardcoded coordinate loops to a semantic, multi-phase generation
     - South/East Edges: Generally kept clear or use low-profile cutaways.
 
 ### Phase 2: Navigation & Flow (Pathfinding)
+*Implemented in `get_path`*
 - Ensure a valid, walkable path exists from the South Entrance to all active Exits.
 - Use `nav_mask` and `base_height` metadata from the Tile Registry to validate the path.
 - Reserve path cells to prevent Phase 3 from placing blocking furniture.
 
 ### Phase 3: Semantic Filling (The Polish)
+*Implemented via `initial_assets` and `random` filling*
 - Use **Wavefunction Collapse (WFC)** or a **Random Walk** to fill non-path cells.
 - **Tile Selection**: Query the Tile Registry using tags (e.g., `indoor`, `wood`, `habitable`).
 - **Collection Composition**: Populate tiles with asset collections (Level 1) using semantic tags:
@@ -33,19 +38,9 @@ Transition from hardcoded coordinate loops to a semantic, multi-phase generation
 ## 3. Data Requirements (The Audit)
 - **Asset Tags**: Every `.json` in `csg/` needs an `asset_tags` field (e.g., `seating`, `table`, `storage`, `clutter`).
 - **Tile Tags**: Every `.lua` in `csg_assets/tiles/` needs a `tile_tags` field (e.g., `floor`, `wall`, `doorway`, `transition`).
-- **Tile Registry**: A central registry (or filtered filesystem view) that the generator can query by tag.
+- **Tile Registry**: A central registry (`csg_assets/tile_registry.json`) that the generator queries.
 
-## 4. Input Schema (Proposed)
-```json
-{
-  "theme": "tavern",
-  "connectivity": {
-    "north": true,
-    "west": false
-  },
-  "constraints": {
-    "min_size": [8, 8],
-    "max_size": [16, 16]
-  }
-}
+## 4. Usage
+```bash
+python3 tools/procedural_gen.py --name "tavern_test" --width 12 --height 12 --north --west
 ```

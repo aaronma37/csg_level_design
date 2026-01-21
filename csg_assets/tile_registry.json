@@ -14,12 +14,13 @@
     ]
   },
   "wall_window_v2": {
-    "name": "Timber Window Wall V2 (32x32)",
+    "name": "Timber Window Baked V2",
     "tile_tags": [
       "wall",
       "north",
       "window",
-      "v2"
+      "v2",
+      "baked"
     ],
     "nav_mask": 0,
     "base_height": 0,
@@ -29,13 +30,12 @@
     ]
   },
   "wall_straight_v2": {
-    "name": "Timber Wall V2 (32x32)",
+    "name": "Timber Wall Baked V2",
     "tile_tags": [
       "wall",
       "north",
-      "indoor",
-      "wood",
-      "v2"
+      "v2",
+      "baked"
     ],
     "nav_mask": 0,
     "base_height": 0,
@@ -84,14 +84,16 @@
     ]
   },
   "wall_corner_nw_32": {
-    "name": "Timber Wall NW Corner (32x32)",
+    "name": "Wooden Floor with NW Corner Wall (32x32)",
     "tile_tags": [
-      "wall",
-      "indoor",
       "wood",
-      "corner"
+      "indoor",
+      "wall",
+      "corner",
+      "nw",
+      "v2"
     ],
-    "nav_mask": 0,
+    "nav_mask": 1,
     "base_height": 0,
     "block_size": [
       1,
@@ -210,6 +212,23 @@
       1
     ]
   },
+  "wall_north_door_32": {
+    "name": "Wooden Floor with North Door Wall (32x32)",
+    "tile_tags": [
+      "wood",
+      "indoor",
+      "wall",
+      "north",
+      "v2",
+      "doorway"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
+    ]
+  },
   "lantern_floor_64": {
     "name": "Lantern on Floor (64x64)",
     "tile_tags": [
@@ -264,6 +283,22 @@
     "block_size": [
       2,
       2
+    ]
+  },
+  "wall_north_32": {
+    "name": "Wooden Floor with North Wall (32x32)",
+    "tile_tags": [
+      "wood",
+      "indoor",
+      "wall",
+      "north",
+      "v2"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
     ]
   },
   "block_wood_64": {
@@ -553,14 +588,14 @@
     ]
   },
   "wall_door_north_32": {
-    "name": "Timber Doorway North V2 (32x32)",
+    "name": "Timber Door Baked V2",
     "tile_tags": [
       "wall",
       "doorway",
       "north",
       "walkable",
-      "indoor",
-      "v2"
+      "v2",
+      "baked"
     ],
     "nav_mask": 1,
     "base_height": 0,
@@ -577,6 +612,23 @@
       "west",
       "walkable",
       "indoor"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
+    ]
+  },
+  "wall_north_window_32": {
+    "name": "Wooden Floor with North Window Wall (32x32)",
+    "tile_tags": [
+      "wood",
+      "indoor",
+      "wall",
+      "north",
+      "v2",
+      "window"
     ],
     "nav_mask": 1,
     "base_height": 0,

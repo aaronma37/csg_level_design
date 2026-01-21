@@ -1,9 +1,9 @@
 # TODO - Tile-Based Level Design
 
 ## High Priority: Foundation
-- [x] Establish 64x64 Grid Standard.
+- [x] Establish 32x32 Grid Standard.
 - [x] Update Renderer (love_exp) to support grid-based tile assembly.
-- [x] Create core tile set: `floor_wood_64`, `block_wood_64`, `pillar_stone_64`.
+- [x] Create core tile set: `floor_wood_32`, `block_wood_32`, `pillar_stone_32`.
 - [ ] Implement "Slope" metadata handling in renderer (for vertical traversal).
 - [ ] Create `tools/tile_validator.py` to check for missing assets or invalid metadata.
 
@@ -38,4 +38,5 @@
 ## Deprecated/Retired
 - [x] ASCII Map communication (superseded by Tile Grid).
 - [x] 80x80 Grid (too large for character scale).
+- [x] 64x64 Grid (too large for character scale).
 - [x] Monolithic `tavern_layout.json` format.

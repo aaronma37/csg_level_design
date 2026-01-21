@@ -1,0 +1,64 @@
+{
+  "name": "wall_corner_nw_baked_v2",
+  "asset_tags": [
+    "structure",
+    "wall",
+    "corner",
+    "v2",
+    "baked"
+  ],
+  "instructions": [
+    {
+      "op": "add",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        32,
+        32,
+        1
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        0,
+        14,
+        48
+      ],
+      "size": [
+        32,
+        4,
+        96
+      ],
+      "color": 2
+    },
+    {
+      "op": "add",
+      "pos": [
+        -14,
+        0,
+        48
+      ],
+      "size": [
+        4,
+        32,
+        96
+      ],
+      "color": 2
+    }
+  ],
+  "snap_points": {
+    "center": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  }
+}
