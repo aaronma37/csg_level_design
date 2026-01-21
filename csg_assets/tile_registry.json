@@ -57,19 +57,6 @@
       1
     ]
   },
-  "pillar_stone_80": {
-    "name": "Stone Pillar Tile (80x80)",
-    "tile_tags": [
-      "stone",
-      "obstacle"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
   "wall_corner_nw_32": {
     "name": "Wooden Floor with NW Corner Wall (32x32)",
     "tile_tags": [
@@ -160,34 +147,6 @@
       1
     ]
   },
-  "wall_post_32": {
-    "name": "Timber Wall with Post (32x32)",
-    "tile_tags": [
-      "wall",
-      "indoor",
-      "wood"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
-  "bar_north_mega": {
-    "name": "Bar Straight Mega (2x2)",
-    "tile_tags": [
-      "furniture",
-      "bar",
-      "mega"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      2,
-      2
-    ]
-  },
   "wall_north_32": {
     "name": "Wooden Floor with North Wall (32x32)",
     "tile_tags": [
@@ -201,21 +160,6 @@
     "base_height": 0,
     "block_size": [
       1,
-      1
-    ]
-  },
-  "fireplace_north_mega": {
-    "name": "Stone Fireplace North Mega (2x1)",
-    "tile_tags": [
-      "furniture",
-      "fireplace",
-      "mega",
-      "north"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      2,
       1
     ]
   },
@@ -248,20 +192,6 @@
       2
     ]
   },
-  "floor_wood_80": {
-    "name": "Wooden Floor (80x80)",
-    "tile_tags": [
-      "wood",
-      "indoor",
-      "walkable"
-    ],
-    "nav_mask": 1,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
   "fireplace_mega": {
     "name": "Stone Fireplace Mega (2x1)",
     "tile_tags": [
@@ -290,35 +220,6 @@
       1
     ]
   },
-  "block_wood_80": {
-    "name": "Wooden Block (80x80)",
-    "tile_tags": [
-      "wood",
-      "indoor",
-      "block",
-      "walkable"
-    ],
-    "nav_mask": 1,
-    "base_height": 16,
-    "block_size": [
-      1,
-      1
-    ]
-  },
-  "stairs_wood_80": {
-    "name": "Wooden Stairs (80x80)",
-    "tile_tags": [
-      "wood",
-      "stairs",
-      "walkable"
-    ],
-    "nav_mask": 1,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
   "dining_table_mega_var2": {
     "name": "Dining Table Mega Var2 (2x1)",
     "tile_tags": [
@@ -330,21 +231,6 @@
     "base_height": 0,
     "block_size": [
       2,
-      1
-    ]
-  },
-  "wall_pillar_right_32": {
-    "name": "Timber Wall Pillar Right (32x32)",
-    "tile_tags": [
-      "wall",
-      "indoor",
-      "wood",
-      "pillar"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      1,
       1
     ]
   },
@@ -376,21 +262,6 @@
       1
     ]
   },
-  "wall_pillar_left_32": {
-    "name": "Timber Wall Pillar Left (32x32)",
-    "tile_tags": [
-      "wall",
-      "indoor",
-      "wood",
-      "pillar"
-    ],
-    "nav_mask": 0,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
   "wall_door_north_32": {
     "name": "Timber Door Baked V2",
     "tile_tags": [
@@ -400,22 +271,6 @@
       "walkable",
       "v2",
       "baked"
-    ],
-    "nav_mask": 1,
-    "base_height": 0,
-    "block_size": [
-      1,
-      1
-    ]
-  },
-  "wall_door_west_32": {
-    "name": "Timber Doorway West (32x32)",
-    "tile_tags": [
-      "wall",
-      "doorway",
-      "west",
-      "walkable",
-      "indoor"
     ],
     "nav_mask": 1,
     "base_height": 0,
