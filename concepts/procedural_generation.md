@@ -43,6 +43,8 @@ Transition from hardcoded coordinate loops to a semantic, multi-phase generation
 ## 4. Theming System (Abstraction)
 To allow the same algorithms to generate Taverns, Dungeons, or Forests, we decouple "Roles" from "Assets" using a **Theme Definition**.
 
+**File:** `tools/themes.py` (Imported by `procedural_gen.py`)
+
 The Generator queries the Theme for tags, rather than hardcoding "wood" or "stone".
 
 ### Theme Structure
@@ -57,7 +59,13 @@ A Theme defines the specific tags required to fulfill logical slots in the room:
 | **`feature_main`** | Major focal point (Fireplace) | `["fireplace", "mega"]` |
 | **`scatter`** | Random decor | `["clutter", "mug"]` |
 
-## 5. Usage
+## 5. Mega-Tile Reservation (Logic)
+To support large furniture (e.g., 2x1 Fireplaces, 2x2 Bars) without overlapping:
+1.  **Metadata:** Tiles define `block_size` in their Lua file (e.g., `{2, 1}`).
+2.  **Look-Ahead:** The generator checks the grid for free space matching the `block_size` (relative to the anchor).
+3.  **Reservation:** If valid, the primary cell gets the `tile_id`, and neighbor cells are marked `reserved = true` to prevent other assets from spawning there.
+
+## 6. Usage
 ```bash
 python3 tools/procedural_gen.py --name "tavern_test" --width 12 --height 12 --north --west --theme tavern
 ```

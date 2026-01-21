@@ -6,7 +6,7 @@ return {
         height_type = "flat",
         nav_mask = 0,
         tile_tags = {"furniture", "fireplace", "mega"},
-        block_size = {2, 1}
+        block_size = {2, 2}
     },
     layout = {
         -- Base Asset containing Floor + Fireplace + Back Walls

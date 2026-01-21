@@ -117,4 +117,27 @@ Assembling assets into a playable world.
     cp csg_assets/scenes/*.lua ~/love_exp/assets/csg_assets/scenes/
     ```
     *   *Note*: `deploy_assets.sh` automatically updates the ASCII visualization (`.txt`) for `tactical_test_32.lua`.
-    
+
+## 5. Visualization & Debugging Tools
+
+### Tile Showcase Generator
+Creates a grid scene containing every tile in the registry (or a specific theme). Useful for verifying assets and visual consistency.
+```bash
+# Generate all tiles
+python3 tools/generate_tile_showcase.py --name showcase_all
+
+# Generate specific theme
+python3 tools/generate_tile_showcase.py --name showcase_tavern --theme tavern
+```
+
+### Asset Validator
+Checks every Tile Lua file to ensure the referenced `asset_id` exists as a compiled `.gltf` model in `csg_assets/`. Prevents runtime crashes.
+```bash
+python3 tools/validate_assets.py
+```
+
+## 6. Mega-Tile Standards
+For large assets (e.g., 2x1 Fireplace):
+1.  **Base Asset**: Create a single "Mega Base" asset (generated via script) that includes the floor and primary structure for the entire footprint.
+2.  **Tile Metadata**: Set `block_size = {width, height}` in the Tile Lua.
+3.  **Generator Logic**: `procedural_gen.py` respects `block_size` to reserve grid cells and prevent overlap.

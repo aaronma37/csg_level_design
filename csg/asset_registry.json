@@ -349,7 +349,6 @@
       "fireplace"
     ],
     "snap_points": [
-      "hearth",
       "hearth_rug",
       "chair_left",
       "chair_right",
@@ -700,25 +699,6 @@
     ],
     "snap_points": [],
     "type": "collection"
-  },
-  "floor_bevel_48": {
-    "name": "floor_bevel_48",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
-    "snap_points": [
-      "north",
-      "south",
-      "east",
-      "west",
-      "north_outer",
-      "south_outer",
-      "east_outer",
-      "west_outer",
-      "center"
-    ],
-    "type": "raw"
   },
   "trophy_wall": {
     "name": "trophy_wall",

@@ -8,6 +8,9 @@ from themes import THEMES
 
 # --- CONFIGURATION ---
 TILE_REGISTRY_PATH = "csg_assets/tile_registry.json"
+ASSET_REGISTRY_PATH = "csg/asset_registry.json"
+CSG_DIR = "csg"
+OUTPUT_DIR = "csg_assets/scenes"
 
 # --- UTILS ---
 
@@ -239,9 +242,10 @@ def generate_room(name, width, height, exits, theme_name="tavern"):
                         # Place it
                         if f_type == "tile":
                             grid[1][slot_x] = {"tile_id": f_id, "rot": 180, "reserved": True} 
-                            # Reserve other cells as "empty" or "linked"
+                            # Reserve other cells as "linked" (part of the mega tile)
                             for (rx, ry) in cells_to_reserve:
                                 grid[ry][rx]["reserved"] = True
+                                grid[ry][rx]["tile_id"] = "linked" 
                         else:
                             # Asset (Legacy)
                             extra_assets.append({"asset_id": f_id, "pos": [slot_x * 32, 16, 0], "rot": 180})
@@ -254,20 +258,19 @@ def generate_room(name, width, height, exits, theme_name="tavern"):
     # 2. Floor Filling
     for z in range(height):
         for x in range(width):
+            # Place floor if cell is empty OR if it's reserved by a path (tile_id is None)
+            # Do NOT overwrite if tile_id is set (e.g. Wall, Feature, or "linked")
             if grid[z][x]["tile_id"] is None:
                 # Primary Floor
                 f_id = get_random_by_role(tile_reg, theme, "floor_primary")
                 grid[z][x]["tile_id"] = f_id
                 
-                # Clutter (Scatter)
+                # Clutter (Scatter) - Only on unreserved cells
                 clutter_def = theme.get("clutter")
                 if clutter_def and not grid[z][x]["reserved"] and random.random() < clutter_def.get("chance", 0.0):
                      c_id = get_random_by_role(tile_reg, theme, "clutter")
                      if c_id:
-                         # If the clutter is a tile (like a rug), replace/layer?
-                         # For now, simplistic replacement if walkable, or just ignore.
-                         # Better: Check if clutter is an asset or tile.
-                         pass # Skip clutter logic for this simplified pass to ensure stability first
+                         pass
 
     # --- EXPORT ---
     
@@ -284,7 +287,10 @@ def generate_room(name, width, height, exits, theme_name="tavern"):
         for z in range(height):
             for x in range(width):
                 t = grid[z][x]
-                tid = t['tile_id'] or 'empty' # Fallback to avoid nil
+                tid = t['tile_id']
+                if tid == "linked": continue # Skip linked cells (covered by mega tile)
+                
+                tid = tid or 'empty' # Fallback
                 f.write(f"        {{ tile_id = '{tid}', pos = {{{x}, {z}}}, height = 0, rot = {t['rot']} }},\n")
         f.write("    },\n    layout = {\n")
         for item in final_layout:

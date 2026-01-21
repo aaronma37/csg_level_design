@@ -71,5 +71,4 @@ def generate_floor_bevel_size(size, variants=1):
         print(f"Generated {output_path}")
 
 if __name__ == "__main__":
-    generate_floor_bevel_size(48)
     generate_floor_bevel_size(32, variants=3) # Generate A, B, C
