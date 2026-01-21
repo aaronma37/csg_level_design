@@ -12,9 +12,42 @@ Creating procedural base geometry.
 1.  **Generate Base Asset**: Run generator (from `generators/tiles/` or `generators/props/`).
     *   *Requirement*: The generator must import `primitives/floor_base_32.json` (or equivalent) to form the base.
     *   *Tagging*: Ensure the JSON output includes `"asset_tags": ["base"]` (or `"mega_base"`).
+    *   *Lighting*: If the asset emits light (e.g., candles), use `asset.add_light()` in the Python script to define `light_emitters`. These will be automatically converted to game lights by the compiler.
     ```bash
     python3 generators/tiles/generate_wall_stone_32.py
     ```
+
+...
+
+## 8. Hardened Python Pipeline (New Standard)
+To prevent "Vibe Coding" errors (path issues, typos), new scripts must adhere to the **Hardened Standard**.
+
+### 1. Central Paths (`tools.project`)
+Never use relative paths like `../../csg`. Use the `project` module:
+```python
+import sys, os
+# Bootstrap path (only needed once per file)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+from tools import project
+
+# Usage
+output_path = project.get_asset_path("my_asset")
+```
+
+### 2. Strict Schema (`tools.schema`)
+Never manually build JSON dictionaries. Use the `Asset` class:
+```python
+from tools.schema import Asset
+
+asset = Asset(name="my_asset", asset_tags=["furniture"])
+asset.add_light(offset=(0, 5, 10), color=(1.0, 0.5, 0.0), intensity=50)
+asset.save(project.get_asset_path("my_asset"))
+```
+
+### 3. Build Tooling
+*   **`tile_compiler.py`**: Now integrated with `tools.project`. Automatically injects lights from `light_emitters`.
+*   **`deploy_assets.sh`**: The master build script. Always run this to sync changes.
+
 2.  **Compile to VOX**:
     ```bash
     python3 csg_compiler.py csg/wall_stone_32.json
