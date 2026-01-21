@@ -5,10 +5,6 @@ return {
         tile_tags = {"furniture", "table", "mega"},
         block_size = {2, 2}
     },
-    lights = {
-        { position = {20, 25, 32}, color = {1.0, 0.7, 0.3}, intensity = 40 },
-        { position = {44, 25, 32}, color = {1.0, 0.7, 0.3}, intensity = 40 }
-    },
     layout = {
     { asset_id = 'dining_table_mega_base', pos = {0, 0, 0}, rot = 0 },
     -- Chairs attached to table base

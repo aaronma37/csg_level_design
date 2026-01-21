@@ -603,7 +603,25 @@
       "color": 241
     }
   ],
+  "light_emitters": [
+    {
+      "offset": [
+        0,
+        0,
+        5
+      ],
+      "color": [
+        1.0,
+        0.9,
+        0.6
+      ],
+      "intensity": 40
+    }
+  ],
+  "snap_points": {},
   "asset_tags": [
-    "light_source"
+    "decor",
+    "light_source",
+    "clutter"
   ]
 }

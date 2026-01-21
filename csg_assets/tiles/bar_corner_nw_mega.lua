@@ -5,9 +5,6 @@ return {
         tile_tags = {"furniture", "bar", "mega"},
         block_size = {2, 2}
     },
-    lights = {
-        { position = {32, 44, 45}, color = {1.0, 0.7, 0.3}, intensity = 100 }
-    },
     layout = {
         -- Use the integrated base asset at origin
         { asset_id = 'bar_corner_mega_base', pos = {0, 0, 0}, rot = 0 },

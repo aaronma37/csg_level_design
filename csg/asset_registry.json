@@ -712,7 +712,9 @@
   "candles": {
     "name": "candles",
     "asset_tags": [
-      "light_source"
+      "decor",
+      "light_source",
+      "clutter"
     ],
     "snap_points": [],
     "type": "raw"

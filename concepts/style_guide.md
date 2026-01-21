@@ -28,5 +28,18 @@ To ensure the world feels cohesive, all assets are sized relative to the **Stand
 
 ## 5. Verification Checklist
 When creating a new asset generator, ask:
-1. "Where does this reach on a character's body?"
-2. "If a character stands next to it, does the interaction point (handle, seat, tabletop) match the CU anchor?"
+## 6. Lighting & Emitters
+To enable the **Auto-Lighting System**, assets that emit light (candles, fireplaces, magic runes) should define `light_emitters` in their JSON metadata.
+
+*   **Structure**:
+    ```json
+    "light_emitters": [
+      {
+        "offset": [0, 0, 5],      // Position relative to asset origin (before rotation)
+        "color": [1.0, 0.9, 0.6], // RGB normalized (0.0 - 1.0)
+        "intensity": 40           // Radius/Brightness factor
+      }
+    ]
+    ```
+*   **Behavior**: The `tile_compiler.py` will automatically transform these offsets based on the prop's final position and rotation in the Tile, adding them to the Scene's light list.
+
