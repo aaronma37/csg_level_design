@@ -141,3 +141,29 @@ For large assets (e.g., 2x1 Fireplace):
 1.  **Base Asset**: Create a single "Mega Base" asset (generated via script) that includes the floor and primary structure for the entire footprint.
 2.  **Tile Metadata**: Set `block_size = {width, height}` in the Tile Lua.
 3.  **Generator Logic**: `procedural_gen.py` respects `block_size` to reserve grid cells and prevent overlap.
+
+## 7. Validation & Auditing
+
+To maintain a high-quality asset pipeline and prevent "empty floor" bugs or runtime crashes, use the following audit tools:
+
+### Tile Floor Audit (`tools/audit_tiles.py`)
+This is the primary tool for verifying that **Base Assets** provide correct floor coverage for the grid cells they occupy.
+- **What it does**: Scans every tile in `tile_registry.json`. For every cell defined in `block_size` (e.g., 2x2), it "virtually slices" the CSG JSON to ensure geometry exists at the floor level ($Z=0$ or $Z=1$).
+- **When to use**: Run this after creating a new Mega-Tile or refactoring floor logic.
+- **Command**: `python3 tools/audit_tiles.py`
+
+### Asset Integrity Check (`tools/validate_assets.py`)
+Ensures that the logical registry matches the physical disk state.
+- **What it does**: Checks that every tile ID registered in the game has a corresponding `.lua` file and that every referenced `asset_id` has a matching `.gltf` binary in the deployment folder.
+- **When to use**: This is automatically run as a "Pre-Flight" check by `deploy_assets.sh`.
+- **Command**: `python3 tools/validate_assets.py`
+
+### Build Caching & Hashing (`tools/check_hash.py`)
+Prevents stale assets and speeds up deployment.
+- **What it does**: Generates an MD5 hash of the CSG JSON source. If the hash matches the build cache, `deploy_assets.sh` skips the expensive VOX and GLTF export steps.
+- **When to use**: Handled automatically by the deployment script.
+
+### ASCII Visualizer (`visualize_scene.lua`)
+A low-fidelity way to check layout logic without opening the full game engine.
+- **What it does**: Reads a Scene Lua file and prints a grid representation to the terminal, marking tiles with letters.
+- **Command**: `lua visualize_scene.lua csg_assets/scenes/tactical_test_32.lua`

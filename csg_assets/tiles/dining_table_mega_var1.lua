@@ -1,27 +1,21 @@
 return {
-    name = "Dining Table Mega Var1 (2x1)",
+    name = "Dining Table Mega Var1 (2x2)",
     size = {32, 32},
     metadata = { 
         tile_tags = {"furniture", "table", "mega"},
-        block_size = {2, 1}
+        block_size = {2, 2}
     },
     lights = {
-        -- Light for the central candle
         { position = {32, 25, 32}, color = {1.0, 0.8, 0.4}, intensity = 50 }
     },
     layout = {
-        -- Table Center: 32, 16
-        { asset_id = 'medieval_feast_table', pos = {32, 16, 0}, rot = 0 },
-        
+        { asset_id = 'dining_table_mega_base', pos = {0, 0, 0}, rot = 0 },
         -- Chairs
-        { asset_id = 'chair', pos = {32, 36, 0}, rot = 0 },
-        { asset_id = 'chair', pos = {32, -4, 0}, rot = 180 },
-        
-        -- Clutter
-        -- Candle Center
-        { asset_id = 'candles', pos = {32, 16, 26}, rot = 0 },
-        -- Mugs
-        { asset_id = 'mug', pos = {24, 10, 26}, rot = 20 },
-        { asset_id = 'mug', pos = {40, 22, 26}, rot = -45 }
+        { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_1', rot = 0 },
+        { asset_id = 'chair', snap_to = 'dining_table_mega_base.seat_3', rot = 180 },
+        -- Clutter (Using new surface snap points)
+        { asset_id = 'candles', snap_to = 'dining_table_mega_base.clutter_center', rot = 0 },
+        { asset_id = 'mug', snap_to = 'dining_table_mega_base.clutter_left', rot = 20 },
+        { asset_id = 'mug', snap_to = 'dining_table_mega_base.clutter_right', rot = -45 }
     }
 }

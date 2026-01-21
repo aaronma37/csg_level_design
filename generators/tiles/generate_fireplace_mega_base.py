@@ -1,7 +1,7 @@
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 import json
-from patterns import csg_patterns
+from generators.floors import floor_wood_plain
 import palette
 
 def offset_instructions(instr_list, offset):
@@ -19,18 +19,7 @@ def generate_fireplace_mega_base():
     name = "fireplace_mega_base"
     instructions = []
     
-    # ---------------------------------------------------------
-    # Coordinate System:
-    # Asset Origin (0,0,0) corresponds to the Center of the Primary Tile (NW cell).
-    # 2x2 Block covers absolute area (0,0) to (64,64).
-    # Primary Tile Center is at absolute (16, 16).
-    #
-    # Relative Bounds: X: -16 to 48, Y: -16 to 48.
-    # ---------------------------------------------------------
-
     # 1. Floor: 4x 32x32 Tiles
-    # Offsets relative to Primary Center (0,0)
-    # NW: (0,0), NE: (32,0), SW: (0,32), SE: (32,32)
     floor_offsets = [
         [0, 0],   # NW (Primary)
         [32, 0],  # NE
@@ -40,22 +29,17 @@ def generate_fireplace_mega_base():
     
     for off in floor_offsets:
         ox, oy = off
-        # Base Layer (Dark Grout)
-        instructions.append({
-            "op": "add",
-            "pos": [-16 + ox, -16 + oy, 0],
-            "size": [32, 32, 1],
-            "color": palette.WOOD_DARK
-        })
-        
-        # Surface Layer (Solid Wood, No Planks)
-        # Inset by 1 to create grout line effect
-        instructions.append({
-            "op": "add",
-            "pos": [-15 + ox, -15 + oy, 1],
-            "size": [30, 30, 1],
-            "color": palette.WOOD_BROWN
-        })
+        # Generate generic floor
+        floor_instr = floor_wood_plain.get_instructions(32, 32)
+        # Offset it to the quadrant
+        # Note: floor_wood_plain is centered at 0,0.
+        # But our quadrant centers are at -16+16=0 relative?
+        # My previous logic had offset [-16+ox, -16+oy].
+        # floor_wood_plain uses [-width//2, ...].
+        # If width=32, pos is [-16, -16].
+        # So we just need to ADD [ox, oy, 0] to the floor instructions.
+        floor_instr = offset_instructions(floor_instr, [ox, oy, 0])
+        instructions.extend(floor_instr)
 
     # 2. Fireplace (Imported)
     fp_path = os.path.join(os.path.dirname(__file__), '../../csg/stone_fireplace.json')

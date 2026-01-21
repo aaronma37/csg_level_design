@@ -75,7 +75,7 @@
     ]
   },
   "dining_table_mega_var1": {
-    "name": "Dining Table Mega Var1 (2x1)",
+    "name": "Dining Table Mega Var1 (2x2)",
     "tile_tags": [
       "furniture",
       "table",
@@ -85,7 +85,7 @@
     "base_height": 0,
     "block_size": [
       2,
-      1
+      2
     ]
   },
   "wall_pillar_v2": {
@@ -206,7 +206,7 @@
     ]
   },
   "dining_table_mega_var2": {
-    "name": "Dining Table Mega Var2 (2x1)",
+    "name": "Dining Table Mega Var2 (2x2)",
     "tile_tags": [
       "furniture",
       "table",
@@ -216,7 +216,7 @@
     "base_height": 0,
     "block_size": [
       2,
-      1
+      2
     ]
   },
   "floor_bevel_32_var2": {
@@ -234,7 +234,7 @@
     ]
   },
   "dining_table_mega": {
-    "name": "Dining Table Mega (2x1)",
+    "name": "Dining Table Mega (2x2)",
     "tile_tags": [
       "furniture",
       "table",
@@ -244,7 +244,7 @@
     "base_height": 0,
     "block_size": [
       2,
-      1
+      2
     ]
   },
   "wall_door_north_32": {

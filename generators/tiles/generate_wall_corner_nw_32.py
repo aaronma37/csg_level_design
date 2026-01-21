@@ -1,6 +1,7 @@
-import sys, os; sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys, os; sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 import json
 import palette
+from generators.floors import floor_wood_plain
 from patterns import csg_patterns
 import math
 
@@ -8,28 +9,11 @@ def generate_wall_corner_nw_32():
     instructions = []
     
     # --- 1. Floor Generation ---
-    f_size = 32
-    half_size = f_size // 2
-    
-    instructions.append({
-        "op": "add",
-        "pos": [-half_size, -half_size, 0],
-        "size": [f_size, f_size, 1],
-        "color": palette.WOOD_DARK
-    })
-    
-    instructions.extend(csg_patterns.create_plank_volume(
-        start_pos=(-half_size + 1, -half_size + 1, 1),
-        size=(f_size - 2, f_size - 2, 1),
-        plank_size=(16, 5, 1),
-        color=[palette.WOOD_BROWN, palette.WOOD_LIGHT],
-        mortar=1,
-        direction='y',
-        paint_mortar=True,
-        mortar_color=palette.WOOD_DARK
-    ))
+    instructions.extend(floor_wood_plain.get_instructions(32, 32))
 
     # --- 2. North Wall ---
+    f_size = 32
+    half_size = f_size // 2
     w_len = 32
     w_h = 96
     wall_back_y = -16
@@ -92,8 +76,6 @@ def generate_wall_corner_nw_32():
             })
             
     # 3.2 West Stone Wainscoting
-    # Rotate brick volume manually by swapping X/Y in creation
-    # Or just use the tool if it supports it. Bricks are 8x4x4.
     for y in range(0, w_len, 8):
         for z in range(0, 40, 4):
             color = random.choice(stone_mix)
@@ -123,6 +105,7 @@ def generate_wall_corner_nw_32():
 
     data = {
         "name": "wall_corner_nw_32",
+        "asset_tags": ["structure", "wall", "corner", "north", "west", "base"],
         "instructions": instructions,
         "snap_points": {
             "center": {"pos": [0, 0, 0]},
@@ -131,7 +114,7 @@ def generate_wall_corner_nw_32():
         }
     }
     
-    output_path = os.path.join(os.path.dirname(__file__), "../csg/wall_corner_nw_32.json")
+    output_path = os.path.join(os.path.dirname(__file__), "../../csg/wall_corner_nw_32.json")
     with open(output_path, "w") as f:
         json.dump(data, f, indent=2)
     print(f"Generated {output_path}")

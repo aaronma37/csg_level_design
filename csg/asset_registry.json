@@ -103,10 +103,7 @@
   },
   "floor_bevel_32_var2": {
     "name": "floor_bevel_32_var2",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
+    "asset_tags": [],
     "snap_points": [
       "north",
       "south",
@@ -161,6 +158,18 @@
     "snap_points": [],
     "type": "raw"
   },
+  "bar_corner_mega_base": {
+    "name": "bar_corner_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "bar"
+    ],
+    "snap_points": [
+      "center"
+    ],
+    "type": "raw"
+  },
   "collection_dining_snapped": {
     "name": "collection_dining_snapped",
     "asset_tags": [
@@ -199,7 +208,12 @@
   },
   "wall_north_32": {
     "name": "wall_north_32",
-    "asset_tags": [],
+    "asset_tags": [
+      "structure",
+      "wall",
+      "north",
+      "base"
+    ],
     "snap_points": [
       "center",
       "north",
@@ -432,10 +446,7 @@
   },
   "floor_bevel_32_var3": {
     "name": "floor_bevel_32_var3",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
+    "asset_tags": [],
     "snap_points": [
       "north",
       "south",
@@ -503,7 +514,14 @@
   },
   "wall_corner_nw_32": {
     "name": "wall_corner_nw_32",
-    "asset_tags": [],
+    "asset_tags": [
+      "structure",
+      "wall",
+      "corner",
+      "north",
+      "west",
+      "base"
+    ],
     "snap_points": [
       "center",
       "north",
@@ -541,7 +559,13 @@
   },
   "wall_north_window_32": {
     "name": "wall_north_window_32",
-    "asset_tags": [],
+    "asset_tags": [
+      "structure",
+      "wall",
+      "window",
+      "north",
+      "base"
+    ],
     "snap_points": [
       "center",
       "north",
@@ -632,6 +656,24 @@
       "stairs"
     ],
     "snap_points": [],
+    "type": "raw"
+  },
+  "dining_table_mega_base": {
+    "name": "dining_table_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "dining"
+    ],
+    "snap_points": [
+      "seat_1",
+      "seat_2",
+      "seat_3",
+      "seat_4",
+      "clutter_center",
+      "clutter_left",
+      "clutter_right"
+    ],
     "type": "raw"
   },
   "tile_river_corner": {
@@ -784,7 +826,13 @@
   },
   "wall_north_door_32": {
     "name": "wall_north_door_32",
-    "asset_tags": [],
+    "asset_tags": [
+      "structure",
+      "wall",
+      "doorway",
+      "north",
+      "base"
+    ],
     "snap_points": [
       "center",
       "north",
@@ -796,10 +844,7 @@
   },
   "floor_bevel_32_var1": {
     "name": "floor_bevel_32_var1",
-    "asset_tags": [
-      "floor",
-      "base"
-    ],
+    "asset_tags": [],
     "snap_points": [
       "north",
       "south",
