@@ -67,18 +67,12 @@ def load_layout_recursively(asset_id, parent_pos=(0,0,0), parent_rot=0):
         lr = item.get('rot', 0)
         
         # Transform local to parent space
-        rx, ry = rotate_point(lx, ly, parent_rot) # Only rotate X/Z around Y
-        gx, gy, gz = parent_pos[0] + rx, parent_pos[1] + ry, parent_pos[2] + lz # Assuming Y is up, lz is North/South?
-        # CAUTION: Coordinate system mismatch. 
-        # In this project: X=West/East, Y=Height, Z=North/South. 
-        # rotate_point assumes 2D rotation on a plane. Here X/Z plane.
-        # So we rotate (x, z).
-        
-        # Standard: Rotates (x, y). Here we pass (x, z).
-        rx, rz = rotate_point(lx, lz, parent_rot) 
+        # In this project: X=East/West, Y=North/South, Z=Height.
+        # So we rotate (X, Y) on the horizontal plane.
+        rx, ry = rotate_point(lx, ly, parent_rot) 
         gx = parent_pos[0] + rx
-        gy = parent_pos[1] + ly # Y is usually additive height
-        gz = parent_pos[2] + rz
+        gy = parent_pos[1] + ry
+        gz = parent_pos[2] + lz
         
         gr = (lr + parent_rot) % 360
         

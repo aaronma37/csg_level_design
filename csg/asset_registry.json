@@ -300,15 +300,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "high_density_cave": {
-    "name": "high_density_cave",
-    "asset_tags": [
-      "terrain",
-      "cave"
-    ],
-    "snap_points": [],
-    "type": "raw"
-  },
   "grass_patch": {
     "name": "grass_patch",
     "asset_tags": [

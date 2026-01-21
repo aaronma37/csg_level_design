@@ -110,9 +110,16 @@ class VoxToGltf:
             elif node["type"] == "GRP":
                 for cnid in node["children"]: traverse(cnid, current_t, current_r)
             elif node["type"] == "SHP":
-                model = self.models[node["model"]]
+                model_idx = node["model"]
+                model = self.models[model_idx]
+                
+                # (floor(S_x/2), floor(S_y/2), floor(S_z/2)
+                msize = model["size"]
+                px, py, pz = msize[0]//2, msize[1]//2, msize[2]//2
+                
                 for (lx, ly, lz), c in model["voxels"].items():
-                    nx, ny, nz = apply_rot_raw(lx, ly, lz, current_r)
+                    # Subtract pivot before rotation and translation
+                    nx, ny, nz = apply_rot_raw(lx - px, ly - py, lz - pz, current_r)
                     wx, wy, wz = int(nx + current_t[0]), int(ny + current_t[1]), int(nz + current_t[2])
                     raw_voxels[(wx, wy, wz)] = c
 

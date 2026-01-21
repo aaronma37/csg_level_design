@@ -65,33 +65,45 @@ def generate_showcase(name, theme_filter=None):
     lua_output = os.path.join(OUTPUT_DIR, f"{name}.lua")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
+    # First, group tiles into rows to calculate row heights
+    rows = []
+    current_row = []
+    cur_x = 0
+    max_h_in_row = 0
+    row_width_limit = 10
+    
+    for tid in tiles_to_show:
+        data = tile_reg[tid]
+        bw, bh = data.get("block_size", [1, 1])
+        
+        if cur_x + bw > row_width_limit:
+            rows.append((current_row, max_h_in_row))
+            current_row = []
+            cur_x = 0
+            max_h_in_row = 0
+            
+        current_row.append({"tid": tid, "bw": bw, "bh": bh, "x": cur_x})
+        cur_x += bw + 1
+        max_h_in_row = max(max_h_in_row, bh)
+        
+    if current_row:
+        rows.append((current_row, max_h_in_row))
+    
     with open(lua_output, 'w') as f:
         f.write(f"-- Showcase: {name} ({len(tiles_to_show)} tiles)\n")
         f.write("return {\n    tiles = {\n")
         
-        cur_x = 0
         cur_z = 0
-        max_z_in_row = 0
-        row_width_limit = 10 # 10 tiles wide
-        
-        for tid in tiles_to_show:
-            data = tile_reg[tid]
-            bw, bh = data.get("block_size", [1, 1])
+        for row_tiles, row_h in rows:
+            for t in row_tiles:
+                # Align centers in Z:
+                # Target center Z = cur_z + (row_h - 1) / 2.0
+                # Tile origin Z = target_center_z - (t["bh"] - 1) / 2.0
+                # Simplified: adj_z = cur_z + (row_h - t["bh"]) / 2.0
+                adj_z = cur_z + (row_h - t["bh"]) / 2.0
+                f.write(f"        {{ tile_id = '{t['tid']}', pos = {{{t['x']}, {adj_z}}}, height = 0, rot = 0 }},\n")
             
-            # If we exceed row width, wrap to next row
-            if cur_x + bw > row_width_limit:
-                cur_x = 0
-                cur_z += max_z_in_row + 1 # +1 for gap
-                max_z_in_row = 0
-            
-            # Place the tile
-            # We add a +0.5 offset if the engine treats coords as corners?
-            # Actually, let's stick to integers and see if they overlap.
-            f.write(f"        {{ tile_id = '{tid}', pos = {{{cur_x}, {cur_z}}}, height = 0, rot = 0 }},\n")
-            
-            # Update cursors
-            cur_x += bw + 1 # +1 for gap
-            max_z_in_row = max(max_z_in_row, bh)
+            cur_z += row_h + 1
 
         f.write("    },\n    layout = {}\n}")
         

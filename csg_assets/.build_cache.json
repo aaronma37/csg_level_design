@@ -1,5 +1,6 @@
 {
-  "asset_registry": "515503b6d9d0788e87308c877ebef21e",
+  "asset_registry": "715ca3acdbefd174c870b4d346aee511",
+  "bar_corner_mega_base": "729b2be40ca285b4d3225e6ea69da038",
   "bar_counter": "90bab137b565dfe4cbb1a3a3387d1834",
   "barrel": "d8834a79b2ba615be56900e04943ba3e",
   "barstool": "fa560986e4b0e29a30029a93019fe978",
@@ -33,6 +34,7 @@
   "debris_log": "1acec849b502f37c7ec651e967d84c56",
   "debris_rock_moss": "5b44c580eeb17fa426c2813f517d82ec",
   "debris_stump": "0943fd4023e12619cb8bbda07746bb29",
+  "dining_table_mega_base": "90be20f6f307136ce7fea1119b85918e",
   "door": "c9b405ba07f511d333605a652778e5ed",
   "fireplace_mega_base": "b8ffae6a3f4397db075331c423574a85",
   "floor_bevel_32": "cfe2e743466e62cef02e8453710bf46d",
@@ -45,7 +47,6 @@
   "forest_lamppost": "f88232460916ec2c438e9399da8f34bd",
   "forest_signpost": "8c72fc98c49892139d00bc57c4f8f150",
   "grass_patch": "df4cd18ba6c51e285b778f823d6c32bf",
-  "high_density_cave": "a4907c47806bf3eb0e5b3bc206d5dc4c",
   "medieval_feast_table": "5712c077677723591e1bd5deb91e1406",
   "mug": "15f91183c1e6b97c2ee93e3097e8ec92",
   "ornate_rug": "7fb7af622056b820597ce63fa543e10d",
@@ -82,7 +83,5 @@
   "willow_terrain": "1409c42e57d1db6c0153d6eeb5143325",
   "willow_tree_xl": "64cf692a1ef5b4d1c2ad3182afff27c3",
   "window": "93e8bd7987f687d30fe6753d9927b811",
-  "wooden_floor": "1025fd7129dd17fa43704c037c995145",
-  "dining_table_mega_base": "90be20f6f307136ce7fea1119b85918e",
-  "bar_corner_mega_base": "729b2be40ca285b4d3225e6ea69da038"
+  "wooden_floor": "1025fd7129dd17fa43704c037c995145"
 }

@@ -60,13 +60,19 @@ class VoxWriter:
                 # Use minimum position + instance position
                 tx, ty, tz = int(pos[0] + m_min[0]), int(pos[1] + m_min[1]), int(pos[2] + m_min[2])
             else:
-                # Handle rotation-swapped dimensions for center calculation
-                cur_w, cur_d = m_size[0], m_size[1]
-                if rot == 90 or rot == 270:
-                    cur_w, cur_d = m_size[1], m_size[0]
-                    
-                # Translation is the Asset Origin
-                tx, ty, tz = int(pos[0]), int(pos[1]), int(pos[2])
+                # Calculate center offset in unrotated space
+                # Original center = min + size/2
+                # v is the vector from Asset Origin (0,0,0) to Center
+                vx = m_min[0] + m_size[0] / 2.0
+                vy = m_min[1] + m_size[1] / 2.0
+                vz = m_min[2] + m_size[2] / 2.0
+                
+                # Rotate the horizontal offset (X, Y) by the instance rotation
+                # MagicaVoxel rotates the model around its center. 
+                # To keep the origin at 'pos', the center must be at 'pos + R(v)'
+                rvx, rvy = rotate_point(vx, vy, rot)
+                
+                tx, ty, tz = int(pos[0] + rvx), int(pos[1] + rvy), int(pos[2] + vz)
             
             shp_id = next_id; next_id += 1
             trn_id = next_id; next_id += 1
