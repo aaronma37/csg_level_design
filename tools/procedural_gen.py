@@ -148,10 +148,8 @@ def generate_room(name, width, height, exits, theme_name="tavern"):
     
     # West Exit
     if exits.get('west') and door_west_id:
-        # Assuming West Door needs 270 deg rotation if it's based on a North standard
-        # If the theme specifically returned a "West Door" asset that is pre-rotated, we'd use 0.
-        # But our convention is "North" assets rotated.
-        grid[height // 2][0] = {"tile_id": door_west_id, "rot": 270, "reserved": True}
+        # Assuming West Door needs 90 deg rotation to face East (Inward)
+        grid[height // 2][0] = {"tile_id": door_west_id, "rot": 90, "reserved": True}
         exit_positions.append((0, height // 2))
 
     # Backdrop Walls
@@ -169,7 +167,7 @@ def generate_room(name, width, height, exits, theme_name="tavern"):
         if grid[z][0]["tile_id"] is None:
             w_id = get_random_by_role(tile_reg, theme, "wall_west") or wall_west_id
             if w_id:
-                grid[z][0] = {"tile_id": w_id, "rot": 270, "reserved": True}
+                grid[z][0] = {"tile_id": w_id, "rot": 90, "reserved": True}
                 blocked_cells.add((0, z))
 
     # --- PHASE 2: WALKABILITY ---
