@@ -1,5 +1,5 @@
 {
-  "asset_registry": "6a48aad4bc25f9f69c3eed32c60ceecd",
+  "asset_registry": "ea45e0ef697b6df1cbd65b776931d9b1",
   "bar_corner_mega_base": "729b2be40ca285b4d3225e6ea69da038",
   "bar_counter": "90bab137b565dfe4cbb1a3a3387d1834",
   "barrel": "d8834a79b2ba615be56900e04943ba3e",
@@ -85,5 +85,9 @@
   "window": "93e8bd7987f687d30fe6753d9927b811",
   "wooden_floor": "1025fd7129dd17fa43704c037c995145",
   "wall_north_mega_128": "90e129e4b2904cc42430c4ae6d9eb66b",
-  "wall_north_plaster_32": "6e3ad67d2e1e8e1b53b28202385eaaa9"
+  "wall_north_plaster_32": "6e3ad67d2e1e8e1b53b28202385eaaa9",
+  "wall_corner_plaster_A": "dcc3cf65e43a90e22871d546656f45e7",
+  "wall_mega_plaster_A_11": "20a3dca5f0d873fd8f259ff9033a0595",
+  "wall_mega_plaster_A_part1": "30ca19f110f741ea4b362e19d0325a0e",
+  "wall_mega_plaster_A_part2": "72341f9d083c2d0eac7a3bef46fcf825"
 }

@@ -1,0 +1,106 @@
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "asset_id": "tile_grass",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "grass_patch",
+      "pos": [
+        55,
+        49,
+        16
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "debris_stump",
+      "pos": [
+        42,
+        40,
+        16
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "debris_rock_moss",
+      "pos": [
+        40,
+        40,
+        16
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "grass_patch",
+      "pos": [
+        49,
+        20,
+        16
+      ],
+      "rot": 270
+    },
+    {
+      "asset_id": "flower_patch_red",
+      "pos": [
+        32,
+        4,
+        16
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "flower_patch_red",
+      "pos": [
+        38,
+        30,
+        16
+      ],
+      "rot": 180
+    },
+    {
+      "asset_id": "debris_rock_moss",
+      "pos": [
+        5,
+        49,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "flower_patch_red",
+      "pos": [
+        39,
+        25,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "debris_stump",
+      "pos": [
+        60,
+        46,
+        16
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "shrub_small",
+      "pos": [
+        58,
+        15,
+        16
+      ],
+      "rot": 270
+    }
+  ]
+}

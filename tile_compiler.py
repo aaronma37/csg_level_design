@@ -49,12 +49,13 @@ def parse_lua_table(content):
     
     layout_str = layout_match.group(1)
     
-    # Split by },
-    # This assumes consistent formatting
-    raw_items = layout_str.split('},')
+    # Regex to find items: { ... } handling one level of nested {} for pos/color fields
+    # Matches { followed by (non-braces OR nested {non-braces}) repeated, ending with }
+    item_pattern = re.compile(r'\{((?:[^{}]|\{[^{}]*\})*)\}', re.DOTALL)
     
-    for raw in raw_items:
-        clean = raw.strip().strip('{').strip()
+    items = []
+    for match in item_pattern.finditer(layout_str):
+        clean = match.group(1).strip()
         if not clean: continue
         
         item = {}

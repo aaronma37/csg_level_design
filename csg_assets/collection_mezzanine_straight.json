@@ -1,0 +1,30 @@
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "id": "tile1",
+      "asset_id": "walkway_tile",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "railing_long",
+      "snap_to": "tile1.railing_y0"
+    },
+    {
+      "id": "tile2",
+      "asset_id": "walkway_tile",
+      "snap_to": "tile1.next_tile_x"
+    },
+    {
+      "asset_id": "railing_long",
+      "snap_to": "tile2.railing_y0"
+    }
+  ]
+}

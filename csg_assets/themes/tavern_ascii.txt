@@ -1,0 +1,25 @@
+LEGEND
+. = floor_bevel_32_var1
+- = SKIP
+
+# Walls
+# = wall_north_plaster_32
+C = wall_corner_plaster_A
+N = wall_mega_plaster_A_part1
+n = wall_mega_plaster_A_part2
+P = wall_pillar_v2
+| = wall_straight_v2
+O = wall_north_window_32
+D = wall_north_door_32
+
+# Old Style Walls
+c = wall_corner_nw_32
+w = wall_north_32
+
+# Furniture Mega-Tiles
+T = dining_table_mega_var1
+F = fireplace_mega
+B = bar_corner_nw_mega
+
+# Pillars/Other
+S = pillar_stone_32

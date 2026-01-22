@@ -131,6 +131,36 @@
       1
     ]
   },
+  "wall_mega_plaster_A_part1": {
+    "name": "Plaster Wall Mega A Part 1",
+    "tile_tags": [
+      "plaster",
+      "wall",
+      "north",
+      "mega"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      6,
+      1
+    ]
+  },
+  "wall_mega_plaster_A_part2": {
+    "name": "Plaster Wall Mega A Part 2",
+    "tile_tags": [
+      "plaster",
+      "wall",
+      "north",
+      "mega"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      5,
+      1
+    ]
+  },
   "wall_north_door_32": {
     "name": "Wooden Floor with North Door Wall (32x32)",
     "tile_tags": [
@@ -261,6 +291,20 @@
     "block_size": [
       2,
       2
+    ]
+  },
+  "wall_corner_plaster_A": {
+    "name": "Plaster Wall Corner A",
+    "tile_tags": [
+      "plaster",
+      "wall",
+      "corner"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
     ]
   },
   "wall_north_plaster_32": {

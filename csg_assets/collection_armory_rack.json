@@ -1,0 +1,17 @@
+{
+  "asset_tags": [
+    "collection"
+  ],
+  "layout": [
+    {
+      "id": "rack",
+      "asset_id": "weapon_rack",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": 0
+    }
+  ]
+}

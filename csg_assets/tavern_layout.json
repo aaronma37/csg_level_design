@@ -1,0 +1,348 @@
+{
+  "layout": [
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        0,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        0,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        160,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        160,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        320,
+        0,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "wooden_floor",
+      "pos": [
+        320,
+        160,
+        -2
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        0,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        64,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        128,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        192,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        256,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        320,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        384,
+        308,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
+        0,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
+        64,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
+        128,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
+        192,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "timber_wall",
+      "pos": [
+        390,
+        256,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "stone_fireplace",
+      "pos": [
+        382,
+        133,
+        0
+      ],
+      "rot": 90
+    },
+    {
+      "asset_id": "bar_counter",
+      "pos": [
+        20,
+        240,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        180,
+        240,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        187,
+        261,
+        0
+      ],
+      "rot": 10
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        223,
+        261,
+        0
+      ],
+      "rot": -7
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        187,
+        237,
+        0
+      ],
+      "rot": 170
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        223,
+        237,
+        0
+      ],
+      "rot": 178
+    },
+    {
+      "asset_id": "medieval_feast_table",
+      "pos": [
+        280,
+        100,
+        0
+      ],
+      "rot": 0
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        287,
+        121,
+        0
+      ],
+      "rot": -3
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        323,
+        121,
+        0
+      ],
+      "rot": -3
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        287,
+        97,
+        0
+      ],
+      "rot": 174
+    },
+    {
+      "asset_id": "chair",
+      "pos": [
+        323,
+        97,
+        0
+      ],
+      "rot": 173
+    }
+  ],
+  "lights": [],
+  "team1_units": [
+    [
+      180,
+      100,
+      0,
+      1.57
+    ],
+    [
+      200,
+      80,
+      0,
+      1.57
+    ],
+    [
+      220,
+      100,
+      0,
+      1.57
+    ]
+  ],
+  "team2_units": [
+    [
+      180,
+      220,
+      0,
+      -1.57
+    ],
+    [
+      200,
+      240,
+      0,
+      -1.57
+    ],
+    [
+      220,
+      220,
+      0,
+      -1.57
+    ]
+  ],
+  "camera": {
+    "eye": [
+      40,
+      -139,
+      135
+    ],
+    "center": [
+      200,
+      160,
+      0
+    ],
+    "angle": 3.5,
+    "distance": 365,
+    "height": 135,
+    "fov": 45
+  },
+  "sunDirection": [
+    0.33,
+    -0.39,
+    0.29
+  ],
+  "ambientColor": [
+    0.2,
+    0.2,
+    0.3
+  ],
+  "fogColor": [
+    0.1,
+    0.1,
+    0.15
+  ],
+  "fogNear": 300,
+  "fogFar": 1000
+}
