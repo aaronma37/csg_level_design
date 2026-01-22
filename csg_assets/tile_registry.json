@@ -13,6 +13,22 @@
       1
     ]
   },
+  "wall_north_mega_128": {
+    "name": "North Wall Mega (4x1)",
+    "tile_tags": [
+      "wood",
+      "indoor",
+      "wall",
+      "north",
+      "mega"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      4,
+      1
+    ]
+  },
   "wall_window_v2": {
     "name": "Timber Window Baked V2",
     "tile_tags": [
@@ -245,6 +261,22 @@
     "block_size": [
       2,
       2
+    ]
+  },
+  "wall_north_plaster_32": {
+    "name": "Wooden Floor with North Wall Plaster (32x32)",
+    "tile_tags": [
+      "wood",
+      "indoor",
+      "wall",
+      "north",
+      "plaster"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
     ]
   },
   "wall_door_north_32": {

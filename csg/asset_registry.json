@@ -292,6 +292,24 @@
     "snap_points": [],
     "type": "raw"
   },
+  "wall_north_mega_128": {
+    "name": "wall_north_mega_128",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "north",
+      "mega"
+    ],
+    "snap_points": [
+      "center",
+      "north",
+      "south",
+      "east",
+      "west",
+      "wall_face"
+    ],
+    "type": "raw"
+  },
   "tankard": {
     "name": "tankard",
     "asset_tags": [
@@ -684,6 +702,24 @@
     ],
     "snap_points": [],
     "type": "collection"
+  },
+  "wall_north_plaster_32": {
+    "name": "wall_north_plaster_32",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "north",
+      "plaster"
+    ],
+    "snap_points": [
+      "center",
+      "north",
+      "south",
+      "east",
+      "west",
+      "wall_face"
+    ],
+    "type": "raw"
   },
   "collection_forest_meadow": {
     "name": "collection_forest_meadow",

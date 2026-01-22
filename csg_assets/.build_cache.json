@@ -1,5 +1,5 @@
 {
-  "asset_registry": "86c3b1e50d05042e3b817e301861bff8",
+  "asset_registry": "6a48aad4bc25f9f69c3eed32c60ceecd",
   "bar_corner_mega_base": "729b2be40ca285b4d3225e6ea69da038",
   "bar_counter": "90bab137b565dfe4cbb1a3a3387d1834",
   "barrel": "d8834a79b2ba615be56900e04943ba3e",
@@ -83,5 +83,7 @@
   "willow_terrain": "1409c42e57d1db6c0153d6eeb5143325",
   "willow_tree_xl": "64cf692a1ef5b4d1c2ad3182afff27c3",
   "window": "93e8bd7987f687d30fe6753d9927b811",
-  "wooden_floor": "1025fd7129dd17fa43704c037c995145"
+  "wooden_floor": "1025fd7129dd17fa43704c037c995145",
+  "wall_north_mega_128": "90e129e4b2904cc42430c4ae6d9eb66b",
+  "wall_north_plaster_32": "6e3ad67d2e1e8e1b53b28202385eaaa9"
 }
