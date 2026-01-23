@@ -11849,6 +11849,13 @@
       "color": 2
     }
   ],
+  "light_emitters": [
+    {
+      "offset": [16, 0, 16],
+      "color": [1.0, 0.4, 0.0],
+      "intensity": 250
+    }
+  ],
   "snap_points": {
     "hearth_rug": {
       "pos": [

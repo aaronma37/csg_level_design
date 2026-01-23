@@ -603,21 +603,13 @@
       "color": 241
     }
   ],
-  "light_emitters": [
-    {
-      "offset": [
-        0,
-        0,
-        5
-      ],
-      "color": [
-        1.0,
-        0.9,
-        0.6
-      ],
-      "intensity": 40
-    }
-  ],
+    "light_emitters": [
+      {
+        "offset": [0, 0, 5],
+        "color": [1.0, 0.6, 0.2],
+        "intensity": 100
+      }
+    ],
   "snap_points": {},
   "asset_tags": [
     "decor",

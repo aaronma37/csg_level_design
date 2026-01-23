@@ -2,9 +2,9 @@
   "name": "book_stack",
   "asset_tags": ["prop", "book", "clutter"],
   "instructions": [
-    { "op": "add", "pos": [-5, -5, 0], "size": [10, 10, 3], "color": 60 },
+    { "op": "add", "pos": [-5, -5, 0], "size": [10, 10, 3], "color": 49 },
     { "op": "add", "pos": [-5, -5, 1], "size": [9, 10, 1], "color": 20 },
-    { "op": "add", "pos": [-5, -5, 3], "size": [10, 10, 3], "color": 65 },
+    { "op": "add", "pos": [-5, -5, 3], "size": [10, 10, 3], "color": 47 },
     { "op": "add", "pos": [-5, -5, 4], "size": [9, 10, 1], "color": 20 }
   ]
 }

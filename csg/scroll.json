@@ -1,0 +1,10 @@
+{
+  "name": "scroll",
+  "asset_tags": ["decor", "clutter"],
+  "instructions": [
+    { "op": "add", "pos": [-4, -2, 0], "size": [8, 4, 1], "color": 1 },
+    { "op": "add", "pos": [-4, -2, 1], "size": [8, 4, 2], "color": 44 },
+    { "op": "add", "pos": [-5, -2, 0], "size": [1, 4, 3], "color": 44 },
+    { "op": "add", "pos": [4, -2, 0], "size": [1, 4, 3], "color": 44 }
+  ]
+}

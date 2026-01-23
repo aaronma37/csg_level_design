@@ -1,20 +1,12 @@
 {
   "name": "stone_fireplace",
-    "light_emitters": [
-      {
-        "offset": [
-          0,
-          10,
-          12
-        ],
-        "color": [
-          1.0,
-          0.5,
-          0.1
-        ],
-        "intensity": 100
-      }
-    ],
+  "light_emitters": [
+    {
+      "offset": [0, 0, 16],
+      "color": [1.0, 0.4, 0.0],
+      "intensity": 250
+    }
+  ],
     "particle_emitters": [
       {
         "offset": [

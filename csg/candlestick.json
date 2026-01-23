@@ -1,0 +1,16 @@
+{
+  "name": "candlestick",
+  "asset_tags": ["decor", "clutter", "light_source"],
+  "instructions": [
+    { "op": "add", "pos": [-2, -2, 0], "size": [4, 4, 1], "color": 23 },
+    { "op": "add", "pos": [-1, -1, 1], "size": [2, 2, 6], "color": 50 },
+    { "op": "add", "pos": [0, 0, 7], "size": [1, 1, 1], "color": 241 }
+  ],
+  "light_emitters": [
+    {
+      "offset": [0, 0, 7],
+      "color": [1.0, 0.5, 0.1],
+      "intensity": 60
+    }
+  ]
+}

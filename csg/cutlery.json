@@ -1,0 +1,11 @@
+{
+  "name": "cutlery",
+  "asset_tags": ["prop", "clutter", "tableware"],
+  "instructions": [
+    { "op": "add", "pos": [-2, -3, 0], "size": [1, 6, 1], "color": 47 },
+    { "op": "add", "pos": [1, -3, 0], "size": [1, 6, 1], "color": 47 },
+    { "op": "add", "pos": [1, 2, 0], "size": [1, 1, 1], "color": 47 },
+    { "op": "add", "pos": [0, 2, 0], "size": [1, 1, 1], "color": 47 },
+    { "op": "add", "pos": [2, 2, 0], "size": [1, 1, 1], "color": 47 }
+  ]
+}

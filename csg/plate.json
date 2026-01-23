@@ -1,0 +1,32 @@
+{
+  "name": "plate",
+  "asset_tags": ["prop", "clutter", "tableware"],
+  "instructions": [
+    {
+      "op": "add",
+      "shape": "cylinder",
+      "pos": [0, 0, 0],
+      "radius": 5,
+      "height": 1,
+      "axis": "z",
+      "color": 44
+    },
+    {
+      "op": "add",
+      "shape": "cylinder",
+      "pos": [0, 0, 1],
+      "radius": 5,
+      "height": 1,
+      "axis": "z",
+      "color": 44
+    },
+    {
+      "op": "subtract",
+      "shape": "cylinder",
+      "pos": [0, 0, 1],
+      "radius": 4,
+      "height": 1,
+      "axis": "z"
+    }
+  ]
+}

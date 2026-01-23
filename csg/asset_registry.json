@@ -7,6 +7,20 @@
     "snap_points": [],
     "type": "raw"
   },
+  "rug_4x2_mega_base": {
+    "name": "rug_4x2_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "decor"
+    ],
+    "snap_points": [
+      "center",
+      "spot_left",
+      "spot_right"
+    ],
+    "type": "raw"
+  },
   "corner_pillar": {
     "name": "corner_pillar",
     "asset_tags": [
@@ -78,6 +92,16 @@
     "name": "mug",
     "asset_tags": [
       "passable"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "fork": {
+    "name": "fork",
+    "asset_tags": [
+      "prop",
+      "clutter",
+      "tableware"
     ],
     "snap_points": [],
     "type": "raw"
@@ -253,20 +277,12 @@
     "type": "raw"
   },
   "floor_bevel_32": {
-    "name": "floor_bevel_32_var1",
+    "name": "floor_bevel_32",
     "asset_tags": [
       "floor",
       "base"
     ],
     "snap_points": [
-      "north",
-      "south",
-      "east",
-      "west",
-      "north_outer",
-      "south_outer",
-      "east_outer",
-      "west_outer",
       "center"
     ],
     "type": "raw"
@@ -379,6 +395,16 @@
     ],
     "type": "raw"
   },
+  "plate": {
+    "name": "plate",
+    "asset_tags": [
+      "prop",
+      "clutter",
+      "tableware"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
   "wooden_floor": {
     "name": "wooden_floor",
     "asset_tags": [
@@ -469,6 +495,15 @@
     "snap_points": [],
     "type": "raw"
   },
+  "inkwell": {
+    "name": "inkwell",
+    "asset_tags": [
+      "decor",
+      "clutter"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
   "book_stack": {
     "name": "book_stack",
     "asset_tags": [
@@ -513,6 +548,16 @@
       "west_outer",
       "center"
     ],
+    "type": "raw"
+  },
+  "candlestick": {
+    "name": "candlestick",
+    "asset_tags": [
+      "decor",
+      "clutter",
+      "light_source"
+    ],
+    "snap_points": [],
     "type": "raw"
   },
   "tile_plateau": {
@@ -598,6 +643,16 @@
     "snap_points": [],
     "type": "raw"
   },
+  "knife": {
+    "name": "knife",
+    "asset_tags": [
+      "prop",
+      "clutter",
+      "tableware"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
   "bookshelf_mega_base": {
     "name": "bookshelf_mega_base",
     "asset_tags": [
@@ -640,6 +695,15 @@
       "east",
       "west"
     ],
+    "type": "raw"
+  },
+  "scroll": {
+    "name": "scroll",
+    "asset_tags": [
+      "decor",
+      "clutter"
+    ],
+    "snap_points": [],
     "type": "raw"
   },
   "stone_fireplace": {
@@ -763,7 +827,19 @@
       "seat_4",
       "clutter_center",
       "clutter_left",
-      "clutter_right"
+      "clutter_right",
+      "clutter_1",
+      "clutter_2",
+      "clutter_3",
+      "clutter_4",
+      "clutter_5",
+      "clutter_6",
+      "clutter_7",
+      "clutter_8",
+      "clutter_9",
+      "clutter_10",
+      "clutter_11",
+      "clutter_12"
     ],
     "type": "raw"
   },
@@ -773,6 +849,16 @@
       "floor",
       "base",
       "terrain"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "cutlery": {
+    "name": "cutlery",
+    "asset_tags": [
+      "prop",
+      "clutter",
+      "tableware"
     ],
     "snap_points": [],
     "type": "raw"

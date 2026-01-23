@@ -512,54 +512,24 @@
     }
   ],
   "snap_points": {
-    "seat_1": {
-      "pos": [
-        0,
-        -6,
-        0
-      ]
-    },
-    "seat_2": {
-      "pos": [
-        32,
-        -6,
-        0
-      ]
-    },
-    "seat_3": {
-      "pos": [
-        0,
-        38,
-        0
-      ]
-    },
-    "seat_4": {
-      "pos": [
-        32,
-        38,
-        0
-      ]
-    },
-    "clutter_center": {
-      "pos": [
-        16,
-        16,
-        25
-      ]
-    },
-    "clutter_left": {
-      "pos": [
-        0,
-        16,
-        25
-      ]
-    },
-    "clutter_right": {
-      "pos": [
-        32,
-        16,
-        25
-      ]
-    }
+    "seat_1": { "pos": [0, -6, 0] },
+    "seat_2": { "pos": [32, -6, 0] },
+    "seat_3": { "pos": [0, 38, 0] },
+    "seat_4": { "pos": [32, 38, 0] },
+    "clutter_center": { "pos": [16, 16, 25] },
+    "clutter_left": { "pos": [0, 16, 25] },
+    "clutter_right": { "pos": [32, 16, 25] },
+    "clutter_1": { "pos": [-8, 8, 25] },
+    "clutter_2": { "pos": [8, 8, 25] },
+    "clutter_3": { "pos": [24, 8, 25] },
+    "clutter_4": { "pos": [40, 8, 25] },
+    "clutter_5": { "pos": [-8, 24, 25] },
+    "clutter_6": { "pos": [8, 24, 25] },
+    "clutter_7": { "pos": [24, 24, 25] },
+    "clutter_8": { "pos": [40, 24, 25] },
+    "clutter_9": { "pos": [0, 8, 25] },
+    "clutter_10": { "pos": [16, 8, 25] },
+    "clutter_11": { "pos": [32, 8, 25] },
+    "clutter_12": { "pos": [16, 24, 25] }
   }
 }

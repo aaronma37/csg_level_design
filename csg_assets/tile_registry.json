@@ -13,6 +13,20 @@
       1
     ]
   },
+  "rug_4x2_mega": {
+    "name": "Ornate Rug Mega (4x2)",
+    "tile_tags": [
+      "decor",
+      "rug",
+      "mega"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      4,
+      2
+    ]
+  },
   "wall_north_mega_128": {
     "name": "North Wall Mega (4x1)",
     "tile_tags": [
@@ -103,6 +117,36 @@
     "block_size": [
       1,
       1
+    ]
+  },
+  "dining_table_mega_var4_messy": {
+    "name": "Dining Table Mega Messy (2x2)",
+    "tile_tags": [
+      "furniture",
+      "table",
+      "mega",
+      "messy"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      2,
+      2
+    ]
+  },
+  "dining_table_mega_var3_cluttered": {
+    "name": "Dining Table Mega Scholarly (2x2)",
+    "tile_tags": [
+      "furniture",
+      "table",
+      "mega",
+      "cluttered"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      2,
+      2
     ]
   },
   "dining_table_mega_var1": {
@@ -446,6 +490,21 @@
     "block_size": [
       1,
       1
+    ]
+  },
+  "dining_table_mega_var5_dinner": {
+    "name": "Dining Table Mega Dinner (2x2)",
+    "tile_tags": [
+      "furniture",
+      "table",
+      "mega",
+      "dinner"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      2,
+      2
     ]
   }
 }
