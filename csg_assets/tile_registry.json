@@ -255,7 +255,7 @@
     ]
   },
   "bar_corner_nw_mega": {
-    "name": "Bar Corner Mega (4x2)",
+    "name": "Bar Corner Mega (3x2)",
     "tile_tags": [
       "furniture",
       "bar",
@@ -264,12 +264,12 @@
     "nav_mask": 0,
     "base_height": 0,
     "block_size": [
-      4,
+      3,
       2
     ]
   },
   "fireplace_mega": {
-    "name": "Stone Fireplace Mega (2x1)",
+    "name": "Stone Fireplace Mega with Wall (2x2)",
     "tile_tags": [
       "furniture",
       "fireplace",

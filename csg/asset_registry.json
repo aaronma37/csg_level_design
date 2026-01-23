@@ -172,15 +172,14 @@
   "bar_corner_mega_base": {
     "name": "bar_corner_mega_base",
     "asset_tags": [
-      "structure",
-      "bar",
+      "base",
       "mega",
-      "tavern"
+      "bar"
     ],
     "snap_points": [
       "center",
-      "mug_spot",
-      "candle_spot"
+      "candle_spot",
+      "mug_spot"
     ],
     "type": "raw"
   },
@@ -711,6 +710,20 @@
     "snap_points": [],
     "type": "raw"
   },
+  "bar_corner_3x2_mega_base": {
+    "name": "bar_corner_3x2_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "bar"
+    ],
+    "snap_points": [
+      "center",
+      "candle_spot",
+      "mug_spot"
+    ],
+    "type": "raw"
+  },
   "stair_railing": {
     "name": "stair_railing",
     "asset_tags": [
@@ -718,6 +731,22 @@
       "stairs"
     ],
     "snap_points": [],
+    "type": "raw"
+  },
+  "fireplace_mega_wall_base": {
+    "name": "fireplace_mega_wall_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "fireplace"
+    ],
+    "snap_points": [
+      "hearth_rug",
+      "chair_left",
+      "chair_right",
+      "mantle_left",
+      "mantle_right"
+    ],
     "type": "raw"
   },
   "dining_table_mega_base": {
