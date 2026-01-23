@@ -7,6 +7,22 @@
     "mega",
     "tavern"
   ],
+  "godrays": [
+    {
+      "offset": [-32, -12, 70],
+      "direction": [0.5, 1.0, -0.8],
+      "color": [1.0, 0.9, 0.7],
+      "intensity": 0.8,
+      "width": 12.0
+    },
+    {
+      "offset": [32, -12, 70],
+      "direction": [0.5, 1.0, -0.8],
+      "color": [1.0, 0.9, 0.7],
+      "intensity": 0.8,
+      "width": 12.0
+    }
+  ],
   "instructions": [
     {
       "op": "add",

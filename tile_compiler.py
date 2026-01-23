@@ -128,6 +128,36 @@ def parse_manual_lights(content):
             lights.append(l)
     return lights
 
+def parse_manual_godrays(content):
+    godrays = []
+    match = re.search(r'godrays\s*=\s*\{(.*)\}', content, re.DOTALL)
+    if not match:
+        return godrays
+        
+    raw_str = match.group(1)
+    entries = raw_str.split('},')
+    for entry in entries:
+        if 'offset' not in entry: continue
+        g = {}
+        off_m = re.search(r"offset\s*=\s*\{([^}]+)\}", entry)
+        if off_m: g['offset'] = [float(x) for x in off_m.group(1).split(',')]
+        
+        dir_m = re.search(r"direction\s*=\s*\{([^}]+)\}", entry)
+        if dir_m: g['direction'] = [float(x) for x in dir_m.group(1).split(',')]
+        
+        col_m = re.search(r"color\s*=\s*\{([^}]+)\}", entry)
+        if col_m: g['color'] = [float(x) for x in col_m.group(1).split(',')]
+        
+        int_m = re.search(r"intensity\s*=\s*([\d\.]+)", entry)
+        if int_m: g['intensity'] = float(int_m.group(1))
+        
+        wid_m = re.search(r"width\s*=\s*([\d\.]+)", entry)
+        if wid_m: g['width'] = float(wid_m.group(1))
+        
+        if 'offset' in g:
+            godrays.append(g)
+    return godrays
+
 def compile_tile(filename):
     with open(os.path.join(TILES_DIR, filename), 'r') as f:
         content = f.read()
@@ -136,8 +166,9 @@ def compile_tile(filename):
     # 1. Parse Layout
     items = parse_lua_table(content)
     
-    # 2. Parse Manual Lights
+    # 2. Parse Manual Metadata
     final_lights = parse_manual_lights(content)
+    final_godrays = parse_manual_godrays(content)
     
     # 3. Resolve Snaps & Collect Auto-Lights
     lookup = {} # id -> item with resolved pos
@@ -219,6 +250,29 @@ def compile_tile(filename):
                     "intensity": emitter['intensity']
                 })
 
+        # --- AUTO GODRAYS ---
+        if 'godrays' in asset_data:
+            for gray in asset_data['godrays']:
+                gx, gy, gz = gray['offset']
+                dx, dy, dz = gray['direction']
+                
+                # Rotate offset and direction by item rotation
+                rgx, rgy = rotate_point(gx, gy, item['rot'])
+                rdx, rdy = rotate_point(dx, dy, item['rot'])
+                
+                # Translate offset
+                fx = final_pos[0] + rgx
+                fy = final_pos[1] + rgy
+                fz = final_pos[2] + gz
+                
+                final_godrays.append({
+                    "offset": [fx, fy, fz],
+                    "direction": [rdx, rdy, dz],
+                    "color": gray['color'],
+                    "intensity": gray['intensity'],
+                    "width": gray['width']
+                })
+
         # Write to Lua string
         line = f"        {{ asset_id = '{item['asset_id']}', pos = {{{final_pos[0]}, {final_pos[1]}, {final_pos[2]}}}, rot = {item['rot']}"
         if 'id' in item:
@@ -233,15 +287,11 @@ def compile_tile(filename):
     match_start = re.search(r'layout\s*=\s*\{', content)
     if match_start:
         new_content = content[:match_start.start()] + resolved_layout_str
-        # Find end of original layout block to append the rest?
-        # Actually, simpler to just assume metadata is before layout, and layout is last?
-        # The file ends with '}' usually.
         new_content += "\n}" 
     else:
         new_content = content
 
-    # Inject Lights Table (overwrite or insert)
-    # Format lights list
+    # Inject Lights Table
     lights_str = "    lights = {\n"
     for l in final_lights:
         p = l['position']
@@ -249,35 +299,31 @@ def compile_tile(filename):
         lights_str += f"        {{ position = {{{p[0]:.2f}, {p[1]:.2f}, {p[2]:.2f}}}, color = {{{c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f}}}, intensity = {l['intensity']} }},\n"
     lights_str += "    },\n"
     
-    # Check if 'lights = {' exists
-    lights_match = re.search(r'lights\s*=\s*\{', new_content)
-    if lights_match:
-        # Replace existing lights block
-        # Find matching closing brace... this is hard with regex.
-        # Let's just find the start, and replace until the next key or end?
-        # A bit risky. 
-        # Better: Since we parsed manual lights, we can just completely regenerate the file structure if we trust our parsing.
-        # But we didn't parse metadata.
-        # Hack: Split before 'lights =', take the first part, append new lights, append 'layout =' part.
-        
-        # If 'layout' comes after 'lights' (standard):
-        pre_lights = new_content[:lights_match.start()]
-        # find where layout starts
-        layout_start = re.search(r'layout\s*=\s*\{', new_content)
-        if layout_start:
-             new_content = pre_lights + lights_str + new_content[layout_start.start():]
-    else:
-        # Insert before layout
-        layout_start = re.search(r'layout\s*=\s*\{', new_content)
-        if layout_start:
-             new_content = new_content[:layout_start.start()] + lights_str + new_content[layout_start.start():]
+    # Inject Godrays Table
+    godrays_str = "    godrays = {\n"
+    for g in final_godrays:
+        o = g['offset']
+        d = g['direction']
+        c = g['color']
+        godrays_str += f"        {{ offset = {{{o[0]:.2f}, {o[1]:.2f}, {o[2]:.2f}}}, direction = {{{d[0]:.2f}, {d[1]:.2f}, {d[2]:.2f}}}, color = {{{c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f}}}, intensity = {g['intensity']}, width = {g['width']} }},\n"
+    godrays_str += "    },\n"
+
+    # Injection logic
+    # Clean up existing ones if they exist
+    new_content = re.sub(r'lights\s*=\s*\{.*?\},?\n', '', new_content, flags=re.DOTALL)
+    new_content = re.sub(r'godrays\s*=\s*\{.*?\},?\n', '', new_content, flags=re.DOTALL)
+
+    # Insert before layout
+    layout_start = re.search(r'layout\s*=\s*\{', new_content)
+    if layout_start:
+         new_content = new_content[:layout_start.start()] + lights_str + godrays_str + new_content[layout_start.start():]
     
     # Write to Game Directory
     os.makedirs(GAME_TILES_DIR, exist_ok=True)
     out_path = os.path.join(GAME_TILES_DIR, filename)
     with open(out_path, 'w') as f:
         f.write(new_content)
-    print(f"Compiled {filename} -> {out_path} (Lights: {len(final_lights)})")
+    print(f"Compiled {filename} -> {out_path} (Lights: {len(final_lights)}, Godrays: {len(final_godrays)})")
 
 
 if __name__ == "__main__":

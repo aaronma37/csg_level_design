@@ -9,6 +9,14 @@ class LightEmitter:
     intensity: float
 
 @dataclass
+class Godray:
+    offset: Tuple[float, float, float]
+    direction: Tuple[float, float, float]
+    color: Tuple[float, float, float]
+    intensity: float
+    width: float
+
+@dataclass
 class ParticleEmitter:
     offset: Tuple[float, float, float]
     system_id: str
@@ -35,12 +43,16 @@ class Asset:
     name: str
     instructions: List[dict] = field(default_factory=list) # Keeping instructions loose for now as they come from VoxelBuilder
     light_emitters: List[LightEmitter] = field(default_factory=list)
+    godrays: List[Godray] = field(default_factory=list)
     particle_emitters: List[ParticleEmitter] = field(default_factory=list)
     snap_points: dict[str, SnapPoint] = field(default_factory=dict)
     asset_tags: List[str] = field(default_factory=list)
 
     def add_light(self, offset: Tuple[float, float, float], color: Tuple[float, float, float], intensity: float):
         self.light_emitters.append(LightEmitter(offset, color, intensity))
+
+    def add_godray(self, offset: Tuple[float, float, float], direction: Tuple[float, float, float], color: Tuple[float, float, float], intensity: float, width: float):
+        self.godrays.append(Godray(offset, direction, color, intensity, width))
 
     def add_particle(self, offset: Tuple[float, float, float], system_id: str):
         self.particle_emitters.append(ParticleEmitter(offset, system_id))
