@@ -255,7 +255,7 @@
     ]
   },
   "bar_corner_nw_mega": {
-    "name": "Bar Corner Mega (2x2)",
+    "name": "Bar Corner Mega (4x2)",
     "tile_tags": [
       "furniture",
       "bar",
@@ -264,7 +264,7 @@
     "nav_mask": 0,
     "base_height": 0,
     "block_size": [
-      2,
+      4,
       2
     ]
   },
@@ -293,6 +293,36 @@
     "base_height": 0,
     "block_size": [
       1,
+      1
+    ]
+  },
+  "tavern_door_mega_3x1": {
+    "name": "Tavern Door Mega (3x1)",
+    "tile_tags": [
+      "wood",
+      "tavern",
+      "door",
+      "mega"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      3,
+      1
+    ]
+  },
+  "tavern_window_mega_3x1": {
+    "name": "Tavern Window Mega (3x1)",
+    "tile_tags": [
+      "wood",
+      "tavern",
+      "window",
+      "mega"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      3,
       1
     ]
   },
@@ -365,6 +395,22 @@
     "base_height": 0,
     "block_size": [
       1,
+      1
+    ]
+  },
+  "tavern_wall_mega_plaster_3x1": {
+    "name": "Tavern Wall Plaster Mega (3x1)",
+    "tile_tags": [
+      "wood",
+      "tavern",
+      "wall",
+      "mega",
+      "plaster"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      3,
       1
     ]
   },

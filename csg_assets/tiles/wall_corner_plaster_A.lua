@@ -6,6 +6,6 @@ return {
         tile_tags = {"plaster", "wall", "corner"}
     },
     layout = {
-        { asset_id = "wall_corner_plaster_A", pos = {16, 0, 0}, rot = 0 }
+        { asset_id = "wall_corner_plaster_A", pos = {0, 0, 0}, rot = 0 }
     }
 }

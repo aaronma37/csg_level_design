@@ -172,14 +172,46 @@
   "bar_corner_mega_base": {
     "name": "bar_corner_mega_base",
     "asset_tags": [
-      "base",
+      "structure",
+      "bar",
       "mega",
-      "bar"
+      "tavern"
     ],
     "snap_points": [
       "center",
-      "candle_spot",
-      "mug_spot"
+      "mug_spot",
+      "candle_spot"
+    ],
+    "type": "raw"
+  },
+  "tavern_window_mega_3x1": {
+    "name": "tavern_window_mega_3x1",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "window",
+      "mega",
+      "tavern"
+    ],
+    "snap_points": [
+      "center",
+      "shelf_left",
+      "shelf_right",
+      "shelf_center"
+    ],
+    "type": "raw"
+  },
+  "tavern_wall_mega_plaster_3x1": {
+    "name": "tavern_wall_mega_plaster_3x1",
+    "asset_tags": [
+      "structure",
+      "wall",
+      "mega",
+      "tavern",
+      "plaster"
+    ],
+    "snap_points": [
+      "center"
     ],
     "type": "raw"
   },
@@ -742,6 +774,23 @@
       "terrain"
     ],
     "snap_points": [],
+    "type": "raw"
+  },
+  "tavern_door_mega_3x1": {
+    "name": "tavern_door_mega_3x1",
+    "asset_tags": [
+      "structure",
+      "door",
+      "mega",
+      "tavern"
+    ],
+    "snap_points": [
+      "center",
+      "left_post",
+      "right_post",
+      "candle_left",
+      "candle_right"
+    ],
     "type": "raw"
   },
   "candles": {

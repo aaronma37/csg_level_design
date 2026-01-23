@@ -1,6 +1,6 @@
 {
   "asset_registry": "ea45e0ef697b6df1cbd65b776931d9b1",
-  "bar_corner_mega_base": "b3b76ec3f92cf0e283d7002f106933ce",
+  "bar_corner_mega_base": "aa311d681700599b0b4893d87cddf664",
   "bar_counter": "90bab137b565dfe4cbb1a3a3387d1834",
   "barrel": "9fe91c9d3b66db3c40f22c1a90029344",
   "barstool": "fa560986e4b0e29a30029a93019fe978",
@@ -95,5 +95,8 @@
   "book_stack": "01d62f389fe593417485d2bfcf621c47",
   "book_vertical": "6b4b54f944ddbaff4df4797cd0fb47af",
   "barrel_stack_mega_base": "afa4d7609213d8768b5a585b75cffb2f",
-  "barrel_side": "5b28e6ba60b0f664cf56d5d50e1c06f5"
+  "barrel_side": "5b28e6ba60b0f664cf56d5d50e1c06f5",
+  "tavern_door_mega_3x1": "b9de4989c85ac77aa2b4e18fc62ee241",
+  "tavern_window_mega_3x1": "15808f178f9f42b516f5f96ddd4f1e7f",
+  "tavern_wall_mega_plaster_3x1": "1aeee016346a83ca2474f882463a6996"
 }
