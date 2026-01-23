@@ -7,14 +7,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_stocked_shelf": {
-    "name": "collection_stocked_shelf",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "corner_pillar": {
     "name": "corner_pillar",
     "asset_tags": [
@@ -36,14 +28,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_storage_decor": {
-    "name": "collection_storage_decor",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "forest_signpost": {
     "name": "forest_signpost",
     "asset_tags": [
@@ -53,14 +37,6 @@
     ],
     "snap_points": [],
     "type": "raw"
-  },
-  "collection_armory_rack": {
-    "name": "collection_armory_rack",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   },
   "bottle": {
     "name": "bottle",
@@ -201,25 +177,11 @@
       "bar"
     ],
     "snap_points": [
-      "center"
+      "center",
+      "candle_spot",
+      "mug_spot"
     ],
     "type": "raw"
-  },
-  "collection_dining_snapped": {
-    "name": "collection_dining_snapped",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "collection_forest_cliff": {
-    "name": "collection_forest_cliff",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   },
   "flower_patch_red": {
     "name": "flower_patch_red",
@@ -286,20 +248,6 @@
     ],
     "snap_points": [],
     "type": "raw"
-  },
-  "collection_dining_hall": {
-    "name": "collection_dining_hall",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "willow_grove_layout": {
-    "name": "willow_grove_layout",
-    "asset_tags": [],
-    "snap_points": [],
-    "type": "collection"
   },
   "flower_patch_blue": {
     "name": "flower_patch_blue",
@@ -371,14 +319,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_bar_set": {
-    "name": "collection_bar_set",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "weapon_rack": {
     "name": "weapon_rack",
     "asset_tags": [
@@ -388,6 +328,23 @@
       "slot_1",
       "slot_2",
       "slot_3"
+    ],
+    "type": "raw"
+  },
+  "barrel_stack_mega_base": {
+    "name": "barrel_stack_mega_base",
+    "asset_tags": [
+      "base",
+      "mega",
+      "floor"
+    ],
+    "snap_points": [
+      "b_1_1",
+      "b_1_2",
+      "b_1_3",
+      "b_2_1",
+      "b_2_2",
+      "b_3_1"
     ],
     "type": "raw"
   },
@@ -419,6 +376,16 @@
     "name": "chandelier",
     "asset_tags": [
       "light_source"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
+  "barrel_side": {
+    "name": "barrel_side",
+    "asset_tags": [
+      "prop",
+      "barrel",
+      "storage"
     ],
     "snap_points": [],
     "type": "raw"
@@ -471,13 +438,15 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_river_corner": {
-    "name": "collection_river_corner",
+  "book_stack": {
+    "name": "book_stack",
     "asset_tags": [
-      "collection"
+      "prop",
+      "book",
+      "clutter"
     ],
     "snap_points": [],
-    "type": "collection"
+    "type": "raw"
   },
   "tile_grass": {
     "name": "tile_grass",
@@ -488,14 +457,6 @@
     ],
     "snap_points": [],
     "type": "raw"
-  },
-  "collection_mezzanine_straight": {
-    "name": "collection_mezzanine_straight",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   },
   "forest_fence": {
     "name": "forest_fence",
@@ -551,22 +512,6 @@
     ],
     "type": "raw"
   },
-  "collection_mezzanine_complete": {
-    "name": "collection_mezzanine_complete",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "collection_misc_clutter": {
-    "name": "collection_misc_clutter",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "debris_stump": {
     "name": "debris_stump",
     "asset_tags": [
@@ -602,6 +547,16 @@
     "snap_points": [],
     "type": "raw"
   },
+  "book_leaning": {
+    "name": "book_leaning",
+    "asset_tags": [
+      "prop",
+      "book",
+      "clutter"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
   "tile_river_straight": {
     "name": "tile_river_straight",
     "asset_tags": [
@@ -612,13 +567,31 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_fireplace_nook": {
-    "name": "collection_fireplace_nook",
+  "bookshelf_mega_base": {
+    "name": "bookshelf_mega_base",
     "asset_tags": [
-      "collection"
+      "base",
+      "mega",
+      "furniture",
+      "storage",
+      "wood"
     ],
-    "snap_points": [],
-    "type": "collection"
+    "snap_points": [
+      "center",
+      "top_left",
+      "top_right",
+      "s1_l_1",
+      "s1_l_2",
+      "s1_l_3",
+      "s1_r_1",
+      "s1_r_2",
+      "s2_l_1",
+      "s2_r_1",
+      "s2_r_2",
+      "s3_l_1",
+      "s3_r_1"
+    ],
+    "type": "raw"
   },
   "wall_north_window_32": {
     "name": "wall_north_window_32",
@@ -655,22 +628,6 @@
       "hearth_rug"
     ],
     "type": "raw"
-  },
-  "collection_forest_plateau": {
-    "name": "collection_forest_plateau",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "collection_forest_tile_A": {
-    "name": "collection_forest_tile_A",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   },
   "debris_log": {
     "name": "debris_log",
@@ -712,6 +669,16 @@
     ],
     "type": "raw"
   },
+  "book_vertical": {
+    "name": "book_vertical",
+    "asset_tags": [
+      "prop",
+      "book",
+      "clutter"
+    ],
+    "snap_points": [],
+    "type": "raw"
+  },
   "stair_railing": {
     "name": "stair_railing",
     "asset_tags": [
@@ -749,14 +716,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_forest_tile_B": {
-    "name": "collection_forest_tile_B",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "wall_north_plaster_32": {
     "name": "wall_north_plaster_32",
     "asset_tags": [
@@ -774,20 +733,6 @@
       "wall_face"
     ],
     "type": "raw"
-  },
-  "collection_forest_meadow": {
-    "name": "collection_forest_meadow",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "tavern_layout": {
-    "name": "tavern_layout",
-    "asset_tags": [],
-    "snap_points": [],
-    "type": "collection"
   },
   "tile_grass_hills": {
     "name": "tile_grass_hills",
@@ -809,22 +754,6 @@
     "snap_points": [],
     "type": "raw"
   },
-  "collection_bar_complete": {
-    "name": "collection_bar_complete",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "collection_mezzanine_corner": {
-    "name": "collection_mezzanine_corner",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "trophy_wall": {
     "name": "trophy_wall",
     "asset_tags": [
@@ -832,14 +761,6 @@
     ],
     "snap_points": [],
     "type": "raw"
-  },
-  "collection_tavern_shell": {
-    "name": "collection_tavern_shell",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   },
   "railing_long": {
     "name": "railing_long",
@@ -871,22 +792,6 @@
     ],
     "type": "raw"
   },
-  "collection_river_straight": {
-    "name": "collection_river_straight",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
-  "collection_forest_tile_C": {
-    "name": "collection_forest_tile_C",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
-  },
   "tile_cliff_straight": {
     "name": "tile_cliff_straight",
     "asset_tags": [
@@ -900,8 +805,8 @@
   "barrel": {
     "name": "barrel",
     "asset_tags": [
-      "clutter",
-      "decor",
+      "prop",
+      "barrel",
       "storage"
     ],
     "snap_points": [],
@@ -940,13 +845,5 @@
       "center"
     ],
     "type": "raw"
-  },
-  "collection_dining_set": {
-    "name": "collection_dining_set",
-    "asset_tags": [
-      "collection"
-    ],
-    "snap_points": [],
-    "type": "collection"
   }
 }

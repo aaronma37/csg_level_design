@@ -1,0 +1,8 @@
+{
+  "name": "book_vertical",
+  "asset_tags": ["prop", "book", "clutter"],
+  "instructions": [
+    { "op": "add", "pos": [-1, -5, 0], "size": [3, 10, 14], "color": 45 },
+    { "op": "add", "pos": [0, -4, 1], "size": [1, 8, 12], "color": 20 }
+  ]
+}

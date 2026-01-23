@@ -16,7 +16,6 @@ GAME_ASSET_DIR="$HOME/love_exp/assets/csg_assets"
 built=0
 skipped=0
 failed=0
-collections=0
 
 # Ensure directories exist
 mkdir -p "$ASSET_DIR"
@@ -31,9 +30,8 @@ for json_path in csg/*.json; do
     [ -e "$json_path" ] || continue
     asset_name=$(basename "$json_path" .json)
     
-    # Check if it is a collection or registry (non-forgable)
-    if grep -qE '"layout":|"type": "collection"' "$json_path" || [[ "$asset_name" == *"registry"* ]]; then
-        # Handle as collection later
+    # Check if it is a registry (non-forgable)
+    if [[ "$asset_name" == *"registry"* ]]; then
         continue
     fi
 
@@ -60,20 +58,6 @@ for json_path in csg/*.json; do
         fi
     else
         ((skipped++))
-    fi
-done
-
-# 2. Collection Stage (Publishing logic assets)
-echo -e "\n${BLUE}📚 PUBLISHING COLLECTIONS${NC}"
-for json_path in csg/*.json; do
-    [ -e "$json_path" ] || continue
-    asset_name=$(basename "$json_path" .json)
-    
-    if grep -qE '"layout":|"type": "collection"' "$json_path" || [[ "$asset_name" == *"registry"* ]]; then
-        # Only copy if changed or missing in target
-        cp "$json_path" "$ASSET_DIR/"
-        echo -e "  - ${BOLD}$asset_name${NC} ... ${GREEN}SYNCED${NC}"
-        ((collections++))
     fi
 done
 
@@ -109,7 +93,6 @@ done
 # Final Summary
 echo -e "\n${BOLD}=== PUBLISH SUMMARY ===${NC}"
 echo -e "  Forged:      ${GREEN}$built${NC}"
-echo -e "  Collections: ${BLUE}$collections${NC}"
 echo -e "  Skipped:     ${YELLOW}$skipped${NC}"
 if [ $failed -gt 0 ]; then
     echo -e "  Failed:      ${RED}$failed${NC}"

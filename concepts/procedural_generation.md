@@ -1,9 +1,12 @@
 # Semantic Procedural Generation
 
+> **LEGACY DOCUMENTATION**
+> This logic and the associated `tools/procedural_gen.py` script have been deprecated. Level generation logic now resides within the Game Engine. This document remains as a reference for the underlying algorithms.
+
 ## 1. Core Objectives
 Transition from hardcoded coordinate loops to a semantic, multi-phase generation system that obeys room constraints, ensures walkability, and populates detail via a tagged tile/asset registry.
 
-**Active Tool**: `tools/procedural_gen.py`
+**Active Tool**: `deprecated/procedural_gen.py` (formerly `tools/procedural_gen.py`)
 
 ## 2. Generation Phases (Implemented)
 

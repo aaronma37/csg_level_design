@@ -1,0 +1,11 @@
+{
+  "name": "book_leaning",
+  "asset_tags": ["prop", "book", "clutter"],
+  "instructions": [
+    { "op": "add", "pos": [-2, -5, 0], "size": [3, 10, 2], "color": 75 },
+    { "op": "add", "pos": [-1, -5, 2], "size": [3, 10, 2], "color": 75 },
+    { "op": "add", "pos": [0, -5, 4], "size": [3, 10, 2], "color": 75 },
+    { "op": "add", "pos": [1, -5, 6], "size": [3, 10, 2], "color": 75 },
+    { "op": "add", "pos": [2, -5, 8], "size": [3, 10, 2], "color": 75 }
+  ]
+}

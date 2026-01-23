@@ -7,16 +7,10 @@ return {
     },
     layout = {
         -- Use the integrated base asset at origin
-        { asset_id = 'bar_corner_mega_base', pos = {0, 0, 0}, rot = 0 },
+        { id = 'base', asset_id = 'bar_corner_mega_base', pos = {0, 0, 0}, rot = 0 },
         
-        -- Clutter (Adjusted to new coordinate system if needed, but 0,0 is the same reference)
-        -- Previous logic used pos={32,32} for the bar. 
-        -- If I change bar to 0,0, I need to shift clutter by -32, -32?
-        -- Let's check:
-        -- Original candles: {8, 56, 38} (Relative to 0,0)
-        -- If Bar was at 32,32 and candles at 8,56... candles were behind/left of bar.
-        -- Let's stick to the relative positions.
-        { asset_id = 'candles', pos = {8, 56, 38}, rot = 0 }, 
-        { asset_id = 'mug', pos = {22, 56, 38}, rot = 45 }
+        -- Clutter (Using snap points)
+        { asset_id = 'candles', snap_to = 'base.candle_spot', rot = 0 }, 
+        { asset_id = 'mug', snap_to = 'base.mug_spot', rot = 45 }
     }
 }

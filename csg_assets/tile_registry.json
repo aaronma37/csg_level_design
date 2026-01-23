@@ -90,6 +90,21 @@
       1
     ]
   },
+  "barrel_single": {
+    "name": "Single Barrel Tile",
+    "tile_tags": [
+      "prop",
+      "barrel",
+      "storage",
+      "floor"
+    ],
+    "nav_mask": 1,
+    "base_height": 0,
+    "block_size": [
+      1,
+      1
+    ]
+  },
   "dining_table_mega_var1": {
     "name": "Dining Table Mega Var1 (2x2)",
     "tile_tags": [
@@ -102,6 +117,21 @@
     "block_size": [
       2,
       2
+    ]
+  },
+  "barrel_stack_mega": {
+    "name": "Barrel Stack Mega (2x1)",
+    "tile_tags": [
+      "prop",
+      "barrel",
+      "mega",
+      "storage"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      2,
+      1
     ]
   },
   "wall_pillar_v2": {
@@ -175,6 +205,21 @@
     "base_height": 0,
     "block_size": [
       1,
+      1
+    ]
+  },
+  "bookshelf_mega": {
+    "name": "Bookshelf Mega (2x1)",
+    "tile_tags": [
+      "furniture",
+      "bookshelf",
+      "mega",
+      "storage"
+    ],
+    "nav_mask": 0,
+    "base_height": 0,
+    "block_size": [
+      2,
       1
     ]
   },
